@@ -120,7 +120,9 @@ fun AppNavGraph() {
                 }
             ) {
                 HomeScreen(
-                    onNavigateBack = { /* Home is root — nowhere to go back to */ }
+                    onNavigateBack = { /* Home is root — nowhere to go back to */ },
+                    // Candidate Portal card tapped → go to native SignUp screen
+                    onNavigateToSignIn = { backStack.add(Screen.SignIn) }
                 )
             }
         }

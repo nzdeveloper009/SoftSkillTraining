@@ -18,30 +18,34 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.cmp.community.healers.softskilltraining.data.repository.PlatformWebView
 import com.cmp.community.healers.softskilltraining.domain.repository.WebViewNavigator
+import com.cmp.community.healers.softskilltraining.presentation.feature.home.helper.NativeDestination
+import com.cmp.community.healers.softskilltraining.presentation.feature.home.helper.PATH_TO_NATIVE
 import com.cmp.community.healers.softskilltraining.theme.*
 import com.cmp.community.healers.softskilltraining.utils.constants.HOME_URL
 
+
 @Composable
 fun HomeScreen(
-    onNavigateBack: () -> Unit = {}
+    onNavigateBack: () -> Unit = {},
+    onNavigateToSignIn: () -> Unit = {}            // ← Candidate Portal card tapped
 ) {
-    var pageTitle    by remember { mutableStateOf("Community Healers") }
-    var isLoading    by remember { mutableStateOf(true) }
-    var refreshKey   by remember { mutableStateOf(0) }
-    var canGoBack    by remember { mutableStateOf(false) }
-    var webViewState by remember { mutableStateOf<WebViewNavigator?>(null) }
+    var pageTitle  by remember { mutableStateOf("Community Healers") }
+    var isLoading  by remember { mutableStateOf(true) }
+    var refreshKey by remember { mutableStateOf(0) }
+    var canGoBack  by remember { mutableStateOf(false) }
+    var navigator  by remember { mutableStateOf<WebViewNavigator?>(null) }
 
     Column(
         modifier = Modifier
             .fillMaxSize()
             .background(BackgroundWhite)
     ) {
-        // ── Top app bar ───────────────────────────────────────────────────────
+        // ── App bar ───────────────────────────────────────────────────────────
         Surface(
             modifier = Modifier
                 .fillMaxWidth()
                 .shadow(elevation = 2.dp),
-            color = ToolbarBg
+            color = BackgroundWhite
         ) {
             Row(
                 modifier = Modifier
@@ -51,32 +55,19 @@ fun HomeScreen(
                     .padding(horizontal = 4.dp),
                 verticalAlignment = Alignment.CenterVertically
             ) {
-                // Back button — goes back in WebView if possible, else exits screen
                 IconButton(
                     onClick = {
-                        if (canGoBack) webViewState?.goBack()
+                        if (canGoBack) navigator?.goBack()
                         else onNavigateBack()
                     }
                 ) {
-                    Icon(
-                        Icons.Outlined.ArrowBack,
-                        contentDescription = "Back",
-                        tint = LabelColor
-                    )
+                    Icon(Icons.Outlined.ArrowBack, contentDescription = "Back", tint = LabelColor)
                 }
 
-                // Title area
-                Column(
-                    modifier = Modifier.weight(1f),
-                    verticalArrangement = Arrangement.Center
-                ) {
+                Column(modifier = Modifier.weight(1f)) {
                     Text(
                         text = pageTitle,
-                        style = TextStyle(
-                            fontSize = 15.sp,
-                            fontWeight = FontWeight.SemiBold,
-                            color = LabelColor
-                        ),
+                        style = TextStyle(fontSize = 15.sp, fontWeight = FontWeight.SemiBold, color = LabelColor),
                         maxLines = 1,
                         overflow = TextOverflow.Ellipsis
                     )
@@ -88,43 +79,44 @@ fun HomeScreen(
                     )
                 }
 
-                // Refresh button
                 IconButton(onClick = { refreshKey++ }) {
-                    Icon(
-                        Icons.Outlined.Refresh,
-                        contentDescription = "Refresh",
-                        tint = PrimaryGreen
-                    )
+                    Icon(Icons.Outlined.Refresh, contentDescription = "Refresh", tint = PrimaryGreen)
                 }
             }
         }
 
-        // ── Loading progress bar ──────────────────────────────────────────────
+        // ── Loading indicator ─────────────────────────────────────────────────
         if (isLoading) {
             LinearProgressIndicator(
-                modifier = Modifier.fillMaxWidth(),
-                color = PrimaryGreen,
+                modifier   = Modifier.fillMaxWidth(),
+                color      = PrimaryGreen,
                 trackColor = Color(0xFFD8F3DC)
             )
         }
 
         // ── WebView ───────────────────────────────────────────────────────────
-        // PlatformWebView is an expect fun — implemented per platform below.
         PlatformWebView(
-            url = HOME_URL,
+            url        = HOME_URL,
             refreshKey = refreshKey,
-            modifier = Modifier
-                .fillMaxSize()
+            modifier   = Modifier
+                .fillMaxWidth()
                 .weight(1f),
-            onPageStarted = { isLoading = true },
-            onPageFinished = { title ->
+            onPageStarted      = { isLoading = true },
+            onPageFinished     = { title ->
                 isLoading = false
                 if (title.isNotBlank()) pageTitle = title
             },
-            onNavigatorReady = { navigator ->
-                webViewState = navigator
-            },
-            onCanGoBackChanged = { canGoBack = it }
+            onNavigatorReady   = { navigator = it },
+            onCanGoBackChanged = { canGoBack = it },
+
+            // ── Map intercepted paths → native navigation ─────────────────────
+            onDeepLinkIntercepted = { path ->
+                when (PATH_TO_NATIVE[path]) {
+                    NativeDestination.SignIn         -> onNavigateToSignIn()
+                    NativeDestination.TrainingSignIn -> { /* TODO */ }
+                    NativeDestination.WebOnly, null  -> { /* let WebView handle it */ }
+                }
+            }
         )
     }
 }

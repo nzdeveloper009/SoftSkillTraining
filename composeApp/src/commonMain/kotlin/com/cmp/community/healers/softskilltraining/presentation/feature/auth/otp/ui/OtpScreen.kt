@@ -45,6 +45,7 @@ fun OtpScreen(
 ) {
     val state by vm.state.collectAsStateWithLifecycle()
     val focusRequesters = remember { List(OTP_LENGTH) { FocusRequester() } }
+    var isVisible by remember { mutableStateOf(false) }
 
     // ── Effects ───────────────────────────────────────────────────────────────
     LaunchedEffect(vm) {
@@ -103,6 +104,7 @@ fun OtpScreen(
             val masked = phone.let {
                 if (it.length >= 7) it.take(4) + "***" + it.takeLast(3) else it
             }
+
             Text(
                 buildAnnotatedString {
                     withStyle(SpanStyle(color = SubtitleColor, fontSize = 15.sp)) {
@@ -116,17 +118,19 @@ fun OtpScreen(
 
             // ── Hint chip ─────────────────────────────────────────────────────
             Spacer(Modifier.height(12.dp))
-            Surface(
-                color = GreenTint,
-                shape = RoundedCornerShape(8.dp)
-            ) {
-                Text(
-                    text = "💡 Hint: enter  1 1 1 1 1 1  to verify",
-                    fontSize = 12.sp,
-                    color = PrimaryGreen,
-                    fontWeight = FontWeight.Medium,
-                    modifier = Modifier.padding(horizontal = 12.dp, vertical = 6.dp)
-                )
+            if(isVisible){
+                Surface(
+                    color = GreenTint,
+                    shape = RoundedCornerShape(8.dp)
+                ) {
+                    Text(
+                        text = "💡 Hint: enter  1 1 1 1 1 1  to verify",
+                        fontSize = 12.sp,
+                        color = PrimaryGreen,
+                        fontWeight = FontWeight.Medium,
+                        modifier = Modifier.padding(horizontal = 12.dp, vertical = 6.dp)
+                    )
+                }
             }
 
             Spacer(Modifier.height(40.dp))

@@ -7,13 +7,16 @@ import com.cmp.community.healers.softskilltraining.domain.repository.WebViewNavi
 /**
  * Cross-platform WebView composable.
  *
- * @param url               The initial URL to load.
- * @param refreshKey        Increment this to trigger a reload.
- * @param modifier          Compose layout modifier.
- * @param onPageStarted     Called when a new page starts loading.
- * @param onPageFinished    Called with the page title once loading completes.
- * @param onNavigatorReady  Returns a [WebViewNavigator] to call goBack()/reload().
- * @param onCanGoBackChanged Returns true when the WebView history has entries to go back to.
+ * @param url                   Initial URL to load.
+ * @param refreshKey            Increment to trigger a reload.
+ * @param modifier              Layout modifier.
+ * @param onPageStarted         Called when a new page starts loading.
+ * @param onPageFinished        Called with the page title once loading completes.
+ * @param onNavigatorReady      Returns a [WebViewNavigator] for goBack()/reload().
+ * @param onCanGoBackChanged    True when the WebView history stack is non-empty.
+ * @param onDeepLinkIntercepted Called when a link's path matches a native route.
+ *                              The path (e.g. "/candidate/auth") is passed back
+ *                              so the caller can navigate natively.
  */
 @Composable
 expect fun PlatformWebView(
@@ -23,5 +26,6 @@ expect fun PlatformWebView(
     onPageStarted: () -> Unit = {},
     onPageFinished: (title: String) -> Unit = {},
     onNavigatorReady: (WebViewNavigator) -> Unit = {},
-    onCanGoBackChanged: (Boolean) -> Unit = {}
+    onCanGoBackChanged: (Boolean) -> Unit = {},
+    onDeepLinkIntercepted: (path: String) -> Unit = {}
 )
