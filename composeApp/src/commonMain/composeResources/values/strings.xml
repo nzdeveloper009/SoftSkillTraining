@@ -1,0 +1,28 @@
+<resources>
+
+    <!--Auth Sign In-->
+    <string name="welcome_back">Welcome Back</string>
+    <string name="welcome_back_sub_title">Sign in to access your candidate portal</string>
+    <string name="phone_number">Phone Number</string>
+    <string name="phone_number_hint">03001234567</string>
+    <string name="password">Password</string>
+    <string name="password_hint">Enter your password</string>
+    <string name="sign_in">Sign In</string>
+    <string name="dont_ve_account">Don't have an account? </string>
+    <string name="sign_up">Sign Up</string>
+    <!--Auth Sign In-->
+    <!--Auth Sign Up-->
+    <string name="create_account">Create Account</string>
+    <string name="create_account_sub_title">Register to start your training journey</string>
+    <string name="first_name">First Name</string>
+    <string name="first_name_hint">Enter your first name</string>
+    <string name="last_name">Last Name</string>
+    <string name="last_name_hint">Enter your last name</string>
+    <string name="email_address">Email Address</string>
+    <string name="strong_password_hint">Create a strong password</string>
+    <string name="confirm_password">Confirm Password</string>
+    <string name="confirm_password_hint">Re-enter your password</string>
+    <string name="already_ve_account">Already have an account? </string>
+    <!--Auth Sign Up-->
+
+</resources>
