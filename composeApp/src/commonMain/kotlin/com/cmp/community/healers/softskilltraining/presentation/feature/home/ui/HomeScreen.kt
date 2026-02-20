@@ -34,6 +34,7 @@ fun HomeScreen(
     var refreshKey by remember { mutableStateOf(0) }
     var canGoBack  by remember { mutableStateOf(false) }
     var navigator  by remember { mutableStateOf<WebViewNavigator?>(null) }
+    var isVisible by remember { mutableStateOf(false) }
 
     Column(
         modifier = Modifier
@@ -71,12 +72,14 @@ fun HomeScreen(
                         maxLines = 1,
                         overflow = TextOverflow.Ellipsis
                     )
-                    Text(
-                        text = HOME_URL,
-                        style = TextStyle(fontSize = 11.sp, color = SubtitleColor),
-                        maxLines = 1,
-                        overflow = TextOverflow.Ellipsis
-                    )
+                    if(isVisible){
+                        Text(
+                            text = HOME_URL,
+                            style = TextStyle(fontSize = 11.sp, color = SubtitleColor),
+                            maxLines = 1,
+                            overflow = TextOverflow.Ellipsis
+                        )
+                    }
                 }
 
                 IconButton(onClick = { refreshKey++ }) {
