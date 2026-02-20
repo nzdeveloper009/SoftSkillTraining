@@ -1,4 +1,4 @@
-package com.cmp.community.healers.softskilltraining.presentation.feature.auth.signup.component
+package com.cmp.community.healers.softskilltraining.presentation.feature.auth.component
 
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Spacer
@@ -22,11 +22,11 @@ import com.cmp.community.healers.softskilltraining.theme.*
 
 
 // ─── Reusable Field Composable ────────────────────────────────────────────────
+
 @Composable
-fun AuthTextField(
+internal fun AuthTextField(
     value: String,
     onValueChange: (String) -> Unit,
-    label: String,
     placeholder: String,
     leadingIcon: @Composable () -> Unit,
     modifier: Modifier = Modifier,
@@ -35,31 +35,14 @@ fun AuthTextField(
     visualTransformation: VisualTransformation = VisualTransformation.None,
     trailingIcon: @Composable (() -> Unit)? = null,
     isError: Boolean = false,
-    errorMessage: String = ""
+    errorMessage: String? = null
 ) {
     Column(modifier = modifier) {
-        Text(
-            text = label,
-            style = TextStyle(
-                fontSize = 14.sp,
-                fontWeight = FontWeight.Bold,
-                color = LabelColor
-            )
-        )
-        Spacer(Modifier.height(8.dp))
         OutlinedTextField(
             value = value,
             onValueChange = onValueChange,
-            modifier = Modifier
-                .fillMaxWidth()
-                .height(58.dp),
-            placeholder = {
-                Text(
-                    text = placeholder,
-                    color = PlaceholderColor,
-                    fontSize = 15.sp
-                )
-            },
+            modifier = Modifier.fillMaxWidth().height(58.dp),
+            placeholder = { Text(placeholder, color = Color(0xFFBDBDBD), fontSize = 15.sp) },
             leadingIcon = leadingIcon,
             trailingIcon = trailingIcon,
             visualTransformation = visualTransformation,
@@ -69,26 +52,21 @@ fun AuthTextField(
             isError = isError,
             shape = RoundedCornerShape(14.dp),
             colors = OutlinedTextFieldDefaults.colors(
-                focusedContainerColor    = FieldBackground,
-                unfocusedContainerColor  = FieldBackground,
-                errorContainerColor      = Color(0xFFFFF0F0),
-                focusedBorderColor       = PrimaryGreen,
-                unfocusedBorderColor     = Color.Transparent,
-                errorBorderColor         = ErrorColor,
-                cursorColor              = PrimaryGreen,
-                focusedTextColor         = LabelColor,
-                unfocusedTextColor       = LabelColor,
-                errorTextColor           = LabelColor
+                focusedContainerColor   = Color(0xFFF5F5F5),
+                unfocusedContainerColor = Color(0xFFF5F5F5),
+                errorContainerColor     = Color(0xFFFFF0F0),
+                focusedBorderColor      = Color(0xFF2D6A4F),
+                unfocusedBorderColor    = Color.Transparent,
+                errorBorderColor        = Color(0xFFE53935),
+                cursorColor             = Color(0xFF2D6A4F),
+                focusedTextColor        = Color(0xFF1A1A1A),
+                unfocusedTextColor      = Color(0xFF1A1A1A)
             ),
             textStyle = TextStyle(fontSize = 15.sp)
         )
-        if (isError && errorMessage.isNotEmpty()) {
+        if (isError && errorMessage != null) {
             Spacer(Modifier.height(4.dp))
-            Text(
-                text = errorMessage,
-                color = ErrorColor,
-                fontSize = 12.sp
-            )
+            Text(errorMessage, color = Color(0xFFE53935), fontSize = 12.sp)
         }
     }
 }

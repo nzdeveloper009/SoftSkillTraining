@@ -35,6 +35,7 @@ val LabelColor       = Color(0xFF1A1A1A)
 val FieldBackground  = Color(0xFFF5F5F5)
 val BackgroundWhite  = Color(0xFFFFFFFF)
 val PrimaryGreen    = Color(0xFF2D6A4F)   // dark forest green (button)
+val IconTint        = Color(0xFFBDBDBD)
 
 
 // Sign Up
@@ -46,11 +47,8 @@ val DividerColor     = Color(0xFFEEEEEE)
 val SignUpLinkColor = Color(0xFF2D6A4F)
 
 // OTP color
-val GreenLight       = Color(0xFFD8F3DC)
-val BoxBorderDefault = Color(0xFFE0E0E0)
-val BoxBorderFocused = Color(0xFF2D6A4F)
-val BoxBorderFilled  = Color(0xFF2D6A4F)
-val BoxBorderError   = Color(0xFFE53935)
+val GreenTint       = Color(0xFFD8F3DC)
+
 
 
 

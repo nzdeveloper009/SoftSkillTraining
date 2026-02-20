@@ -21,77 +21,41 @@ import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.lifecycle.compose.collectAsStateWithLifecycle
+import androidx.lifecycle.viewmodel.compose.viewModel
 import com.cmp.community.healers.softskilltraining.presentation.feature.auth.otp.component.OtpBox
+import com.cmp.community.healers.softskilltraining.presentation.feature.auth.otp.mvi.OtpEffect
+import com.cmp.community.healers.softskilltraining.presentation.feature.auth.otp.mvi.OtpEvent
+import com.cmp.community.healers.softskilltraining.presentation.feature.auth.otp.mvi.OtpViewModel
 import com.cmp.community.healers.softskilltraining.theme.*
+import com.cmp.community.healers.softskilltraining.utils.constants.OTP_LENGTH
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 
-private const val OTP_LENGTH = 6
-private const val RESEND_COUNTDOWN = 60   // seconds
-
 @Composable
 fun OtpScreen(
-    phoneNumber: String = "03001234567",          // shown masked in subtitle
-    onOtpVerified: (otp: String) -> Unit = {},
-    onBack: () -> Unit = {},
-    onResendOtp: () -> Unit = {}
+    phone: String,
+    vm: OtpViewModel = viewModel { OtpViewModel(phone) },
+    onNavigateToHome: () -> Unit,
+    onNavigateBack: () -> Unit
 ) {
-    val otpValues      = remember { mutableStateListOf(*Array(OTP_LENGTH) { "" }) }
+    val state by vm.state.collectAsStateWithLifecycle()
     val focusRequesters = remember { List(OTP_LENGTH) { FocusRequester() } }
-    val focusManager   = LocalFocusManager.current
-    val scope          = rememberCoroutineScope()
 
-    var hasError       by remember { mutableStateOf(false) }
-    var errorMessage   by remember { mutableStateOf("") }
-    var isVerifying    by remember { mutableStateOf(false) }
-
-    // Resend countdown
-    var resendTimer    by remember { mutableStateOf(RESEND_COUNTDOWN) }
-    var canResend      by remember { mutableStateOf(false) }
-
-    LaunchedEffect(Unit) {
-        // Auto-focus first box
-        focusRequesters[0].requestFocus()
-        // Start countdown
-        while (resendTimer > 0) {
-            delay(1000)
-            resendTimer--
-        }
-        canResend = true
-    }
-
-    fun restartCountdown() {
-        resendTimer = RESEND_COUNTDOWN
-        canResend = false
-        scope.launch {
-            while (resendTimer > 0) {
-                delay(1000)
-                resendTimer--
+    // Effects — one-shot navigation / focus commands
+    LaunchedEffect(vm) {
+        vm.effect.collect { effect ->
+            when (effect) {
+                is OtpEffect.MoveFocus     -> focusRequesters.getOrNull(effect.index)?.requestFocus()
+                is OtpEffect.NavigateToHome -> onNavigateToHome()
+                is OtpEffect.NavigateBack  -> onNavigateBack()
+                is OtpEffect.ShowSnackbar  -> { /* wire to SnackbarHost */ }
             }
-            canResend = true
         }
     }
 
-    fun submitOtp() {
-        val otp = otpValues.joinToString("")
-        if (otp.length < OTP_LENGTH) {
-            hasError = true
-            errorMessage = "Please enter all 6 digits"
-            return
-        }
-        hasError = false
-        isVerifying = true
-        // Simulate async — caller handles real verification
-        scope.launch {
-            delay(600)
-            isVerifying = false
-            onOtpVerified(otp)
-        }
-    }
-
-    val maskedPhone = if (phoneNumber.length >= 7)
-        phoneNumber.take(4) + "***" + phoneNumber.takeLast(3)
-    else phoneNumber
+    // Auto-focus first box on entry
+    LaunchedEffect(Unit) { focusRequesters[0].requestFocus() }
 
     Box(
         modifier = Modifier
@@ -104,195 +68,110 @@ fun OtpScreen(
                 .padding(horizontal = 24.dp)
                 .padding(top = 56.dp)
         ) {
-
-            // ── Back Button ──────────────────────────────────────────────────
+            // Back button
             IconButton(
-                onClick = onBack,
+                onClick = { vm.onEvent(OtpEvent.NavigateBack) },
                 modifier = Modifier
                     .size(44.dp)
                     .clip(RoundedCornerShape(12.dp))
                     .background(FieldBackground)
-                    .offset(x = (-4).dp)
             ) {
                 Icon(
-                    imageVector = Icons.AutoMirrored.Outlined.ArrowBack,
-                    contentDescription = "Back",
-                    tint = LabelColor,
-                    modifier = Modifier.size(20.dp)
+                    Icons.AutoMirrored.Outlined.ArrowBack, null,
+                    tint = LabelColor, modifier = Modifier.size(20.dp)
                 )
             }
 
             Spacer(Modifier.height(32.dp))
 
-            // ── Header ───────────────────────────────────────────────────────
+            // Title
             Text(
-                text = "Verification Code",
+                "Verification Code",
                 style = TextStyle(
-                    fontSize = 32.sp,
-                    fontWeight = FontWeight.ExtraBold,
-                    color = LabelColor,
-                    letterSpacing = (-0.5).sp
+                    fontSize = 32.sp, fontWeight = FontWeight.ExtraBold,
+                    color = LabelColor, letterSpacing = (-0.5).sp
                 )
             )
-
             Spacer(Modifier.height(10.dp))
 
-            Text(
-                text = "We've sent a 6-digit code to",
-                style = TextStyle(
-                    fontSize = 15.sp,
-                    color = SubtitleColor
-                )
-            )
-
-            Text(
-                text = maskedPhone,
-                style = TextStyle(
-                    fontSize = 15.sp,
-                    fontWeight = FontWeight.Bold,
-                    color = LabelColor
-                )
-            )
+            // Subtitle with masked phone
+            val masked = phone.let {
+                if (it.length >= 7) it.take(4) + "***" + it.takeLast(3) else it
+            }
+            Text("We've sent a 6-digit code to", style = TextStyle(fontSize = 15.sp, color = SubtitleColor))
+            Text(masked, style = TextStyle(fontSize = 15.sp, fontWeight = FontWeight.Bold, color = LabelColor))
 
             Spacer(Modifier.height(48.dp))
 
-            // ── OTP Boxes ────────────────────────────────────────────────────
+            // OTP boxes
             Row(
                 modifier = Modifier.fillMaxWidth(),
                 horizontalArrangement = Arrangement.spacedBy(10.dp)
             ) {
-                otpValues.forEachIndexed { index, value ->
+                state.digits.forEachIndexed { index, digit ->
                     OtpBox(
-                        value = value,
-                        isFocused = false,   // managed via FocusRequester
-                        isError = hasError,
-                        modifier = Modifier.weight(1f),
+                        value = digit,
+                        isError = state.isError,
                         focusRequester = focusRequesters[index],
-                        onValueChange = { newVal ->
-                            // Accept only digits
-                            val digit = newVal.filter { it.isDigit() }.take(1)
-                            otpValues[index] = digit
-                            hasError = false
-
-                            if (digit.isNotEmpty() && index < OTP_LENGTH - 1) {
-                                focusRequesters[index + 1].requestFocus()
-                            } else if (digit.isNotEmpty() && index == OTP_LENGTH - 1) {
-                                focusManager.clearFocus()
-                                submitOtp()
-                            }
-                        },
-                        onKeyBack = {
-                            if (otpValues[index].isEmpty() && index > 0) {
-                                otpValues[index - 1] = ""
-                                focusRequesters[index - 1].requestFocus()
-                            } else {
-                                otpValues[index] = ""
-                            }
-                        }
+                        modifier = Modifier.weight(1f),
+                        onValueChange = { vm.onEvent(OtpEvent.DigitEntered(index, it)) },
+                        onBackspace   = { vm.onEvent(OtpEvent.BackspacePressed(index)) }
                     )
                 }
             }
 
-            // ── Error Message ─────────────────────────────────────────────────
+            // Inline error
             AnimatedVisibility(
-                visible = hasError,
-                enter = fadeIn() + slideInVertically(),
+                visible = state.isError,
+                enter = fadeIn() + slideInVertically { -it / 2 },
                 exit  = fadeOut()
             ) {
                 Column {
                     Spacer(Modifier.height(12.dp))
-                    Text(
-                        text = errorMessage,
-                        color = ErrorColor,
-                        fontSize = 13.sp
-                    )
+                    Text(state.errorMessage, color = ErrorColor, fontSize = 13.sp)
                 }
             }
 
             Spacer(Modifier.height(40.dp))
 
-            // ── Verify Button ─────────────────────────────────────────────────
+            // Verify button
             Button(
-                onClick = { submitOtp() },
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .height(58.dp),
-                enabled = !isVerifying,
-                shape = RoundedCornerShape(14.dp),
-                colors = ButtonDefaults.buttonColors(
-                    containerColor         = PrimaryGreen,
-                    contentColor           = Color.White,
-                    disabledContainerColor = PrimaryGreen.copy(alpha = 0.6f),
-                    disabledContentColor   = Color.White
+                onClick  = { vm.onEvent(OtpEvent.Submit) },
+                enabled  = !state.isLoading,
+                modifier = Modifier.fillMaxWidth().height(58.dp),
+                shape    = RoundedCornerShape(14.dp),
+                colors   = ButtonDefaults.buttonColors(
+                    containerColor = PrimaryGreen, contentColor = Color.White,
+                    disabledContainerColor = PrimaryGreen.copy(alpha = 0.6f), disabledContentColor = Color.White
                 ),
-                elevation = ButtonDefaults.buttonElevation(
-                    defaultElevation = 0.dp,
-                    pressedElevation = 2.dp
-                )
+                elevation = ButtonDefaults.buttonElevation(defaultElevation = 0.dp)
             ) {
-                if (isVerifying) {
-                    CircularProgressIndicator(
-                        modifier = Modifier.size(22.dp),
-                        color = Color.White,
-                        strokeWidth = 2.5.dp
-                    )
+                if (state.isLoading) {
+                    CircularProgressIndicator(modifier = Modifier.size(22.dp), color = Color.White, strokeWidth = 2.5.dp)
                 } else {
-                    Text(
-                        text = "Verify Code",
-                        style = TextStyle(
-                            fontSize = 16.sp,
-                            fontWeight = FontWeight.SemiBold,
-                            letterSpacing = 0.3.sp
-                        )
-                    )
+                    Text("Verify Code", style = TextStyle(fontSize = 16.sp, fontWeight = FontWeight.SemiBold))
                 }
             }
 
             Spacer(Modifier.height(32.dp))
 
-            // ── Resend Row ────────────────────────────────────────────────────
+            // Resend row
             Row(
                 modifier = Modifier.fillMaxWidth(),
                 horizontalArrangement = Arrangement.Center,
                 verticalAlignment = Alignment.CenterVertically
             ) {
-                Text(
-                    text = "Didn't receive the code? ",
-                    color = SubtitleColor,
-                    fontSize = 14.sp
-                )
-
-                if (canResend) {
+                Text("Didn't receive the code? ", color = SubtitleColor, fontSize = 14.sp)
+                if (state.canResend) {
                     TextButton(
-                        onClick = {
-                            onResendOtp()
-                            restartCountdown()
-                            // Clear OTP fields
-                            repeat(OTP_LENGTH) { otpValues[it] = "" }
-                            hasError = false
-                            focusRequesters[0].requestFocus()
-                        },
+                        onClick = { vm.onEvent(OtpEvent.ResendOtp) },
                         contentPadding = PaddingValues(0.dp)
                     ) {
-                        Text(
-                            text = "Resend",
-                            color = PrimaryGreen,
-                            fontWeight = FontWeight.Bold,
-                            fontSize = 14.sp
-                        )
+                        Text("Resend", color = PrimaryGreen, fontWeight = FontWeight.Bold, fontSize = 14.sp)
                     }
                 } else {
-                    Text(
-                        text = "Resend in ",
-                        color = SubtitleColor,
-                        fontSize = 14.sp
-                    )
-                    Text(
-                        text = "${resendTimer}s",
-                        color = PrimaryGreen,
-                        fontWeight = FontWeight.Bold,
-                        fontSize = 14.sp
-                    )
+                    Text("Resend in ", color = SubtitleColor, fontSize = 14.sp)
+                    Text("${state.resendTimer}s", color = PrimaryGreen, fontWeight = FontWeight.Bold, fontSize = 14.sp)
                 }
             }
         }

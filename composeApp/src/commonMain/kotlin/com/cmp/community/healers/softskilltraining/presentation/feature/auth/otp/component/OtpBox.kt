@@ -41,41 +41,35 @@ import com.cmp.community.healers.softskilltraining.theme.*
 @Composable
 fun OtpBox(
     value: String,
-    isFocused: Boolean,
     isError: Boolean,
     focusRequester: FocusRequester,
     onValueChange: (String) -> Unit,
-    onKeyBack: () -> Unit,
+    onBackspace: () -> Unit,
     modifier: Modifier = Modifier
 ) {
     var focused by remember { mutableStateOf(false) }
 
     val borderColor by animateColorAsState(
         targetValue = when {
-            isError  -> BoxBorderError
-            focused  -> BoxBorderFocused
-            value.isNotEmpty() -> BoxBorderFilled
-            else     -> BoxBorderDefault
+            isError            -> Color(0xFFE53935)
+            focused            -> PrimaryGreen
+            value.isNotEmpty() -> PrimaryGreen
+            else               -> Color(0xFFE0E0E0)
         },
-        animationSpec = tween(150),
-        label = "border"
+        animationSpec = tween(150), label = "border"
     )
-
     val bgColor by animateColorAsState(
         targetValue = when {
             isError && value.isNotEmpty() -> Color(0xFFFFF0F0)
-            focused  -> Color.White
-            value.isNotEmpty() -> GreenLight.copy(alpha = 0.35f)
-            else     -> FieldBackground
+            focused            -> Color.White
+            value.isNotEmpty() -> GreenTint.copy(alpha = 0.3f)
+            else               -> FieldBackground
         },
-        animationSpec = tween(150),
-        label = "bg"
+        animationSpec = tween(150), label = "bg"
     )
-
     val borderWidth by animateDpAsState(
         targetValue = if (focused || value.isNotEmpty()) 2.dp else 1.5.dp,
-        animationSpec = tween(150),
-        label = "borderWidth"
+        animationSpec = tween(150), label = "bw"
     )
 
     BasicTextField(
@@ -83,17 +77,14 @@ fun OtpBox(
         onValueChange = onValueChange,
         modifier = modifier
             .aspectRatio(0.85f)
-            .clip(MaterialTheme.shapes.medium)
+            .clip(RoundedCornerShape(14.dp))
             .background(bgColor)
             .border(borderWidth, borderColor, RoundedCornerShape(14.dp))
             .focusRequester(focusRequester)
             .onFocusChanged { focused = it.isFocused }
             .onKeyEvent { event ->
-                if (event.type == KeyEventType.KeyDown &&
-                    event.key == Key.Backspace
-                ) {
-                    onKeyBack()
-                    true
+                if (event.type == KeyEventType.KeyDown && event.key == Key.Backspace) {
+                    onBackspace(); true
                 } else false
             },
         textStyle = TextStyle(
@@ -102,16 +93,9 @@ fun OtpBox(
             color = LabelColor,
             textAlign = TextAlign.Center
         ),
-        keyboardOptions = KeyboardOptions(
-            keyboardType = KeyboardType.NumberPassword,
-            imeAction = ImeAction.Next
-        ),
+        keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.NumberPassword),
         singleLine = true,
         cursorBrush = SolidColor(PrimaryGreen),
-        decorationBox = { innerTextField ->
-            Box(contentAlignment = Alignment.Center) {
-                innerTextField()
-            }
-        }
+        decorationBox = { inner -> Box(contentAlignment = Alignment.Center) { inner() } }
     )
 }
