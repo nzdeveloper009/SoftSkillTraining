@@ -42,6 +42,8 @@ import com.cmp.community.healers.softskilltraining.theme.*
 fun OtpBox(
     value: String,
     isError: Boolean,
+    isExpired: Boolean,
+    enabled: Boolean,
     focusRequester: FocusRequester,
     onValueChange: (String) -> Unit,
     onBackspace: () -> Unit,
@@ -51,7 +53,8 @@ fun OtpBox(
 
     val borderColor by animateColorAsState(
         targetValue = when {
-            isError            -> Color(0xFFE53935)
+            isExpired          -> Color(0xFFBDBDBD)
+            isError            -> ErrorColor
             focused            -> PrimaryGreen
             value.isNotEmpty() -> PrimaryGreen
             else               -> Color(0xFFE0E0E0)
@@ -60,10 +63,11 @@ fun OtpBox(
     )
     val bgColor by animateColorAsState(
         targetValue = when {
+            isExpired               -> Color(0xFFF0F0F0)
             isError && value.isNotEmpty() -> Color(0xFFFFF0F0)
-            focused            -> Color.White
-            value.isNotEmpty() -> GreenTint.copy(alpha = 0.3f)
-            else               -> FieldBackground
+            focused                 -> Color.White
+            value.isNotEmpty()      -> GreenTint.copy(alpha = 0.3f)
+            else                    -> FieldBackground
         },
         animationSpec = tween(150), label = "bg"
     )
@@ -74,27 +78,29 @@ fun OtpBox(
 
     BasicTextField(
         value = value,
-        onValueChange = onValueChange,
+        onValueChange = { if (enabled) onValueChange(it) },
+        readOnly = !enabled,
         modifier = modifier
             .aspectRatio(0.85f)
             .clip(RoundedCornerShape(14.dp))
             .background(bgColor)
             .border(borderWidth, borderColor, RoundedCornerShape(14.dp))
             .focusRequester(focusRequester)
-            .onFocusChanged { focused = it.isFocused }
+            .onFocusChanged { focused = it.isFocused && enabled }
             .onKeyEvent { event ->
-                if (event.type == KeyEventType.KeyDown && event.key == Key.Backspace) {
+                if (enabled && event.type == KeyEventType.KeyDown && event.key == Key.Backspace) {
                     onBackspace(); true
                 } else false
             },
         textStyle = TextStyle(
             fontSize = 22.sp,
             fontWeight = FontWeight.Bold,
-            color = LabelColor,
+            color = if (isExpired) Color(0xFFBDBDBD) else LabelColor,
             textAlign = TextAlign.Center
         ),
         keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.NumberPassword),
         singleLine = true,
+        enabled = enabled,
         cursorBrush = SolidColor(PrimaryGreen),
         decorationBox = { inner -> Box(contentAlignment = Alignment.Center) { inner() } }
     )

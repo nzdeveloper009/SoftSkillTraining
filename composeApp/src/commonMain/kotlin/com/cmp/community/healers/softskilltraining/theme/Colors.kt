@@ -48,6 +48,11 @@ val SignUpLinkColor = Color(0xFF2D6A4F)
 
 // OTP color
 val GreenTint       = Color(0xFFD8F3DC)
+val OrangeExpired   = Color(0xFFE65100)
+
+
+// Home
+val ToolbarBg       = Color(0xFFFFFFFF)
 
 
 

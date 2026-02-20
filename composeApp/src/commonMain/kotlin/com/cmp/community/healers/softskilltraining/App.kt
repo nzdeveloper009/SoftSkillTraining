@@ -14,12 +14,8 @@ import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.tooling.preview.Preview
-import com.cmp.community.healers.softskilltraining.presentation.feature.auth.login.ui.SignInScreen
-import com.cmp.community.healers.softskilltraining.presentation.feature.auth.nav.AuthNavGraph
-import com.cmp.community.healers.softskilltraining.presentation.feature.auth.otp.ui.OtpScreen
-import com.cmp.community.healers.softskilltraining.presentation.feature.auth.signup.ui.SignUpScreen
+import com.cmp.community.healers.softskilltraining.core.navigation.AppNavGraph
 import org.jetbrains.compose.resources.painterResource
-
 import softskilltraining.composeapp.generated.resources.Res
 import softskilltraining.composeapp.generated.resources.compose_multiplatform
 
@@ -27,11 +23,7 @@ import softskilltraining.composeapp.generated.resources.compose_multiplatform
 @Preview
 fun App() {
     MaterialTheme {
-        AuthNavGraph(
-            onAuthSuccess = {
-
-            },
-        )
+        AppNavGraph()
     }
 }
 

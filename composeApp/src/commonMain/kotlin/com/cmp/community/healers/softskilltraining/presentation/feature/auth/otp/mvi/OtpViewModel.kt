@@ -24,7 +24,6 @@ class OtpViewModel(val phone: String) : BaseViewModel<OtpState, OtpEvent, OtpEff
                 val newDigits = state.value.digits.toMutableList().also { it[event.index] = digit }
                 setState { copy(digits = newDigits, isError = false, errorMessage = "") }
 
-                // Auto-advance or auto-submit
                 if (digit.isNotEmpty()) {
                     val next = event.index + 1
                     if (next < OTP_LENGTH) {
@@ -49,26 +48,34 @@ class OtpViewModel(val phone: String) : BaseViewModel<OtpState, OtpEvent, OtpEff
 
             OtpEvent.Submit -> {
                 val otp = state.value.otp
-                if (otp.length < OTP_LENGTH) {
-                    setState { copy(isError = true, errorMessage = "Please enter all 6 digits") }
-                } else {
-                    submit(otp)
+                when {
+                    otp.length < OTP_LENGTH -> setState { copy(isError = true, errorMessage = "Please enter all 6 digits") }
+                    else -> submit(otp)
                 }
             }
 
             OtpEvent.ResendOtp -> {
-                setState { copy(digits = List(OTP_LENGTH) { "" }, isError = false, errorMessage = "") }
+                // Reset digits + restart countdown
+                setState {
+                    copy(
+                        digits = List(OTP_LENGTH) { "" },
+                        isError = false,
+                        errorMessage = "",
+                        isExpired = false
+                    )
+                }
                 setEffect(OtpEffect.MoveFocus(0))
                 startCountdown()
-                // TODO: trigger actual resend API call
             }
 
             OtpEvent.TimerTick -> {
                 val current = state.value.resendTimer
-                if (current > 0) {
+                if (current > 1) {
                     setState { copy(resendTimer = current - 1) }
                 } else {
-                    setState { copy(canResend = true) }
+                    // Timer expired — stop, show Resend
+                    timerJob?.cancel()
+                    setState { copy(resendTimer = 0, canResend = true, isExpired = true) }
                 }
             }
 
@@ -76,15 +83,21 @@ class OtpViewModel(val phone: String) : BaseViewModel<OtpState, OtpEvent, OtpEff
         }
     }
 
-    // ── Internals ─────────────────────────────────────────────────────────────
-
+    // ── Verify logic ──────────────────────────────────────────────────────────
+    // Dummy rule: "111111" is the correct OTP
     private fun submit(otp: String) {
+        // Don't allow submission after timer expired
+        if (state.value.isExpired) {
+            setState { copy(isError = true, errorMessage = "OTP expired. Please resend a new code.") }
+            return
+        }
+
         viewModelScope.launch {
             setState { copy(isLoading = true, isError = false) }
-            delay(1500) // TODO: call real API
+            delay(800) // simulate network latency
 
-            val success = true
-            if (success) {
+            if (otp == CORRECT_OTP) {
+                timerJob?.cancel()
                 setState { copy(isLoading = false) }
                 setEffect(OtpEffect.NavigateToHome)
             } else {
@@ -92,7 +105,7 @@ class OtpViewModel(val phone: String) : BaseViewModel<OtpState, OtpEvent, OtpEff
                     copy(
                         isLoading = false,
                         isError = true,
-                        errorMessage = "Invalid OTP. Please try again.",
+                        errorMessage = "Incorrect OTP. Please try again.",
                         digits = List(OTP_LENGTH) { "" }
                     )
                 }
@@ -103,7 +116,7 @@ class OtpViewModel(val phone: String) : BaseViewModel<OtpState, OtpEvent, OtpEff
 
     private fun startCountdown() {
         timerJob?.cancel()
-        setState { copy(resendTimer = RESEND_COUNTDOWN_SECONDS, canResend = false) }
+        setState { copy(resendTimer = RESEND_COUNTDOWN_SECONDS, canResend = false, isExpired = false) }
         timerJob = viewModelScope.launch {
             repeat(RESEND_COUNTDOWN_SECONDS) {
                 delay(1000)
@@ -115,5 +128,9 @@ class OtpViewModel(val phone: String) : BaseViewModel<OtpState, OtpEvent, OtpEff
     override fun onCleared() {
         super.onCleared()
         timerJob?.cancel()
+    }
+
+    companion object {
+        const val CORRECT_OTP = "111111"
     }
 }
