@@ -41,14 +41,14 @@ val LightColors = lightColorScheme(
 //)
 
 
-val LightColorTheme = lightColorScheme(
-    primary = Primary,
-    surface = Surface,
-    surfaceContainerLowest = SurfaceLowest,
-    background = Background,
-    onSurface = OnSurface,
-    onSurfaceVariant = OnSurfaceVariant
-)
+//val LightColorTheme = lightColorScheme(
+//    primary = Primary,
+//    surface = Surface,
+//    surfaceContainerLowest = SurfaceLowest,
+//    background = Background,
+//    onSurface = OnSurface,
+//    onSurfaceVariant = OnSurfaceVariant
+//)
 
 @Composable
 fun extendedColor(light: Color, dark: Color): Color {

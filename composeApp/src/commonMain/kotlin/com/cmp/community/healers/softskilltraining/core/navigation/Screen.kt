@@ -27,4 +27,5 @@ sealed interface Screen: NavKey {
     @Serializable
     data class OtpVerify(val phone:String): Screen, NavKey
     @Serializable data object Home    :  Screen, NavKey
+    @Serializable data object CandidateHome    :  Screen, NavKey
 }

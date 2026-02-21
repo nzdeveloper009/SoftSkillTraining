@@ -21,6 +21,8 @@ import com.cmp.community.healers.softskilltraining.presentation.feature.auth.otp
 import com.cmp.community.healers.softskilltraining.presentation.feature.auth.otp.ui.OtpScreen
 import com.cmp.community.healers.softskilltraining.presentation.feature.auth.signup.mvi.SignUpViewModel
 import com.cmp.community.healers.softskilltraining.presentation.feature.auth.signup.ui.SignUpScreen
+import com.cmp.community.healers.softskilltraining.presentation.feature.home.mvi.CandidateHomeViewModel
+import com.cmp.community.healers.softskilltraining.presentation.feature.home.ui.CandidateHomeScreen
 import com.cmp.community.healers.softskilltraining.presentation.feature.home.ui.HomeScreen
 import kotlinx.serialization.modules.SerializersModule
 import kotlinx.serialization.modules.polymorphic
@@ -36,6 +38,8 @@ fun AppNavGraph() {
                     subclass(Screen.SignIn::class, Screen.SignIn.serializer())
                     subclass(Screen.SignUp::class, Screen.SignUp.serializer())
                     subclass(Screen.OtpVerify::class, Screen.OtpVerify.serializer())
+                    subclass(Screen.Home::class, Screen.Home.serializer())
+                    subclass(Screen.CandidateHome::class, Screen.CandidateHome.serializer())
                 }
             }
         },
@@ -106,7 +110,7 @@ fun AppNavGraph() {
                     onNavigateToHome = {
                         // Clear the entire auth stack, push Home
                         backStack.clear()
-                        backStack.add(Screen.Home)
+                        backStack.add(Screen.CandidateHome)
                     },
                     onNavigateBack   = { backStack.removeLastOrNull() }
                 )
@@ -123,6 +127,19 @@ fun AppNavGraph() {
                     onNavigateBack = { /* Home is root — nowhere to go back to */ },
                     // Candidate Portal card tapped → go to native SignUp screen
                     onNavigateToSignIn = { backStack.add(Screen.SignIn) }
+                )
+            }
+            entry<Screen.CandidateHome>(
+                metadata = NavDisplay.transitionSpec {
+                    fadeIn(tween(250)) togetherWith fadeOut(tween(250))
+                }
+            ) {
+                val vm: CandidateHomeViewModel = viewModel { CandidateHomeViewModel() }
+
+                CandidateHomeScreen(
+                    vm = vm,
+                    // Candidate Portal card tapped → go to native SignUp screen
+                    onLogout = { backStack.add(Screen.SignIn) }
                 )
             }
         }

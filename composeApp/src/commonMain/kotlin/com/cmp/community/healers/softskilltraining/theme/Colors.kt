@@ -1,5 +1,6 @@
 package com.cmp.community.healers.softskilltraining.theme
 
+import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
 
 // ─── Brand Palette ────────────────────────────────────────────────────────────
@@ -17,13 +18,13 @@ val NeutralGray900= Color(0xFF1A1A1A)  // primary text
 
 
 
-val Background = Color(0xFF58A1F8)
-val Primary = Color(0xFF5977F7)
-val PrimaryDark = Color(0xFF592346)
-val Surface = Color(0xFFEFEFF2)
-val OnSurface = Color(0xFF1B1B1C)
-val OnSurfaceVariant = Color(0xFF535364)
-val SurfaceLowest = Color(0xFFFFFFFF)
+//val Background = Color(0xFF58A1F8)
+//val Primary = Color(0xFF5977F7)
+//val PrimaryDark = Color(0xFF592346)
+//val Surface = Color(0xFFEFEFF2)
+//val OnSurface = Color(0xFF1B1B1C)
+//val OnSurfaceVariant = Color(0xFF535364)
+//val SurfaceLowest = Color(0xFFFFFFFF)
 
 
 
@@ -53,6 +54,23 @@ val OrangeExpired   = Color(0xFFE65100)
 
 // Home
 val ToolbarBg       = Color(0xFFFFFFFF)
+
+// Home Candidate
+val Primary        = Color(0xFF2D6A4F)   // hsl(152 45% 28%)
+val PrimaryLight   = Color(0xFF40916C)   // hsl(152 40% 40%)
+val BgScreen       = Color(0xFFFAFAFA)   // hsl(0 0% 98%)
+val CardColor      = Color(0xFFFFFFFF)
+val BorderColor    = Color(0xFFE5E5E5)   // hsl(0 0% 90%)
+val MutedFg        = Color(0xFF737373)   // hsl(0 0% 45%)
+val TextFg         = Color(0xFF262626)   // hsl(0 0% 15%)
+val Secondary      = Color(0xFFF5F5F5)   // hsl(0 0% 96%)
+val Destructive    = Color(0xFFEF4444)
+val Amber          = Color(0xFFF59E0B)
+val AmberBg        = Color(0xFFFFFBEB)
+val AmberBorder    = Color(0xFFFDE68A)
+val AmberText      = Color(0xFF92400E)
+val PrimaryGrad    = Brush.linearGradient(listOf(Primary, PrimaryLight))
+
 
 
 
