@@ -13,6 +13,7 @@ composeMultiplatform = "1.10.0"
 jetbrainsMaterialIconsExtended = "1.7.3"
 junit = "4.13.2"
 kotlin = "2.3.0"
+kotlinxDatetime = "0.7.1"
 material3 = "1.10.0-alpha05"
 
 # For native Android
@@ -20,6 +21,9 @@ navigation3 = "1.0.1"
 
 # For Compose Multiplatform
 cmpNavigation3 = "1.0.0-alpha06"
+
+# QR Code
+qrose = "1.1.2"
 
 [libraries]
 kotlin-test = { module = "org.jetbrains.kotlin:kotlin-test", version.ref = "kotlin" }
@@ -51,7 +55,12 @@ jetbrains-lifecycle-viewmodel = { module = "org.jetbrains.androidx.lifecycle:lif
 androidx-navigation3-runtime = { module = "androidx.navigation3:navigation3-runtime", version.ref = "navigation3" }
 androidx-navigation3-ui = { module = "androidx.navigation3:navigation3-ui", version.ref = "navigation3" }
 
+kotlinx-datetime = { module = "org.jetbrains.kotlinx:kotlinx-datetime", version.ref = "kotlinxDatetime" }
 kotlinx-serialization-json = { module = "org.jetbrains.kotlinx:kotlinx-serialization-json", version = "1.10.0" }
+
+# QR Code
+qrose = { module = "io.github.alexzhirkevich:qrose", version.ref = "qrose" }
+qrose-oned = { module = "io.github.alexzhirkevich:qrose-oned", version.ref = "qrose" }
 
 [plugins]
 androidApplication = { id = "com.android.application", version.ref = "agp" }

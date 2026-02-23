@@ -33,33 +33,22 @@ import com.cmp.community.healers.softskilltraining.theme.MutedFg
 import com.cmp.community.healers.softskilltraining.theme.Primary
 import com.cmp.community.healers.softskilltraining.utils.constants.MimeType
 
-
 @Composable
 fun CandidateHomeScreen(
-    vm: CandidateHomeViewModel = viewModel { CandidateHomeViewModel() },
-    onLogout: () -> Unit             = {}
+    vm:                  CandidateHomeViewModel = viewModel { CandidateHomeViewModel() },
+    onLogout:            () -> Unit             = {},
+    onNavigateToPayment: () -> Unit             = {}   // ← called after validation passes
 ) {
-    val state   by vm.state.collectAsStateWithLifecycle()
-    val snackbar = remember { SnackbarHostState() }
+    val state    by vm.state.collectAsStateWithLifecycle()
+    val snackbar  = remember { SnackbarHostState() }
 
-    // ── Pre-build one picker per DocumentType ─────────────────────────────────
-    //
-    // WHY: rememberFilePicker() is a @Composable — it must be called
-    //      unconditionally at the top level of a composable, NOT inside
-    //      a LaunchedEffect, lambda, or conditional block.
-    //      We build every picker here and store them in a Map<DocumentType, () -> Unit>.
-    //      When the PickDocument effect arrives, we simply invoke the right lambda.
-    //
-    // This replaces the Android-only:
-    //   rememberLauncherForActivityResult(ActivityResultContracts.GetContent()) { ... }
-
+    // Pre-build one picker per DocumentType (KMP-safe, no Android-only APIs)
     val docLaunchers: Map<DocumentType, () -> Unit> = DocumentType.entries.associateWith { type ->
         val mime = when {
             type.acceptPdf && type.acceptImage -> MimeType.IMAGE_OR_PDF
             type.acceptPdf                     -> MimeType.PDF
             else                               -> MimeType.IMAGE
         }
-        // Each call to rememberFilePicker() is stable across recompositions
         rememberFilePicker(mime) { file ->
             file?.let { vm.onEvent(CandidateHomeEvent.DocumentSelected(type, it.uri)) }
         }
@@ -69,24 +58,18 @@ fun CandidateHomeScreen(
         file?.let { vm.onEvent(CandidateHomeEvent.DegreeSelected(it.uri)) }
     }
 
-    // ── Effects ───────────────────────────────────────────────────────────────
     LaunchedEffect(vm) {
         vm.effect.collect { effect ->
             when (effect) {
-                // Navigation
+                CandidateHomeEffect.NavigateToPayment -> onNavigateToPayment()  // ← wired
                 CandidateHomeEffect.NavigateToLogin   -> onLogout()
-                CandidateHomeEffect.NavigateToPayment -> { /* TODO: push payment screen */ }
-
-                // File pickers — just invoke the pre-built lambdas
                 is CandidateHomeEffect.PickDocument   -> docLaunchers[effect.type]?.invoke()
                 CandidateHomeEffect.PickDegree        -> degreeLauncher()
-
                 is CandidateHomeEffect.ShowSnackbar   -> snackbar.showSnackbar(effect.message)
             }
         }
     }
 
-    // ── UI ────────────────────────────────────────────────────────────────────
     Scaffold(
         snackbarHost   = { SnackbarHost(snackbar) },
         containerColor = BgScreen
@@ -94,14 +77,12 @@ fun CandidateHomeScreen(
         Box(modifier = Modifier.fillMaxSize().padding(pad)) {
 
             Column(modifier = Modifier.fillMaxSize()) {
-
                 TopBar(
                     state        = state,
                     onTab        = { vm.onEvent(CandidateHomeEvent.TabChanged(it)) },
                     onLangToggle = { vm.onEvent(CandidateHomeEvent.ToggleLanguage) },
                     onLogout     = { vm.onEvent(CandidateHomeEvent.Logout) }
                 )
-
                 Column(
                     modifier = Modifier
                         .fillMaxSize()
@@ -116,21 +97,16 @@ fun CandidateHomeScreen(
                     DocumentUploadCard(
                         state    = state,
                         onToggle = { vm.onEvent(CandidateHomeEvent.ToggleDocumentsSection) },
-                        // Fires RequestPickDocument → ViewModel emits PickDocument effect
-                        // → LaunchedEffect above calls docLaunchers[type]()
                         onPick   = { type -> vm.onEvent(CandidateHomeEvent.RequestPickDocument(type)) }
                     )
                     EducationDeclarationCard(
                         state        = state,
                         onEvent      = { vm.onEvent(it) },
-                        // Fires RequestPickDegree → ViewModel emits PickDegree effect
-                        // → LaunchedEffect above calls degreeLauncher()
                         onPickDegree = { vm.onEvent(CandidateHomeEvent.RequestPickDegree) }
                     )
                 }
             }
 
-            // ── Sticky bottom bar ─────────────────────────────────────────────
             Surface(
                 modifier        = Modifier.align(Alignment.BottomCenter).fillMaxWidth(),
                 color           = CardColor,
@@ -144,7 +120,8 @@ fun CandidateHomeScreen(
                     horizontalArrangement = Arrangement.SpaceBetween,
                     verticalAlignment     = Alignment.CenterVertically
                 ) {
-                    Text("Step 1 of 4 • Registration", style = TextStyle(fontSize = 13.sp, color = MutedFg))
+                    Text("Step 1 of 4 • Registration",
+                        style = TextStyle(fontSize = 13.sp, color = MutedFg))
                     Button(
                         onClick  = { vm.onEvent(CandidateHomeEvent.ContinueToPayment) },
                         enabled  = !state.isSubmitting,
@@ -158,11 +135,17 @@ fun CandidateHomeScreen(
                         modifier = Modifier.height(46.dp)
                     ) {
                         if (state.isSubmitting) {
-                            CircularProgressIndicator(modifier = Modifier.size(18.dp), color = Color.White, strokeWidth = 2.dp)
+                            CircularProgressIndicator(
+                                modifier    = Modifier.size(18.dp),
+                                color       = Color.White,
+                                strokeWidth = 2.dp
+                            )
                         } else {
-                            Text("Continue to Payment", fontWeight = FontWeight.SemiBold, fontSize = 14.sp)
+                            Text("Continue to Payment",
+                                fontWeight = FontWeight.SemiBold, fontSize = 14.sp)
                             Spacer(Modifier.width(6.dp))
-                            Icon(Icons.Outlined.ChevronRight, null, modifier = Modifier.size(16.dp))
+                            Icon(Icons.Outlined.ChevronRight, null,
+                                modifier = Modifier.size(16.dp))
                         }
                     }
                 }

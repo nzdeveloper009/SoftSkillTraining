@@ -21,9 +21,12 @@ import com.cmp.community.healers.softskilltraining.presentation.feature.auth.otp
 import com.cmp.community.healers.softskilltraining.presentation.feature.auth.otp.ui.OtpScreen
 import com.cmp.community.healers.softskilltraining.presentation.feature.auth.signup.mvi.SignUpViewModel
 import com.cmp.community.healers.softskilltraining.presentation.feature.auth.signup.ui.SignUpScreen
+import com.cmp.community.healers.softskilltraining.presentation.feature.home.mvi.CandidateHomeState
 import com.cmp.community.healers.softskilltraining.presentation.feature.home.mvi.CandidateHomeViewModel
 import com.cmp.community.healers.softskilltraining.presentation.feature.home.ui.CandidateHomeScreen
 import com.cmp.community.healers.softskilltraining.presentation.feature.home.ui.HomeScreen
+import com.cmp.community.healers.softskilltraining.presentation.feature.payment.mvi.PaymentViewModel
+import com.cmp.community.healers.softskilltraining.presentation.feature.payment.ui.PaymentScreen
 import kotlinx.serialization.modules.SerializersModule
 import kotlinx.serialization.modules.polymorphic
 
@@ -40,11 +43,21 @@ fun AppNavGraph() {
                     subclass(Screen.OtpVerify::class, Screen.OtpVerify.serializer())
                     subclass(Screen.Home::class, Screen.Home.serializer())
                     subclass(Screen.CandidateHome::class, Screen.CandidateHome.serializer())
+                    subclass(Screen.Payment::class,       Screen.Payment.serializer())
                 }
             }
         },
         Screen.SignIn
     )
+
+    // ── Hoisted shared ViewModel ──────────────────────────────────────────────
+    // Lives at AppNavGraph scope — survives push/pop between CandidateHome ↔ Payment.
+    // Both screens receive the SAME vm instance, so:
+    //   • TopBar (tab selection, language) looks identical on both screens
+    //   • Changing language on Payment screen is reflected when user goes Back
+    //   • No duplicate state, no prop-drilling of CandidateHomeState
+    val candidateHomeVm: CandidateHomeViewModel = viewModel { CandidateHomeViewModel() }
+
 
     // ── NavDisplay ────────────────────────────────────────────────────────────
     NavDisplay(
@@ -134,12 +147,29 @@ fun AppNavGraph() {
                     fadeIn(tween(250)) togetherWith fadeOut(tween(250))
                 }
             ) {
-                val vm: CandidateHomeViewModel = viewModel { CandidateHomeViewModel() }
-
                 CandidateHomeScreen(
-                    vm = vm,
-                    // Candidate Portal card tapped → go to native SignUp screen
-                    onLogout = { backStack.add(Screen.SignIn) }
+                    vm                  = candidateHomeVm,         // ← shared VM
+                    onLogout            = {
+                        backStack.clear()
+                        backStack.add(Screen.SignIn)
+                    },
+                    onNavigateToPayment = { backStack.add(Screen.Payment) }
+                )
+            }
+            entry<Screen.Payment> {
+                val paymentVm = viewModel { PaymentViewModel() }
+
+                PaymentScreen(
+                    vm                     = paymentVm,
+                    candidateHomeVm        = candidateHomeVm,      // ← same shared VM
+                    onLogout               = {
+                        backStack.clear()
+                        backStack.add(Screen.SignIn)
+                    },
+                    onBackToRegistration   = { backStack.removeLastOrNull() },
+                    onContinueToScheduling = {
+                        // TODO: backStack.add(Screen.Scheduling)
+                    }
                 )
             }
         }

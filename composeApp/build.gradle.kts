@@ -47,6 +47,13 @@ kotlin {
             implementation(libs.jetbrains.lifecycle.viewmodel.nav3)
             implementation(libs.jetbrains.lifecycle.viewmodel)
             implementation(libs.kotlinx.serialization.json)
+
+            // QR Code
+            implementation(libs.qrose)
+            // For single-dimension barcodes (UPC,EAN, Code128, ...)
+            implementation(libs.qrose.oned)
+            // Date
+            implementation(libs.kotlinx.datetime)
         }
         commonTest.dependencies {
             implementation(libs.kotlin.test)
