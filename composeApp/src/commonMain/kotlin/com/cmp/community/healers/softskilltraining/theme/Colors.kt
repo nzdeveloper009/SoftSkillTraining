@@ -77,6 +77,11 @@ val SuccessBorder = Color(0xFFBBF7D0)
 val SuccessText   = Color(0xFF15803D)
 
 
+// Congrat Screen
+val BlueBg         = Color(0xFFEFF6FF)
+val BlueBorder     = Color(0xFFBFDBFE)
+val BlueText       = Color(0xFF1D4ED8)
+
 
 
 

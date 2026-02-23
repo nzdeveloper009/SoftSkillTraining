@@ -31,7 +31,7 @@ import com.cmp.community.healers.softskilltraining.theme.BgScreen
 import com.cmp.community.healers.softskilltraining.theme.CardColor
 import com.cmp.community.healers.softskilltraining.theme.MutedFg
 import com.cmp.community.healers.softskilltraining.theme.Primary
-import com.cmp.community.healers.softskilltraining.utils.constants.MimeType
+import com.cmp.community.healers.softskilltraining.utils.constants.file.MimeType
 
 @Composable
 fun CandidateHomeScreen(

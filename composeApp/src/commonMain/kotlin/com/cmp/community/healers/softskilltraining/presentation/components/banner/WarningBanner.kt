@@ -44,3 +44,23 @@ fun WarningBanner() {
         }
     }
 }
+
+
+@Composable
+fun WarningBanner(message: String) {
+    Surface(
+        modifier = Modifier.fillMaxWidth(),
+        shape    = RoundedCornerShape(12.dp),
+        color    = AmberBg,
+        border   = BorderStroke(1.dp, AmberBorder)
+    ) {
+        Row(
+            modifier = Modifier.padding(14.dp),
+            horizontalArrangement = Arrangement.spacedBy(8.dp),
+            verticalAlignment     = Alignment.Top
+        ) {
+            Icon(Icons.Outlined.Warning, null, tint = Amber, modifier = Modifier.size(16.dp))
+            Text(message, style = TextStyle(fontSize = 13.sp, color = AmberText, lineHeight = 18.sp))
+        }
+    }
+}

@@ -3,7 +3,7 @@ package com.cmp.community.healers.softskilltraining.core.file
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.remember
 import androidx.compose.ui.interop.LocalUIViewController
-import com.cmp.community.healers.softskilltraining.utils.constants.MimeType
+import com.cmp.community.healers.softskilltraining.utils.constants.file.MimeType
 import kotlinx.cinterop.ExperimentalForeignApi
 import kotlinx.cinterop.StableRef
 import kotlinx.cinterop.addressOf

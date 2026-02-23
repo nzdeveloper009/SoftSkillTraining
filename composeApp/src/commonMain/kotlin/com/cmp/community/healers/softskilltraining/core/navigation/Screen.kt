@@ -29,4 +29,5 @@ sealed interface Screen: NavKey {
     @Serializable data object Home    :  Screen, NavKey
     @Serializable data object CandidateHome    :  Screen, NavKey
     @Serializable data object Payment    :  Screen, NavKey
+    @Serializable data object Scheduling     : Screen, NavKey
 }

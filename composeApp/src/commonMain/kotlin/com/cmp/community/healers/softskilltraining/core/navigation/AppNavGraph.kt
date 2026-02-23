@@ -21,6 +21,8 @@ import com.cmp.community.healers.softskilltraining.presentation.feature.auth.otp
 import com.cmp.community.healers.softskilltraining.presentation.feature.auth.otp.ui.OtpScreen
 import com.cmp.community.healers.softskilltraining.presentation.feature.auth.signup.mvi.SignUpViewModel
 import com.cmp.community.healers.softskilltraining.presentation.feature.auth.signup.ui.SignUpScreen
+import com.cmp.community.healers.softskilltraining.presentation.feature.exam_scheduling.mvi.SchedulingViewModel
+import com.cmp.community.healers.softskilltraining.presentation.feature.exam_scheduling.ui.SchedulingScreen
 import com.cmp.community.healers.softskilltraining.presentation.feature.home.mvi.CandidateHomeState
 import com.cmp.community.healers.softskilltraining.presentation.feature.home.mvi.CandidateHomeViewModel
 import com.cmp.community.healers.softskilltraining.presentation.feature.home.ui.CandidateHomeScreen
@@ -44,6 +46,7 @@ fun AppNavGraph() {
                     subclass(Screen.Home::class, Screen.Home.serializer())
                     subclass(Screen.CandidateHome::class, Screen.CandidateHome.serializer())
                     subclass(Screen.Payment::class,       Screen.Payment.serializer())
+                    subclass(Screen.Scheduling::class,     Screen.Scheduling.serializer())
                 }
             }
         },
@@ -130,7 +133,6 @@ fun AppNavGraph() {
             }
 
             // ── Home (WebView) ────────────────────────────────────────────────
-            // Fade transition — no slide for the root home screen
             entry<Screen.Home>(
                 metadata = NavDisplay.transitionSpec {
                     fadeIn(tween(250)) togetherWith fadeOut(tween(250))
@@ -142,6 +144,8 @@ fun AppNavGraph() {
                     onNavigateToSignIn = { backStack.add(Screen.SignIn) }
                 )
             }
+
+            // ── Candidate Home  (Step 1 · Registration) ───────────────────────
             entry<Screen.CandidateHome>(
                 metadata = NavDisplay.transitionSpec {
                     fadeIn(tween(250)) togetherWith fadeOut(tween(250))
@@ -156,6 +160,8 @@ fun AppNavGraph() {
                     onNavigateToPayment = { backStack.add(Screen.Payment) }
                 )
             }
+
+            // ── Payment  (Step 2) ─────────────────────────────────────────────
             entry<Screen.Payment> {
                 val paymentVm = viewModel { PaymentViewModel() }
 
@@ -168,7 +174,28 @@ fun AppNavGraph() {
                     },
                     onBackToRegistration   = { backStack.removeLastOrNull() },
                     onContinueToScheduling = {
-                        // TODO: backStack.add(Screen.Scheduling)
+                         backStack.add(Screen.Scheduling)
+                    }
+                )
+            }
+
+            // ── Scheduling  (Step 3) ──────────────────────────────────────────
+            // Congrats phase renders inside SchedulingScreen — no separate route needed.
+            entry<Screen.Scheduling> {
+                val schedulingVm = viewModel { SchedulingViewModel() }
+                SchedulingScreen(
+                    vm                  = schedulingVm,
+                    candidateHomeVm     = candidateHomeVm,
+                    onLogout            = {
+                        backStack.clear()
+                        backStack.add(Screen.SignIn)
+                    },
+                    onBackToPayment     = { backStack.removeLastOrNull() },
+                    onRegistrationDone  = {
+                        // Registration fully complete — go back to Home (or Profile)
+                        // Clear the entire candidate flow so the user can't go back
+                        backStack.clear()
+                        backStack.add(Screen.CandidateHome)
                     }
                 )
             }

@@ -14,3 +14,11 @@ val PAKISTAN_CITIES = listOf(
     "Abbottabad", "Islamabad", "Karachi", "Lahore",
     "Malakand", "Mardan", "Peshawar", "Quetta"
 )
+
+
+val DAY_HEADERS = listOf("Su", "Mo", "Tu", "We", "Th", "Fr", "Sa")
+
+val MONTH_NAMES = listOf(
+    "January","February","March","April","May","June",
+    "July","August","September","October","November","December"
+)
