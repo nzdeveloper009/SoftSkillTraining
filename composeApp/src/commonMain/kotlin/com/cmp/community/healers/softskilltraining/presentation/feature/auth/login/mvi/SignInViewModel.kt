@@ -43,11 +43,10 @@ class SignInViewModel : BaseViewModel<SignInState, SignInEvent, SignInEffect>(Si
             setState { copy(isLoading = true, generalError = null) }
             delay(1500) // Replace with real repo call
 
-            // TODO: replace with actual result handling
             val success = true
             if (success) {
                 setState { copy(isLoading = false) }
-                setEffect(SignInEffect.NavigateToOtp(phone = current.phone))
+                setEffect(SignInEffect.NavigateToHome(phone = current.phone))
             } else {
                 setState {
                     copy(isLoading = false, generalError = "Invalid credentials. Please try again.")

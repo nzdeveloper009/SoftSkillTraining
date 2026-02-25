@@ -23,7 +23,7 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.cmp.community.healers.softskilltraining.presentation.components.card.ExpandCard
 import com.cmp.community.healers.softskilltraining.presentation.feature.home.mvi.CandidateHomeState
-import com.cmp.community.healers.softskilltraining.presentation.feature.registration.document_upload.helper.DocumentType
+import com.cmp.community.healers.softskilltraining.utils.constants.document.DocumentType
 import com.cmp.community.healers.softskilltraining.theme.Amber
 import com.cmp.community.healers.softskilltraining.theme.AmberBg
 import com.cmp.community.healers.softskilltraining.theme.AmberBorder

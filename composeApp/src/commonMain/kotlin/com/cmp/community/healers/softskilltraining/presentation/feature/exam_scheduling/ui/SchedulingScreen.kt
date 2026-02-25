@@ -33,7 +33,8 @@ fun SchedulingScreen(
     candidateHomeVm:     CandidateHomeViewModel,
     onLogout:            () -> Unit            = {},
     onBackToPayment:     () -> Unit            = {},
-    onRegistrationDone:  () -> Unit            = {}   // after "Go to Profile" on congrats
+    // Training details passed back so AppNavGraph can call MarkSchedulingComplete
+    onRegistrationDone:  (date: String, time: String, center: String, address: String, city: String) -> Unit = { _, _, _, _, _ -> }
 ) {
     val state     by vm.state.collectAsStateWithLifecycle()
     val homeState by candidateHomeVm.state.collectAsStateWithLifecycle()
@@ -43,7 +44,13 @@ fun SchedulingScreen(
         vm.effect.collect { eff ->
             when (eff) {
                 SchedulingEffect.NavigateBackToPayment -> onBackToPayment()
-                SchedulingEffect.NavigateToProfile     -> onRegistrationDone()
+                SchedulingEffect.NavigateToProfile     -> onRegistrationDone(
+                    state.trainingDate,
+                    state.trainingTime,
+                    state.trainingCenterFull,
+                    state.trainingCenterAddress,
+                    state.trainingCenter
+                )
                 is SchedulingEffect.ShowSnackbar       -> snackbar.showSnackbar(eff.msg)
             }
         }
@@ -89,3 +96,4 @@ fun SchedulingScreen(
         }
     }
 }
+

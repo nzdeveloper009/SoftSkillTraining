@@ -1,22 +1,22 @@
 package com.cmp.community.healers.softskilltraining.presentation.feature.home.mvi
 
 import com.cmp.community.healers.softskilltraining.core.base.UiEvent
-import com.cmp.community.healers.softskilltraining.presentation.feature.registration.document_upload.helper.CandidateTab
-import com.cmp.community.healers.softskilltraining.presentation.feature.registration.document_upload.helper.DocumentType
+import com.cmp.community.healers.softskilltraining.utils.constants.homee.CandidateTab
+import com.cmp.community.healers.softskilltraining.utils.constants.document.DocumentType
 
 sealed interface CandidateHomeEvent : UiEvent {
 
-    // Top bar
+    // ── Top bar ───────────────────────────────────────────────────────────────
     data class TabChanged(val tab: CandidateTab)        : CandidateHomeEvent
     data object ToggleLanguage                          : CandidateHomeEvent
     data object Logout                                  : CandidateHomeEvent
 
-    // Section toggles
+    // ── Section toggles ───────────────────────────────────────────────────────
     data object TogglePersonalSection                   : CandidateHomeEvent
     data object ToggleDocumentsSection                  : CandidateHomeEvent
     data object ToggleEducationSection                  : CandidateHomeEvent
 
-    // Personal information
+    // ── Personal information ──────────────────────────────────────────────────
     data class FatherNameChanged(val value: String)     : CandidateHomeEvent
     data class CnicChanged(val value: String)           : CandidateHomeEvent
     data class DateOfBirthChanged(val value: String)    : CandidateHomeEvent
@@ -24,29 +24,43 @@ sealed interface CandidateHomeEvent : UiEvent {
     data class AddressChanged(val value: String)        : CandidateHomeEvent
     data object ToggleCityDropdown                      : CandidateHomeEvent
 
-    // Documents
-    /**
-     * UI requests the ViewModel to open the file picker for [type].
-     * ViewModel responds by emitting [CandidateHomeEffect.PickDocument].
-     * The Screen collects that effect and calls [rememberFilePicker].
-     */
+    // ── Documents ─────────────────────────────────────────────────────────────
     data class RequestPickDocument(val type: DocumentType) : CandidateHomeEvent
-
-    /**
-     * Called by the Screen's [rememberFilePicker] callback once the user
-     * picks a file.  URI is already resolved.
-     */
     data class DocumentSelected(val type: DocumentType, val uri: String) : CandidateHomeEvent
 
-    // Education
+    // ── Education ─────────────────────────────────────────────────────────────
     data object ToggleSixteenYearsEducation             : CandidateHomeEvent
-    /**
-     * UI requests the ViewModel to trigger degree picker.
-     * ViewModel emits [CandidateHomeEffect.PickDegree].
-     */
     data object RequestPickDegree                       : CandidateHomeEvent
     data class DegreeSelected(val uri: String)          : CandidateHomeEvent
 
-    // Navigation
+    // ── Navigation ────────────────────────────────────────────────────────────
+
+    /** "Continue to Payment" — validates form then emits NavigateToPayment effect */
     data object ContinueToPayment                       : CandidateHomeEvent
+
+    /**
+     * Fired when user taps the Application tab from Profile screen.
+     * ViewModel reads [applicationStep] and emits the correct navigation effect
+     * to resume where the user left off.
+     */
+    data object NavigateToApplicationTab                : CandidateHomeEvent
+
+    // ── Step advancement (called externally from nav graph after each step) ───
+
+    /** Call after registration form submitted successfully */
+    data object MarkRegistrationComplete                : CandidateHomeEvent
+
+    /** Call after payment confirmed — records training fee as paid */
+    data object MarkPaymentComplete                     : CandidateHomeEvent
+
+    /**
+     * Call after training scheduled — stores training details on profile.
+     */
+    data class MarkSchedulingComplete(
+        val trainingDate:    String,
+        val trainingTime:    String,
+        val trainingCenter:  String,
+        val trainingAddress: String,
+        val trainingCity:    String
+    ) : CandidateHomeEvent
 }

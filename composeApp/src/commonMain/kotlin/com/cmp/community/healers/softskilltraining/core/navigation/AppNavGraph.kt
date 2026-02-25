@@ -7,6 +7,10 @@ import androidx.compose.animation.slideInHorizontally
 import androidx.compose.animation.slideOutHorizontally
 import androidx.compose.animation.togetherWith
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
 import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.lifecycle.viewmodel.navigation3.rememberViewModelStoreNavEntryDecorator
 import androidx.navigation3.runtime.NavKey
@@ -23,9 +27,11 @@ import com.cmp.community.healers.softskilltraining.presentation.feature.auth.sig
 import com.cmp.community.healers.softskilltraining.presentation.feature.auth.signup.ui.SignUpScreen
 import com.cmp.community.healers.softskilltraining.presentation.feature.exam_scheduling.mvi.SchedulingViewModel
 import com.cmp.community.healers.softskilltraining.presentation.feature.exam_scheduling.ui.SchedulingScreen
+import com.cmp.community.healers.softskilltraining.presentation.feature.home.mvi.CandidateHomeEvent
 import com.cmp.community.healers.softskilltraining.presentation.feature.home.mvi.CandidateHomeState
 import com.cmp.community.healers.softskilltraining.presentation.feature.home.mvi.CandidateHomeViewModel
 import com.cmp.community.healers.softskilltraining.presentation.feature.home.ui.CandidateHomeScreen
+import com.cmp.community.healers.softskilltraining.presentation.feature.home.ui.CandidateScheduledHomeScreen
 import com.cmp.community.healers.softskilltraining.presentation.feature.home.ui.HomeScreen
 import com.cmp.community.healers.softskilltraining.presentation.feature.payment.mvi.PaymentViewModel
 import com.cmp.community.healers.softskilltraining.presentation.feature.payment.ui.PaymentScreen
@@ -45,21 +51,27 @@ fun AppNavGraph() {
                     subclass(Screen.OtpVerify::class, Screen.OtpVerify.serializer())
                     subclass(Screen.Home::class, Screen.Home.serializer())
                     subclass(Screen.CandidateHome::class, Screen.CandidateHome.serializer())
-                    subclass(Screen.Payment::class,       Screen.Payment.serializer())
-                    subclass(Screen.Scheduling::class,     Screen.Scheduling.serializer())
+                    subclass(Screen.Payment::class, Screen.Payment.serializer())
+                    subclass(Screen.Scheduling::class, Screen.Scheduling.serializer())
+                    subclass(Screen.CandidateScheduledHome::class, Screen.CandidateScheduledHome.serializer())
                 }
             }
         },
         Screen.SignIn
     )
 
-    // ── Hoisted shared ViewModel ──────────────────────────────────────────────
-    // Lives at AppNavGraph scope — survives push/pop between CandidateHome ↔ Payment.
-    // Both screens receive the SAME vm instance, so:
-    //   • TopBar (tab selection, language) looks identical on both screens
-    //   • Changing language on Payment screen is reflected when user goes Back
-    //   • No duplicate state, no prop-drilling of CandidateHomeState
-    val candidateHomeVm: CandidateHomeViewModel = viewModel { CandidateHomeViewModel() }
+    // ── Shared CandidateHomeViewModel — lazily initialized with real phone ────
+    //
+    // WHY NOT create it at graph scope:
+    //   viewModel { CandidateHomeViewModel() }  ← phone would always be ""
+    //
+    // WHY this pattern works:
+    //   1. CandidateHome entry gets key.phone from the route (set by SignIn/OTP)
+    //   2. It creates the VM with the real phone and stores it here
+    //   3. Payment and Scheduling entries read `candidateHomeVm` — guaranteed
+    //      non-null because you can only reach them after CandidateHome composed
+    //   4. On logout we null it out so the next session starts fresh
+    var candidateHomeVm: CandidateHomeViewModel? by remember { mutableStateOf(null) }
 
 
     // ── NavDisplay ────────────────────────────────────────────────────────────
@@ -75,10 +87,10 @@ fun AppNavGraph() {
         transitionSpec = {
             slideInHorizontally(
                 initialOffsetX = { it },
-                animationSpec  = tween(300)
+                animationSpec = tween(300)
             ) togetherWith slideOutHorizontally(
-                targetOffsetX  = { -it / 3 },
-                animationSpec  = tween(300)
+                targetOffsetX = { -it / 3 },
+                animationSpec = tween(300)
             )
         },
 
@@ -86,10 +98,10 @@ fun AppNavGraph() {
         popTransitionSpec = {
             slideInHorizontally(
                 initialOffsetX = { -it / 3 },
-                animationSpec  = tween(300)
+                animationSpec = tween(300)
             ) togetherWith slideOutHorizontally(
-                targetOffsetX  = { it },
-                animationSpec  = tween(300)
+                targetOffsetX = { it },
+                animationSpec = tween(300)
             )
         },
 
@@ -101,7 +113,10 @@ fun AppNavGraph() {
                 val vm: SignInViewModel = viewModel { SignInViewModel() }
                 SignInScreen(
                     vm = vm,
-                    onNavigateToHome    = { phone -> backStack.add(Screen.CandidateHome(phone)) },
+                    onNavigateToHome = { phone ->
+                        backStack.clear()
+                        backStack.add(Screen.CandidateHome(phone))
+                    },
                     onNavigateToSignUp = { backStack.add(Screen.SignUp) }
                 )
             }
@@ -111,8 +126,8 @@ fun AppNavGraph() {
                 val vm: SignUpViewModel = viewModel { SignUpViewModel() }
                 SignUpScreen(
                     vm = vm,
-                    onNavigateToOtp     = { phone -> backStack.add(Screen.OtpVerify(phone)) },
-                    onNavigateToSignIn  = { backStack.removeLastOrNull() }
+                    onNavigateToOtp = { phone -> backStack.add(Screen.OtpVerify(phone)) },
+                    onNavigateToSignIn = { backStack.removeLastOrNull() }
                 )
             }
 
@@ -121,14 +136,14 @@ fun AppNavGraph() {
             entry<Screen.OtpVerify> { key ->
                 val vm: OtpViewModel = viewModel { OtpViewModel(phone = key.phone) }
                 OtpScreen(
-                    phone            = key.phone,
-                    vm               = vm,
+                    phone = key.phone,
+                    vm = vm,
                     onNavigateToHome = {
                         // Clear the entire auth stack, push Home
                         backStack.clear()
                         backStack.add(Screen.CandidateHome(key.phone))
                     },
-                    onNavigateBack   = { backStack.removeLastOrNull() }
+                    onNavigateBack = { backStack.removeLastOrNull() }
                 )
             }
 
@@ -145,36 +160,59 @@ fun AppNavGraph() {
                 )
             }
 
-            // ── Candidate Home  (Step 1 · Registration) ───────────────────────
+            // ── Candidate Home  (Step 1 Registration  +  Profile tab) ─────────
+            //
+            // HOW TABS WORK:
+            //   PROFILE tab     → CandidateHomeScreen switches content inline to
+            //                     ProfileScreen (no nav push — same back-stack entry)
+            //   APPLICATION tab → ViewModel reads candidateHomeVm.applicationStep
+            //                     and emits the correct NavigateTo* effect below
             entry<Screen.CandidateHome>(
                 metadata = NavDisplay.transitionSpec {
                     fadeIn(tween(250)) togetherWith fadeOut(tween(250))
                 }
-            ) {
+            ) { key ->
+                val vm = viewModel { CandidateHomeViewModel(loggedInPhone = key.phone) }
+
+                // Store in shared slot — only written once per session.
+                // `candidateHomeVm` stays non-null for the entire candidate flow.
+                if (candidateHomeVm == null) candidateHomeVm = vm
+
                 CandidateHomeScreen(
-                    vm                  = candidateHomeVm,         // ← shared VM
-                    onLogout            = {
+                    vm       = vm,
+                    onLogout = {
+                        candidateHomeVm = null           // clear for next login
                         backStack.clear()
                         backStack.add(Screen.SignIn)
                     },
-                    onNavigateToPayment = { backStack.add(Screen.Payment) }
+                    onNavigateToPayment       = { backStack.add(Screen.Payment) },
+                    onNavigateToRegistration  = { /* already on this screen — no-op */ },
+                    onNavigateToScheduling    = { backStack.add(Screen.Scheduling) },
+                    onNavigateToScheduledHome = {
+                        backStack.add(Screen.CandidateScheduledHome(key.phone))
+                    }
                 )
             }
 
             // ── Payment  (Step 2) ─────────────────────────────────────────────
+            // Application tab on PaymentScreen → ViewModel is shared so the effect
+            // is collected by CandidateHomeScreen's LaunchedEffect, which is still
+            // alive in the back-stack. Navigation 3 keeps all entries alive.
             entry<Screen.Payment> {
+                val sharedVm = requireNotNull(candidateHomeVm)
                 val paymentVm = viewModel { PaymentViewModel() }
-
                 PaymentScreen(
-                    vm                     = paymentVm,
-                    candidateHomeVm        = candidateHomeVm,      // ← same shared VM
-                    onLogout               = {
+                    vm = paymentVm,
+                    candidateHomeVm = sharedVm,
+                    onLogout = {
                         backStack.clear()
                         backStack.add(Screen.SignIn)
                     },
-                    onBackToRegistration   = { backStack.removeLastOrNull() },
+                    onBackToRegistration = { backStack.removeLastOrNull() },
                     onContinueToScheduling = {
-                         backStack.add(Screen.Scheduling)
+                        // Advance step in shared VM → Profile card shows "Paid"
+                        sharedVm.onEvent(CandidateHomeEvent.MarkPaymentComplete)
+                        backStack.add(Screen.Scheduling)
                     }
                 )
             }
@@ -182,20 +220,54 @@ fun AppNavGraph() {
             // ── Scheduling  (Step 3) ──────────────────────────────────────────
             // Congrats phase renders inside SchedulingScreen — no separate route needed.
             entry<Screen.Scheduling> {
+                val sharedVm = requireNotNull(candidateHomeVm)
                 val schedulingVm = viewModel { SchedulingViewModel() }
                 SchedulingScreen(
-                    vm                  = schedulingVm,
-                    candidateHomeVm     = candidateHomeVm,
-                    onLogout            = {
+                    vm = schedulingVm,
+                    candidateHomeVm = sharedVm,
+                    onLogout = {
                         backStack.clear()
                         backStack.add(Screen.SignIn)
                     },
-                    onBackToPayment     = { backStack.removeLastOrNull() },
-                    onRegistrationDone  = {
-                        // Registration fully complete — go back to Home (or Profile)
-                        // Clear the entire candidate flow so the user can't go back
+                    onBackToPayment = { backStack.removeLastOrNull() },
+                    // Scheduling confirmed → advance step + store training details
+                    onRegistrationDone = { date, time, center, address, city ->
+                        sharedVm.onEvent(
+                            CandidateHomeEvent.MarkSchedulingComplete(
+                                trainingDate = date,
+                                trainingTime = time,
+                                trainingCenter = center,
+                                trainingAddress = address,
+                                trainingCity = city
+                            )
+                        )
+                        // Return to CandidateHome — Profile tab will now show
+                        // the full training card
                         backStack.clear()
-                        backStack.add(Screen.CandidateHome(""))
+                        backStack.add(Screen.CandidateHome(sharedVm.state.value.profilePhone))
+                    }
+                )
+            }
+
+            // ── Candidate Scheduled Home  (All steps complete) ────────────────
+            // Shown when applicationStep == COMPLETE.
+            // Application tab → "Training Already Scheduled" card
+            // Profile tab     → ProfileScreen rendered inline (no nav push)
+            // "Go to Profile" button → switches activeTab to PROFILE inside the VM
+            entry<Screen.CandidateScheduledHome>(
+                metadata = NavDisplay.transitionSpec {
+                    fadeIn(tween(250)) togetherWith fadeOut(tween(250))
+                }
+            ) { key ->
+                val vm = viewModel { CandidateHomeViewModel(loggedInPhone = key.phone) }
+                if (candidateHomeVm == null) candidateHomeVm = vm
+
+                CandidateScheduledHomeScreen(
+                    candidateHomeVm = vm,
+                    onLogout        = {
+                        candidateHomeVm = null
+                        backStack.clear()
+                        backStack.add(Screen.SignIn)
                     }
                 )
             }

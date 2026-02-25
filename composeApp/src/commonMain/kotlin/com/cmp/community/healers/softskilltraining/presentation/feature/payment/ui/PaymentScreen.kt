@@ -38,7 +38,8 @@ import com.cmp.community.healers.softskilltraining.presentation.feature.payment.
 import com.cmp.community.healers.softskilltraining.presentation.feature.payment.mvi.PaymentEffect
 import com.cmp.community.healers.softskilltraining.presentation.feature.payment.mvi.PaymentEvent
 import com.cmp.community.healers.softskilltraining.presentation.feature.payment.mvi.PaymentViewModel
-import com.cmp.community.healers.softskilltraining.presentation.feature.registration.document_upload.helper.CandidateTab
+import com.cmp.community.healers.softskilltraining.presentation.feature.profile.ui.ProfileScreen
+import com.cmp.community.healers.softskilltraining.utils.constants.homee.CandidateTab
 import com.cmp.community.healers.softskilltraining.theme.BgScreen
 import com.cmp.community.healers.softskilltraining.utils.constants.payment.PaymentPhase
 
@@ -92,40 +93,65 @@ fun PaymentScreen(
                     onLogout     = onLogout
                 )
 
-                // ── Scrollable body ───────────────────────────────────────────
-                // bottom = 140.dp — enough room for the 2-row bottom bar
-                Column(
-                    modifier = Modifier
-                        .fillMaxSize()
-                        .verticalScroll(rememberScrollState())
-                        .padding(horizontal = 14.dp)
-                        .padding(top = 16.dp, bottom = 140.dp),
-                    verticalArrangement = Arrangement.spacedBy(14.dp)
-                ) {
-                    PaymentProgressCard()
-                    PaymentSectionHeader()
-                    RegistrationFeeCard(state = state, onEvent = { vm.onEvent(it) })
+                // ── Tab-aware body ────────────────────────────────────────────
+                // Profile tab → ProfileScreen inline (no nav push)
+                // Application tab → payment content as before
+                AnimatedContent(
+                    targetState  = homeState.activeTab,
+                    transitionSpec = { fadeIn(tween(220)) togetherWith fadeOut(tween(160)) },
+                    label        = "payment_tab"
+                ) { tab ->
+                    when (tab) {
+                        CandidateTab.PROFILE -> {
+                            Column(
+                                modifier = Modifier
+                                    .fillMaxSize()
+                                    .verticalScroll(rememberScrollState())
+                            ) {
+                                ProfileScreen(state = homeState)
+                            }
+                        }
 
-                    AnimatedContent(
-                        targetState = state.phase,
-                        transitionSpec = { fadeIn(tween(300)) togetherWith fadeOut(tween(200)) },
-                        label = "banner"
-                    ) { phase ->
-                        when (phase) {
-                            PaymentPhase.PAID -> SuccessBanner()
-                            else              -> WarningBanner()
+                        CandidateTab.REGISTRATION -> {
+                            Box(modifier = Modifier.fillMaxSize()) {
+                                // ── Scrollable body ───────────────────────────
+                                // bottom = 140.dp — room for the 2-row bottom bar
+                                Column(
+                                    modifier = Modifier
+                                        .fillMaxSize()
+                                        .verticalScroll(rememberScrollState())
+                                        .padding(horizontal = 14.dp)
+                                        .padding(top = 16.dp, bottom = 140.dp),
+                                    verticalArrangement = Arrangement.spacedBy(14.dp)
+                                ) {
+                                    PaymentProgressCard()
+                                    PaymentSectionHeader()
+                                    RegistrationFeeCard(state = state, onEvent = { vm.onEvent(it) })
+
+                                    AnimatedContent(
+                                        targetState = state.phase,
+                                        transitionSpec = { fadeIn(tween(300)) togetherWith fadeOut(tween(200)) },
+                                        label = "banner"
+                                    ) { phase ->
+                                        when (phase) {
+                                            PaymentPhase.PAID -> SuccessBanner()
+                                            else              -> WarningBanner()
+                                        }
+                                    }
+                                }
+
+                                // ── Sticky bottom bar ─────────────────────────
+                                PaymentBottomBar(
+                                    isPaid     = state.phase == PaymentPhase.PAID,
+                                    modifier   = Modifier.align(Alignment.BottomCenter),
+                                    onBack     = { vm.onEvent(PaymentEvent.BackToRegistration) },
+                                    onContinue = { vm.onEvent(PaymentEvent.ContinueToScheduling) }
+                                )
+                            }
                         }
                     }
                 }
             }
-
-            // ── Sticky bottom bar ─────────────────────────────────────────────
-            PaymentBottomBar(
-                isPaid     = state.phase == PaymentPhase.PAID,
-                modifier   = Modifier.align(Alignment.BottomCenter),
-                onBack     = { vm.onEvent(PaymentEvent.BackToRegistration) },
-                onContinue = { vm.onEvent(PaymentEvent.ContinueToScheduling) }
-            )
         }
     }
 }

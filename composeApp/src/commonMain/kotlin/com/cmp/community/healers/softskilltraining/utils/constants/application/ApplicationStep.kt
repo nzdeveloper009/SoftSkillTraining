@@ -8,5 +8,7 @@ enum class ApplicationStep {
     /** Step 3 — payment done, scheduling pending */
     SCHEDULING,
     /** All 3 steps complete */
-    COMPLETE
+    COMPLETE,
+//    /** Error state */
+//    ERROR
 }

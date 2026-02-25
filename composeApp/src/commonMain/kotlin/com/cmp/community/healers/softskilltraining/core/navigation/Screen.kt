@@ -26,8 +26,20 @@ sealed interface Screen: NavKey {
      */
     @Serializable
     data class OtpVerify(val phone:String): Screen, NavKey
+    /**
+     * CandidateHome carries the verified phone number so
+     * CandidateHomeViewModel is always initialized with the real phone,
+     * not an empty string.
+     */
     @Serializable data class CandidateHome(val phone:String)    :  Screen, NavKey
     @Serializable data object Home    :  Screen, NavKey
     @Serializable data object Payment    :  Screen, NavKey
     @Serializable data object Scheduling     : Screen, NavKey
+    /**
+     * Shown when applicationStep == COMPLETE.
+     * Displays "Training Already Scheduled" card with Go to Profile button.
+     * Carries phone so CandidateHomeViewModel can be resolved correctly.
+     */
+    @Serializable data class  CandidateScheduledHome(val phone: String)    : Screen, NavKey
+
 }

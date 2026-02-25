@@ -1,4 +1,4 @@
-package com.cmp.community.healers.softskilltraining.presentation.feature.registration.document_upload.helper
+package com.cmp.community.healers.softskilltraining.utils.constants.document
 
 enum class DocumentType(
     val label: String,

@@ -37,7 +37,7 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.cmp.community.healers.softskilltraining.presentation.feature.home.mvi.CandidateHomeState
-import com.cmp.community.healers.softskilltraining.presentation.feature.registration.document_upload.helper.CandidateTab
+import com.cmp.community.healers.softskilltraining.utils.constants.homee.CandidateTab
 import com.cmp.community.healers.softskilltraining.theme.AppLanguage
 import com.cmp.community.healers.softskilltraining.theme.Border
 import com.cmp.community.healers.softskilltraining.theme.CardColor

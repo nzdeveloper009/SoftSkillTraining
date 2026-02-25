@@ -71,6 +71,11 @@ val AmberBorder    = Color(0xFFFDE68A)
 val AmberText      = Color(0xFF92400E)
 val PrimaryGrad    = Brush.linearGradient(listOf(Primary, PrimaryLight))
 
+val CardBg        = Color(0xFFEBF1FC)
+val CardBorder    = Color(0xFFD0DFFA)
+val TitleColor    = Color(0xFF1A3A5C)
+val SubtitleHomeColor = Color(0xFF4A6080)
+
 // Payment
 val SuccessBg     = Color(0xFFF0FDF4)
 val SuccessBorder = Color(0xFFBBF7D0)

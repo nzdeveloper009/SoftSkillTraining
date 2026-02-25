@@ -30,7 +30,7 @@ import androidx.compose.ui.draw.clip
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import com.cmp.community.healers.softskilltraining.presentation.feature.registration.document_upload.helper.DocumentType
+import com.cmp.community.healers.softskilltraining.utils.constants.document.DocumentType
 import com.cmp.community.healers.softskilltraining.theme.Border
 import com.cmp.community.healers.softskilltraining.theme.CardColor
 import com.cmp.community.healers.softskilltraining.theme.Destructive
