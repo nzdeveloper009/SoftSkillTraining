@@ -18,7 +18,7 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import com.cmp.community.healers.softskilltraining.theme.BorderColor
+import com.cmp.community.healers.softskilltraining.theme.Border
 import com.cmp.community.healers.softskilltraining.theme.MutedFg
 import com.cmp.community.healers.softskilltraining.theme.Secondary
 import com.cmp.community.healers.softskilltraining.theme.TextFg
@@ -34,7 +34,7 @@ fun ScheduleInfoTile(
         modifier = modifier,
         shape    = RoundedCornerShape(10.dp),
         color    = Secondary,
-        border   = BorderStroke(1.dp, BorderColor.copy(alpha = 0.5f))
+        border   = BorderStroke(1.dp, Border.copy(alpha = 0.5f))
     ) {
         Column(
             modifier            = Modifier.padding(12.dp),

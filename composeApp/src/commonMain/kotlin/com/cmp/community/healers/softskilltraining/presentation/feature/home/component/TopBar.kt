@@ -13,11 +13,9 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
-import androidx.compose.foundation.layout.statusBarsPadding
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.automirrored.outlined.Logout
 import androidx.compose.material.icons.outlined.Description
 import androidx.compose.material.icons.outlined.Language
 import androidx.compose.material.icons.outlined.Logout
@@ -41,7 +39,7 @@ import androidx.compose.ui.unit.sp
 import com.cmp.community.healers.softskilltraining.presentation.feature.home.mvi.CandidateHomeState
 import com.cmp.community.healers.softskilltraining.presentation.feature.registration.document_upload.helper.CandidateTab
 import com.cmp.community.healers.softskilltraining.theme.AppLanguage
-import com.cmp.community.healers.softskilltraining.theme.BorderColor
+import com.cmp.community.healers.softskilltraining.theme.Border
 import com.cmp.community.healers.softskilltraining.theme.CardColor
 import com.cmp.community.healers.softskilltraining.theme.Destructive
 import com.cmp.community.healers.softskilltraining.theme.MutedFg
@@ -132,7 +130,7 @@ fun TopBar(
                     modifier = Modifier
                         .clip(RoundedCornerShape(10.dp))
                         .background(Secondary.copy(alpha = 0.5f))
-                        .border(1.dp, BorderColor.copy(alpha = 0.5f), RoundedCornerShape(10.dp))
+                        .border(1.dp, Border.copy(alpha = 0.5f), RoundedCornerShape(10.dp))
                         .padding(3.dp),
                     horizontalArrangement = Arrangement.spacedBy(2.dp)
                 ) {
@@ -154,7 +152,7 @@ fun TopBar(
                 OutlinedButton(
                     onClick        = onLangToggle,
                     shape          = RoundedCornerShape(8.dp),
-                    border         = BorderStroke(1.5.dp, BorderColor),
+                    border         = BorderStroke(1.5.dp, Border),
                     contentPadding = PaddingValues(horizontal = 10.dp, vertical = 0.dp),
                     colors         = ButtonDefaults.outlinedButtonColors(contentColor = TextFg),
                     modifier       = Modifier.height(34.dp)

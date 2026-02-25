@@ -24,7 +24,7 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.cmp.community.healers.softskilltraining.presentation.feature.payment.mvi.PaymentEvent
 import com.cmp.community.healers.softskilltraining.presentation.feature.payment.mvi.PaymentState
-import com.cmp.community.healers.softskilltraining.theme.BorderColor
+import com.cmp.community.healers.softskilltraining.theme.Border
 import com.cmp.community.healers.softskilltraining.theme.Primary
 
 // ─────────────────────────────────────────────────────────────────────────────
@@ -36,16 +36,16 @@ fun PaidPhase(state: PaymentState, onEvent: (PaymentEvent) -> Unit) {
     Column(verticalArrangement = Arrangement.spacedBy(16.dp)) {
 
         // Transaction details
-        HorizontalDivider(color = BorderColor.copy(alpha = 0.4f))
+        HorizontalDivider(color = Border.copy(alpha = 0.4f))
 
         ReceiptRow("Transaction ID", state.transactionId, isGreen = false)
         ReceiptRow("Payment Date",   state.paymentDate,   isGreen = false)
 
-        HorizontalDivider(color = BorderColor.copy(alpha = 0.4f))
+        HorizontalDivider(color = Border.copy(alpha = 0.4f))
 
         ReceiptRow("Status", "Success", isGreen = true)
 
-        HorizontalDivider(color = BorderColor.copy(alpha = 0.4f))
+        HorizontalDivider(color = Border.copy(alpha = 0.4f))
 
         // Download Receipt button — outlined style from screenshot
         OutlinedButton(

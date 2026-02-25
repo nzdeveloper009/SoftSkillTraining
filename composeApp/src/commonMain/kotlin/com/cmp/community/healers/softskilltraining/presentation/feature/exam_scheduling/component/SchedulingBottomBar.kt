@@ -41,7 +41,7 @@ import com.cmp.community.healers.softskilltraining.theme.TextFg
 fun SchedulingBottomBar(
     dateSelected: Boolean,
     isScheduling: Boolean,
-    modifier: Modifier,
+    modifier:     Modifier,
     onBack:       () -> Unit,
     onContinue:   () -> Unit
 ) {

@@ -12,11 +12,11 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.shape.CircleShape
+import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.outlined.ChevronLeft
 import androidx.compose.material.icons.outlined.ChevronRight
 import androidx.compose.material3.Icon
-import androidx.compose.material3.IconButton
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
@@ -29,9 +29,10 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.cmp.community.healers.softskilltraining.presentation.feature.exam_scheduling.mvi.SchedulingEvent
 import com.cmp.community.healers.softskilltraining.presentation.feature.exam_scheduling.mvi.SchedulingState
-import com.cmp.community.healers.softskilltraining.theme.BorderColor
+import com.cmp.community.healers.softskilltraining.theme.Border
 import com.cmp.community.healers.softskilltraining.theme.MutedFg
 import com.cmp.community.healers.softskilltraining.theme.Primary
+import com.cmp.community.healers.softskilltraining.theme.Secondary
 import com.cmp.community.healers.softskilltraining.theme.TextFg
 import com.cmp.community.healers.softskilltraining.utils.constants.DAY_HEADERS
 import com.cmp.community.healers.softskilltraining.utils.constants.MONTH_NAMES
@@ -39,43 +40,47 @@ import com.cmp.community.healers.softskilltraining.utils.constants.MONTH_NAMES
 
 @Composable
 fun CalendarWidget(
-    state: SchedulingState,
+    state:    SchedulingState,
     onEvent:  (SchedulingEvent) -> Unit,
     modifier: Modifier = Modifier
 ) {
-    Column(modifier = modifier, verticalArrangement = Arrangement.spacedBy(8.dp)) {
+    Column(modifier = modifier, verticalArrangement = Arrangement.spacedBy(6.dp)) {
 
         // ── Month navigation ──────────────────────────────────────────────────
+        // Use Box + clickable instead of IconButton — IconButton has a hardcoded
+        // 48dp min touch target that renders as a large grey circle on screen.
         Row(
             modifier              = Modifier.fillMaxWidth(),
             horizontalArrangement = Arrangement.SpaceBetween,
             verticalAlignment     = Alignment.CenterVertically
         ) {
-            IconButton(
-                onClick  = { onEvent(SchedulingEvent.PrevMonth) },
+            Box(
                 modifier = Modifier
-                    .size(32.dp)
-                    .clip(CircleShape)
-                    .border(1.dp, BorderColor, CircleShape)
+                    .size(30.dp)
+                    .clip(RoundedCornerShape(8.dp))
+                    .background(Secondary)
+                    .border(1.dp, Border, RoundedCornerShape(8.dp))
+                    .clickable { onEvent(SchedulingEvent.PrevMonth) },
+                contentAlignment = Alignment.Center
             ) {
-                Icon(Icons.Outlined.ChevronLeft, null, tint = TextFg, modifier = Modifier.size(16.dp))
+                Icon(Icons.Outlined.ChevronLeft, null, tint = TextFg, modifier = Modifier.size(15.dp))
             }
+
             Text(
                 "${MONTH_NAMES.getOrElse(state.displayMonth - 1) { "" }} ${state.displayYear}",
-                style = TextStyle(
-                    fontSize = 14.sp,
-                    fontWeight = FontWeight.SemiBold,
-                    color = TextFg
-                )
+                style = TextStyle(fontSize = 13.sp, fontWeight = FontWeight.SemiBold, color = TextFg)
             )
-            IconButton(
-                onClick  = { onEvent(SchedulingEvent.NextMonth) },
+
+            Box(
                 modifier = Modifier
-                    .size(32.dp)
-                    .clip(CircleShape)
-                    .border(1.dp, BorderColor, CircleShape)
+                    .size(30.dp)
+                    .clip(RoundedCornerShape(8.dp))
+                    .background(Secondary)
+                    .border(1.dp, Border, RoundedCornerShape(8.dp))
+                    .clickable { onEvent(SchedulingEvent.NextMonth) },
+                contentAlignment = Alignment.Center
             ) {
-                Icon(Icons.Outlined.ChevronRight, null, tint = TextFg, modifier = Modifier.size(16.dp))
+                Icon(Icons.Outlined.ChevronRight, null, tint = TextFg, modifier = Modifier.size(15.dp))
             }
         }
 

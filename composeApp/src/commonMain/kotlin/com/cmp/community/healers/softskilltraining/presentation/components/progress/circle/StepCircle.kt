@@ -1,4 +1,4 @@
-package com.cmp.community.healers.softskilltraining.presentation.feature.exam_scheduling.component
+package com.cmp.community.healers.softskilltraining.presentation.components.progress.circle
 
 import androidx.compose.animation.core.RepeatMode
 import androidx.compose.animation.core.animateFloat
@@ -28,7 +28,7 @@ import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.cmp.community.healers.softskilltraining.domain.model.StepInfo
-import com.cmp.community.healers.softskilltraining.theme.BorderColor
+import com.cmp.community.healers.softskilltraining.theme.Border
 import com.cmp.community.healers.softskilltraining.theme.MutedFg
 import com.cmp.community.healers.softskilltraining.theme.Primary
 import com.cmp.community.healers.softskilltraining.theme.Secondary
@@ -55,7 +55,7 @@ fun StepCircle(step: StepInfo, modifier: Modifier) {
                     step.isActive -> Primary.copy(alpha = alpha)
                     else          -> Secondary
                 })
-                .border(2.dp, if (step.isDone || step.isActive) Primary else BorderColor, CircleShape),
+                .border(2.dp, if (step.isDone || step.isActive) Primary else Border, CircleShape),
             contentAlignment = Alignment.Center
         ) {
             if (step.isDone)

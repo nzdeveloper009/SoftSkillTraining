@@ -35,7 +35,7 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.cmp.community.healers.softskilltraining.presentation.feature.payment.mvi.PaymentEvent
 import com.cmp.community.healers.softskilltraining.presentation.feature.payment.mvi.PaymentState
-import com.cmp.community.healers.softskilltraining.theme.BorderColor
+import com.cmp.community.healers.softskilltraining.theme.Border
 import com.cmp.community.healers.softskilltraining.theme.CardColor
 import com.cmp.community.healers.softskilltraining.theme.MutedFg
 import com.cmp.community.healers.softskilltraining.theme.PrimaryGrad
@@ -58,7 +58,7 @@ fun RegistrationFeeCard(
         modifier        = Modifier.fillMaxWidth(),
         shape           = RoundedCornerShape(14.dp),
         color           = CardColor,
-        border          = BorderStroke(1.dp, BorderColor.copy(alpha = 0.4f)),
+        border          = BorderStroke(1.dp, Border.copy(alpha = 0.4f)),
         shadowElevation = 2.dp
     ) {
         Column(modifier = Modifier.fillMaxWidth()) {

@@ -64,7 +64,7 @@ import com.cmp.community.healers.softskilltraining.theme.*
 @Composable
 fun SignInScreen(
     vm: SignInViewModel = viewModel { SignInViewModel() },
-    onNavigateToOtp: (phone: String) -> Unit,
+    onNavigateToHome: (phone: String) -> Unit,
     onNavigateToSignUp: () -> Unit
 ) {
     val state by vm.state.collectAsStateWithLifecycle()
@@ -73,7 +73,7 @@ fun SignInScreen(
     LaunchedEffect(vm) {
         vm.effect.collect { effect ->
             when (effect) {
-                is SignInEffect.NavigateToOtp    -> onNavigateToOtp(effect.phone)
+                is SignInEffect.NavigateToHome    -> onNavigateToHome(effect.phone)
                 is SignInEffect.NavigateToSignUp -> onNavigateToSignUp()
                 is SignInEffect.ShowSnackbar     -> { /* wire to SnackbarHost if needed */ }
             }

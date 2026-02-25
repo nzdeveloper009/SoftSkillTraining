@@ -23,7 +23,7 @@ import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import com.cmp.community.healers.softskilltraining.theme.BorderColor
+import com.cmp.community.healers.softskilltraining.theme.Border
 import com.cmp.community.healers.softskilltraining.theme.CardColor
 import com.cmp.community.healers.softskilltraining.theme.MutedFg
 import com.cmp.community.healers.softskilltraining.theme.Primary
@@ -35,7 +35,7 @@ fun SelectTrainingDateHeader() {
         modifier        = Modifier.fillMaxWidth(),
         shape           = RoundedCornerShape(14.dp),
         color           = CardColor,
-        border          = BorderStroke(1.dp, BorderColor.copy(alpha = 0.6f)),
+        border          = BorderStroke(1.dp, Border.copy(alpha = 0.6f)),
         shadowElevation = 1.dp
     ) {
         Row(
@@ -52,12 +52,7 @@ fun SelectTrainingDateHeader() {
             }
             Column {
                 Text("Select Training Date",
-                    style = TextStyle(
-                        fontSize = 16.sp,
-                        fontWeight = FontWeight.Bold,
-                        color = TextFg
-                    )
-                )
+                    style = TextStyle(fontSize = 16.sp, fontWeight = FontWeight.Bold, color = TextFg))
                 Text("Choose your preferred training date",
                     style = TextStyle(fontSize = 12.sp, color = MutedFg))
             }

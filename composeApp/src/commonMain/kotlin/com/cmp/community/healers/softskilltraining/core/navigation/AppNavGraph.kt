@@ -101,7 +101,7 @@ fun AppNavGraph() {
                 val vm: SignInViewModel = viewModel { SignInViewModel() }
                 SignInScreen(
                     vm = vm,
-                    onNavigateToOtp    = { phone -> backStack.add(Screen.OtpVerify(phone)) },
+                    onNavigateToHome    = { phone -> backStack.add(Screen.CandidateHome(phone)) },
                     onNavigateToSignUp = { backStack.add(Screen.SignUp) }
                 )
             }
@@ -126,7 +126,7 @@ fun AppNavGraph() {
                     onNavigateToHome = {
                         // Clear the entire auth stack, push Home
                         backStack.clear()
-                        backStack.add(Screen.CandidateHome)
+                        backStack.add(Screen.CandidateHome(key.phone))
                     },
                     onNavigateBack   = { backStack.removeLastOrNull() }
                 )
@@ -195,7 +195,7 @@ fun AppNavGraph() {
                         // Registration fully complete — go back to Home (or Profile)
                         // Clear the entire candidate flow so the user can't go back
                         backStack.clear()
-                        backStack.add(Screen.CandidateHome)
+                        backStack.add(Screen.CandidateHome(""))
                     }
                 )
             }

@@ -21,7 +21,7 @@ import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import com.cmp.community.healers.softskilltraining.theme.BorderColor
+import com.cmp.community.healers.softskilltraining.theme.Border
 import com.cmp.community.healers.softskilltraining.theme.CardColor
 import com.cmp.community.healers.softskilltraining.theme.Primary
 import com.cmp.community.healers.softskilltraining.theme.Secondary
@@ -41,7 +41,7 @@ fun PaymentMethodTile(
         color    = if (selected) Primary.copy(alpha = 0.06f) else Secondary.copy(alpha = 0.3f),
         border   = BorderStroke(
             width = if (selected) 2.dp else 1.dp,
-            color = if (selected) Primary.copy(alpha = 0.4f) else BorderColor.copy(alpha = 0.6f)
+            color = if (selected) Primary.copy(alpha = 0.4f) else Border.copy(alpha = 0.6f)
         )
     ) {
         Column(

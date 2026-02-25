@@ -29,8 +29,8 @@ import com.cmp.community.healers.softskilltraining.utils.constants.scheduling.Sc
 
 @Composable
 fun SchedulingScreen(
-    vm: SchedulingViewModel = viewModel { SchedulingViewModel() },
-    candidateHomeVm: CandidateHomeViewModel,
+    vm:                  SchedulingViewModel   = viewModel { SchedulingViewModel() },
+    candidateHomeVm:     CandidateHomeViewModel,
     onLogout:            () -> Unit            = {},
     onBackToPayment:     () -> Unit            = {},
     onRegistrationDone:  () -> Unit            = {}   // after "Go to Profile" on congrats

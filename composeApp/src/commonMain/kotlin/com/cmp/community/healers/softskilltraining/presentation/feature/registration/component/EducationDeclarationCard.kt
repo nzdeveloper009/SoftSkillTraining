@@ -19,7 +19,6 @@ import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.automirrored.outlined.MenuBook
 import androidx.compose.material.icons.outlined.CheckCircle
 import androidx.compose.material.icons.outlined.Info
 import androidx.compose.material.icons.outlined.MenuBook
@@ -45,11 +44,10 @@ import androidx.compose.ui.unit.sp
 import com.cmp.community.healers.softskilltraining.presentation.components.card.ExpandCard
 import com.cmp.community.healers.softskilltraining.presentation.feature.home.mvi.CandidateHomeEvent
 import com.cmp.community.healers.softskilltraining.presentation.feature.home.mvi.CandidateHomeState
-import com.cmp.community.healers.softskilltraining.theme.BorderColor
+import com.cmp.community.healers.softskilltraining.theme.Border
 import com.cmp.community.healers.softskilltraining.theme.MutedFg
 import com.cmp.community.healers.softskilltraining.theme.Primary
 import com.cmp.community.healers.softskilltraining.theme.PrimaryGrad
-import com.cmp.community.healers.softskilltraining.theme.PrimaryLight
 import com.cmp.community.healers.softskilltraining.theme.Secondary
 import com.cmp.community.healers.softskilltraining.theme.TextFg
 
@@ -63,7 +61,7 @@ fun EducationDeclarationCard(
         state.educationExpanded, { onEvent(CandidateHomeEvent.ToggleEducationSection) }
     ) {
         Column(verticalArrangement = Arrangement.spacedBy(14.dp)) {
-            Surface(shape = RoundedCornerShape(12.dp), color = Secondary.copy(0.3f), border = BorderStroke(1.dp, BorderColor.copy(0.4f))) {
+            Surface(shape = RoundedCornerShape(12.dp), color = Secondary.copy(0.3f), border = BorderStroke(1.dp, Border.copy(0.4f))) {
                 Row(modifier = Modifier.fillMaxWidth().padding(14.dp), horizontalArrangement = Arrangement.SpaceBetween, verticalAlignment = Alignment.CenterVertically) {
                     Column(modifier = Modifier.weight(1f).padding(end = 12.dp)) {
                         Text("16 Years of Education", fontSize = 14.sp, fontWeight = FontWeight.SemiBold, color = TextFg)
@@ -71,7 +69,7 @@ fun EducationDeclarationCard(
                             fontSize = 12.sp, color = MutedFg, lineHeight = 16.sp, modifier = Modifier.padding(top = 2.dp))
                     }
                     Switch(checked = state.hasSixteenYearsEducation, onCheckedChange = { onEvent(CandidateHomeEvent.ToggleSixteenYearsEducation) },
-                        colors = SwitchDefaults.colors(checkedThumbColor = Color.White, checkedTrackColor = Primary, uncheckedThumbColor = Color.White, uncheckedTrackColor = BorderColor))
+                        colors = SwitchDefaults.colors(checkedThumbColor = Color.White, checkedTrackColor = Primary, uncheckedThumbColor = Color.White, uncheckedTrackColor = Border))
                 }
             }
             AnimatedVisibility(visible = state.hasSixteenYearsEducation, enter = expandVertically() + fadeIn(), exit = shrinkVertically() + fadeOut()) {
@@ -82,7 +80,7 @@ fun EducationDeclarationCard(
                             fontSize = 13.sp, fontWeight = FontWeight.SemiBold, color = Primary)
                     }
                     Surface(shape = RoundedCornerShape(16.dp), color = Primary.copy(0.02f),
-                        border = BorderStroke(2.dp, if (state.degreeUri != null) PrimaryGrad else Brush.linearGradient(listOf(BorderColor, BorderColor))),
+                        border = BorderStroke(2.dp, if (state.degreeUri != null) PrimaryGrad else Brush.linearGradient(listOf(Border, Border))),
                         modifier = Modifier.fillMaxWidth().clickable { onPickDegree() }
                     ) {
                         Column(modifier = Modifier.padding(24.dp), horizontalAlignment = Alignment.CenterHorizontally, verticalArrangement = Arrangement.spacedBy(12.dp)) {

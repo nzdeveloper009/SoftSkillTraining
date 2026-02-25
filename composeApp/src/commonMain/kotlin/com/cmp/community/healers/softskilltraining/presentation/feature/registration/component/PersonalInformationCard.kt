@@ -35,7 +35,7 @@ import com.cmp.community.healers.softskilltraining.presentation.components.field
 import com.cmp.community.healers.softskilltraining.presentation.components.field.FieldLabel
 import com.cmp.community.healers.softskilltraining.presentation.feature.home.mvi.CandidateHomeEvent
 import com.cmp.community.healers.softskilltraining.presentation.feature.home.mvi.CandidateHomeState
-import com.cmp.community.healers.softskilltraining.theme.BorderColor
+import com.cmp.community.healers.softskilltraining.theme.Border
 import com.cmp.community.healers.softskilltraining.theme.CardColor
 import com.cmp.community.healers.softskilltraining.theme.Destructive
 import com.cmp.community.healers.softskilltraining.theme.MutedFg
@@ -71,7 +71,7 @@ fun PersonalInformationCard(
                         leadingIcon = { Icon(Icons.Outlined.Phone, null, tint = MutedFg, modifier = Modifier.size(16.dp)) },
                         shape = RoundedCornerShape(8.dp),
                         colors = OutlinedTextFieldDefaults.colors(
-                            disabledContainerColor = Secondary, disabledBorderColor = BorderColor,
+                            disabledContainerColor = Secondary, disabledBorderColor = Border,
                             disabledTextColor = MutedFg, disabledLeadingIconColor = MutedFg
                         ),
                         textStyle = TextStyle(fontSize = 13.sp)
@@ -90,7 +90,7 @@ fun PersonalInformationCard(
                         shape = RoundedCornerShape(8.dp),
                         colors = OutlinedTextFieldDefaults.colors(
                             disabledContainerColor    = if (state.city.isBlank()) Secondary else CardColor,
-                            disabledBorderColor       = if (state.errors["city"] != null) Destructive else BorderColor,
+                            disabledBorderColor       = if (state.errors["city"] != null) Destructive else Border,
                             disabledTextColor         = if (state.city.isBlank()) MutedFg else TextFg,
                             disabledLeadingIconColor  = MutedFg,
                             disabledTrailingIconColor = MutedFg

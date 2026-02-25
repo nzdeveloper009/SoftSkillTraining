@@ -25,7 +25,7 @@ import com.cmp.community.healers.softskilltraining.utils.constants.scheduling.Sc
 
 @Composable
 fun SchedulingContent(
-    state: SchedulingState,
+    state:           SchedulingState,
     homeState:       com.cmp.community.healers.softskilltraining.presentation.feature.home.mvi.CandidateHomeState,
     candidateHomeVm: CandidateHomeViewModel,
     onLogout:        () -> Unit,

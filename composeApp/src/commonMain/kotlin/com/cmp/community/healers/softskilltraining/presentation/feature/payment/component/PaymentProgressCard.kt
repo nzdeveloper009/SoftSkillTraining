@@ -22,7 +22,8 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.cmp.community.healers.softskilltraining.domain.model.StepInfo
-import com.cmp.community.healers.softskilltraining.theme.BorderColor
+import com.cmp.community.healers.softskilltraining.presentation.components.progress.circle.StepCircle
+import com.cmp.community.healers.softskilltraining.theme.Border
 import com.cmp.community.healers.softskilltraining.theme.CardColor
 import com.cmp.community.healers.softskilltraining.theme.MutedFg
 import com.cmp.community.healers.softskilltraining.theme.Primary
@@ -44,7 +45,7 @@ fun PaymentProgressCard() {
         modifier        = Modifier.fillMaxWidth(),
         shape           = RoundedCornerShape(14.dp),
         color           = CardColor,
-        border          = BorderStroke(1.dp, BorderColor.copy(alpha = 0.6f)),
+        border          = BorderStroke(1.dp, Border.copy(alpha = 0.6f)),
         shadowElevation = 1.dp
     ) {
         Column(modifier = Modifier.padding(16.dp)) {
@@ -79,7 +80,7 @@ fun PaymentProgressCard() {
                         .align(Alignment.TopCenter)
                         .padding(horizontal = 28.dp)
                         .offset(y = 20.dp)
-                        .background(BorderColor.copy(alpha = 0.4f))
+                        .background(Border.copy(alpha = 0.4f))
                 )
                 // Active segment (step 1 done → 50% = from left to middle)
                 Box(

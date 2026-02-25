@@ -31,7 +31,7 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.cmp.community.healers.softskilltraining.presentation.feature.registration.document_upload.helper.DocumentType
-import com.cmp.community.healers.softskilltraining.theme.BorderColor
+import com.cmp.community.healers.softskilltraining.theme.Border
 import com.cmp.community.healers.softskilltraining.theme.CardColor
 import com.cmp.community.healers.softskilltraining.theme.Destructive
 import com.cmp.community.healers.softskilltraining.theme.MutedFg
@@ -45,7 +45,7 @@ fun DocRow(type: DocumentType, uploaded: Boolean, modifier: Modifier, onPick: ()
         modifier = modifier,
         shape    = RoundedCornerShape(12.dp),
         color    = if (uploaded) Primary.copy(alpha = 0.04f) else CardColor,
-        border   = BorderStroke(1.dp, if (uploaded) Primary.copy(alpha = 0.25f) else BorderColor.copy(alpha = 0.6f))
+        border   = BorderStroke(1.dp, if (uploaded) Primary.copy(alpha = 0.25f) else Border.copy(alpha = 0.6f))
     ) {
         Row(
             modifier = Modifier

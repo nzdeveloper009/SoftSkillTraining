@@ -29,7 +29,7 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.cmp.community.healers.softskilltraining.presentation.feature.exam_scheduling.mvi.SchedulingState
-import com.cmp.community.healers.softskilltraining.theme.BorderColor
+import com.cmp.community.healers.softskilltraining.theme.Border
 import com.cmp.community.healers.softskilltraining.theme.CardColor
 import com.cmp.community.healers.softskilltraining.theme.MutedFg
 import com.cmp.community.healers.softskilltraining.theme.SuccessBg
@@ -97,7 +97,7 @@ fun CelebrationCard(state: SchedulingState, onGoToProfile: () -> Unit) {
                 )
             )
 
-            HorizontalDivider(color = BorderColor.copy(alpha = 0.5f))
+            HorizontalDivider(color = Border.copy(alpha = 0.5f))
 
             // ── Training Schedule card ────────────────────────────────────────
             TrainingScheduleCard(state)
@@ -115,7 +115,7 @@ fun CelebrationCard(state: SchedulingState, onGoToProfile: () -> Unit) {
             OutlinedButton(
                 onClick  = onGoToProfile,
                 shape    = RoundedCornerShape(12.dp),
-                border   = BorderStroke(1.5.dp, BorderColor),
+                border   = BorderStroke(1.5.dp, Border),
                 colors   = ButtonDefaults.outlinedButtonColors(contentColor = TextFg),
                 modifier = Modifier.fillMaxWidth().height(52.dp)
             ) {

@@ -27,7 +27,7 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.cmp.community.healers.softskilltraining.presentation.feature.exam_scheduling.mvi.SchedulingState
-import com.cmp.community.healers.softskilltraining.theme.BorderColor
+import com.cmp.community.healers.softskilltraining.theme.Border
 import com.cmp.community.healers.softskilltraining.theme.CardColor
 import com.cmp.community.healers.softskilltraining.theme.MutedFg
 import com.cmp.community.healers.softskilltraining.theme.Primary
@@ -39,7 +39,7 @@ fun TrainingScheduleCard(state: SchedulingState) {
         modifier = Modifier.fillMaxWidth(),
         shape    = RoundedCornerShape(12.dp),
         color    = CardColor,
-        border   = BorderStroke(1.dp, BorderColor.copy(alpha = 0.6f))
+        border   = BorderStroke(1.dp, Border.copy(alpha = 0.6f))
     ) {
         Column(
             modifier = Modifier.padding(16.dp),

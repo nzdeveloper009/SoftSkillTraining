@@ -18,7 +18,7 @@ import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import com.cmp.community.healers.softskilltraining.theme.BorderColor
+import com.cmp.community.healers.softskilltraining.theme.Border
 import com.cmp.community.healers.softskilltraining.theme.CardColor
 import com.cmp.community.healers.softskilltraining.theme.Destructive
 import com.cmp.community.healers.softskilltraining.theme.MutedFg
@@ -42,7 +42,7 @@ fun FieldBox(
             shape = RoundedCornerShape(8.dp),
             keyboardOptions = KeyboardOptions(keyboardType = keyboard),
             colors = OutlinedTextFieldDefaults.colors(
-                focusedBorderColor = Primary, unfocusedBorderColor = BorderColor,
+                focusedBorderColor = Primary, unfocusedBorderColor = Border,
                 errorBorderColor = Destructive, focusedContainerColor = CardColor,
                 unfocusedContainerColor = CardColor, errorContainerColor = Destructive.copy(0.04f),
                 cursorColor = Primary, focusedTextColor = TextFg,

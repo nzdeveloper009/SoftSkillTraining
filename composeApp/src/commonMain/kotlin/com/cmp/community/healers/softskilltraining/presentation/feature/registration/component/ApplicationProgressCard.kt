@@ -9,8 +9,6 @@ import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
-import androidx.compose.foundation.layout.offset
-import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.material.icons.Icons
@@ -28,7 +26,7 @@ import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.cmp.community.healers.softskilltraining.presentation.components.card.Card14
-import com.cmp.community.healers.softskilltraining.theme.BorderColor
+import com.cmp.community.healers.softskilltraining.theme.Border
 import com.cmp.community.healers.softskilltraining.theme.MutedFg
 import com.cmp.community.healers.softskilltraining.theme.Primary
 import com.cmp.community.healers.softskilltraining.theme.Secondary
@@ -57,7 +55,7 @@ fun ApplicationProgressCard(currentStep: Int, totalSteps: Int) {
                     Box(
                         modifier = Modifier.size(40.dp).clip(CircleShape)
                             .background(when { done -> Primary; active -> Primary.copy(0.15f); else -> Secondary })
-                            .border(2.dp, if (active || done) Primary else BorderColor, CircleShape),
+                            .border(2.dp, if (active || done) Primary else Border, CircleShape),
                         contentAlignment = Alignment.Center
                     ) {
                         if (done) Icon(Icons.Outlined.Check, null, tint = Color.White, modifier = Modifier.size(16.dp))

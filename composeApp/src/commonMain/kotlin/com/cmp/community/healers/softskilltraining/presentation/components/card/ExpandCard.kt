@@ -32,7 +32,7 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.cmp.community.healers.softskilltraining.presentation.components.icon.IconBox
-import com.cmp.community.healers.softskilltraining.theme.BorderColor
+import com.cmp.community.healers.softskilltraining.theme.Border
 import com.cmp.community.healers.softskilltraining.theme.CardColor
 import com.cmp.community.healers.softskilltraining.theme.MutedFg
 import com.cmp.community.healers.softskilltraining.theme.TextFg
@@ -41,7 +41,7 @@ import com.cmp.community.healers.softskilltraining.theme.TextFg
 @Composable
 fun ExpandCard(icon: ImageVector, title: String, subtitle: String, expanded: Boolean, onToggle: () -> Unit, content: @Composable ColumnScope.() -> Unit) {
     Surface(modifier = Modifier.fillMaxWidth(), shape = RoundedCornerShape(14.dp), color = CardColor,
-        border = BorderStroke(1.dp, BorderColor.copy(0.4f)), shadowElevation = 1.dp) {
+        border = BorderStroke(1.dp, Border.copy(0.4f)), shadowElevation = 1.dp) {
         Column {
             Row(modifier = Modifier.fillMaxWidth().clickable(onClick = onToggle).padding(16.dp),
                 verticalAlignment = Alignment.CenterVertically, horizontalArrangement = Arrangement.spacedBy(12.dp)) {

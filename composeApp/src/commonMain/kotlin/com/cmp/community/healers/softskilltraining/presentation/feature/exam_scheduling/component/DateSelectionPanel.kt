@@ -43,57 +43,71 @@ import com.cmp.community.healers.softskilltraining.theme.TextFg
 
 @Composable
 fun DateSelectionPanel(
-    state: SchedulingState,
+    state:    SchedulingState,
     onEvent:  (SchedulingEvent) -> Unit,
     modifier: Modifier = Modifier
 ) {
     Surface(
         modifier = modifier,
         shape    = RoundedCornerShape(12.dp),
-        color    = SuccessBg.copy(alpha = 0.4f),
+        color    = SuccessBg.copy(alpha = 0.5f),
         border   = BorderStroke(1.dp, SuccessBorder)
     ) {
         Column(
-            modifier = Modifier.padding(14.dp),
-            verticalArrangement = Arrangement.spacedBy(14.dp)
+            modifier = Modifier
+                .fillMaxWidth()
+                .padding(horizontal = 14.dp, vertical = 12.dp),
+            verticalArrangement = Arrangement.spacedBy(10.dp)
         ) {
-            // Header
+
+            // ── Header row ────────────────────────────────────────────────────
             Row(
                 verticalAlignment     = Alignment.CenterVertically,
                 horizontalArrangement = Arrangement.spacedBy(8.dp)
             ) {
-                Icon(Icons.Outlined.CheckCircle, null, tint = SuccessText, modifier = Modifier.size(18.dp))
+                Icon(
+                    Icons.Outlined.CheckCircle, null,
+                    tint     = SuccessText,
+                    modifier = Modifier.size(18.dp)
+                )
                 Column {
-                    Text("Date Selected",
-                        style = TextStyle(
-                            fontSize = 13.sp,
-                            fontWeight = FontWeight.Bold,
-                            color = SuccessText
-                        )
+                    Text(
+                        "Date Selected",
+                        style = TextStyle(fontSize = 13.sp, fontWeight = FontWeight.Bold, color = SuccessText)
                     )
-                    Text("Confirm to schedule your training",
-                        style = TextStyle(fontSize = 10.sp, color = SuccessText.copy(alpha = 0.7f), lineHeight = 14.sp))
+                    Text(
+                        "Confirm to schedule your training",
+                        style = TextStyle(fontSize = 11.sp, color = SuccessText.copy(alpha = 0.75f), lineHeight = 14.sp)
+                    )
                 }
             }
 
-            // Date display box
+            // ── Date box ──────────────────────────────────────────────────────
             Surface(
-                shape  = RoundedCornerShape(8.dp),
-                color  = CardColor,
-                border = BorderStroke(1.dp, SuccessBorder)
+                modifier = Modifier.fillMaxWidth(),
+                shape    = RoundedCornerShape(8.dp),
+                color    = CardColor,
+                border   = BorderStroke(1.dp, SuccessBorder)
             ) {
-                Column(modifier = Modifier.fillMaxWidth().padding(12.dp)) {
-                    Text("Training Date",
-                        style = TextStyle(fontSize = 10.sp, color = MutedFg))
-                    Spacer(Modifier.height(4.dp))
+                Column(modifier = Modifier.fillMaxWidth().padding(10.dp)) {
+                    Text(
+                        "Training Date",
+                        style = TextStyle(fontSize = 10.sp, color = MutedFg)
+                    )
+                    Spacer(Modifier.height(3.dp))
                     Text(
                         state.selectedDateLabel,
-                        style = TextStyle(fontSize = 13.sp, fontWeight = FontWeight.Bold, color = TextFg)
+                        style = TextStyle(
+                            fontSize   = 13.sp,
+                            fontWeight = FontWeight.Bold,
+                            color      = TextFg,
+                            lineHeight = 18.sp
+                        )
                     )
                 }
             }
 
-            // Schedule Training button
+            // ── Schedule Training button — always full width, never clips ─────
             Button(
                 onClick  = { onEvent(SchedulingEvent.ScheduleTraining) },
                 enabled  = !state.isScheduling,
@@ -103,14 +117,28 @@ fun DateSelectionPanel(
                     contentColor           = Color.White,
                     disabledContainerColor = Primary.copy(alpha = 0.55f)
                 ),
-                modifier = Modifier.fillMaxWidth().height(46.dp)
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .height(48.dp)
             ) {
                 if (state.isScheduling) {
-                    CircularProgressIndicator(modifier = Modifier.size(16.dp), color = Color.White, strokeWidth = 2.dp)
+                    CircularProgressIndicator(
+                        modifier    = Modifier.size(16.dp),
+                        color       = Color.White,
+                        strokeWidth = 2.dp
+                    )
                     Spacer(Modifier.width(8.dp))
-                    Text("Scheduling...", fontSize = 13.sp, fontWeight = FontWeight.SemiBold)
+                    Text(
+                        "Scheduling...",
+                        fontSize   = 14.sp,
+                        fontWeight = FontWeight.SemiBold
+                    )
                 } else {
-                    Text("Schedule Training", fontSize = 13.sp, fontWeight = FontWeight.SemiBold)
+                    Text(
+                        "Schedule Training",
+                        fontSize   = 14.sp,
+                        fontWeight = FontWeight.SemiBold
+                    )
                 }
             }
         }
