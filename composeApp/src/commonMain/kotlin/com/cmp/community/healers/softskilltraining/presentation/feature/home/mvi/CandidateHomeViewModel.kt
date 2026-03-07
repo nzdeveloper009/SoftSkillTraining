@@ -2,6 +2,9 @@ package com.cmp.community.healers.softskilltraining.presentation.feature.home.mv
 
 import androidx.lifecycle.viewModelScope
 import com.cmp.community.healers.softskilltraining.core.base.BaseViewModel
+import com.cmp.community.healers.softskilltraining.core.datastore.AppPreferences
+import com.cmp.community.healers.softskilltraining.core.storage.TokenStorage
+import com.cmp.community.healers.softskilltraining.domain.repository.AuthRepository
 import com.cmp.community.healers.softskilltraining.utils.constants.homee.CandidateTab
 import com.cmp.community.healers.softskilltraining.utils.constants.document.DocumentType
 import com.cmp.community.healers.softskilltraining.theme.AppLanguage
@@ -15,7 +18,9 @@ import kotlinx.datetime.toLocalDateTime
 import kotlin.time.Clock
 
 class CandidateHomeViewModel(
-    loggedInPhone: String = ""
+    loggedInPhone: String = "",
+    private val authRepository: AuthRepository,
+    private val appPreferences: AppPreferences
 ) : BaseViewModel<CandidateHomeState, CandidateHomeEvent, CandidateHomeEffect>(
     CandidateHomeState(
         contactNumber = loggedInPhone,
@@ -32,8 +37,7 @@ class CandidateHomeViewModel(
             CandidateHomeEvent.ToggleLanguage ->
                 setState { copy(language = if (language == AppLanguage.ENGLISH) AppLanguage.URDU else AppLanguage.ENGLISH) }
 
-            CandidateHomeEvent.Logout ->
-                setEffect(CandidateHomeEffect.NavigateToLogin)
+            CandidateHomeEvent.Logout -> logout()
 
             // ── Section expand/collapse ───────────────────────────────────────
             CandidateHomeEvent.TogglePersonalSection  -> setState { copy(personalExpanded  = !personalExpanded) }
@@ -199,6 +203,20 @@ class CandidateHomeViewModel(
             setState { copy(isSubmitting = false) }
             onEvent(CandidateHomeEvent.MarkRegistrationComplete)
             setEffect(CandidateHomeEffect.NavigateToPayment)
+        }
+    }
+
+    // ── Logout — call API, clear tokens, navigate ─────────────────────────────
+
+    private fun logout() {
+        viewModelScope.launch {
+            val token = TokenStorage.accessToken
+            if (!token.isNullOrBlank()) {
+                authRepository.logout(token) // fire-and-forget; clear locally regardless
+            }
+            TokenStorage.clear()
+            appPreferences.clearAuthSession()
+            setEffect(CandidateHomeEffect.NavigateToLogin)
         }
     }
 

@@ -20,6 +20,9 @@ import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Lock
 import androidx.compose.material.icons.outlined.Lock
 import androidx.compose.material.icons.outlined.Phone
+import androidx.compose.material.icons.outlined.Visibility
+import androidx.compose.material.icons.outlined.VisibilityOff
+import androidx.compose.material3.IconButton
 import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.CircularProgressIndicator
@@ -47,6 +50,7 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.input.ImeAction
 import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.text.input.PasswordVisualTransformation
+import androidx.compose.ui.text.input.VisualTransformation
 import androidx.compose.ui.text.withStyle
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
@@ -63,7 +67,7 @@ import com.cmp.community.healers.softskilltraining.theme.*
 // ─── Screen ──────────────────────────────────────────────────────────────────
 @Composable
 fun SignInScreen(
-    vm: SignInViewModel = viewModel { SignInViewModel() },
+    vm: SignInViewModel,
     onNavigateToHome: (phone: String) -> Unit,
     onNavigateToSignUp: () -> Unit
 ) {
@@ -142,7 +146,15 @@ fun SignInScreen(
                 onValueChange = { vm.onEvent(SignInEvent.PasswordChanged(it)) },
                 placeholder = "Enter your password",
                 leadingIcon = { Icon(Icons.Outlined.Lock, null, tint = IconTint, modifier = Modifier.size(20.dp)) },
-                visualTransformation = PasswordVisualTransformation(),
+                trailingIcon = {
+                    IconButton(onClick = { vm.onEvent(SignInEvent.TogglePasswordVisibility) }) {
+                        Icon(
+                            if (state.passwordVisible) Icons.Outlined.VisibilityOff else Icons.Outlined.Visibility,
+                            null, tint = IconTint, modifier = Modifier.size(20.dp)
+                        )
+                    }
+                },
+                visualTransformation = if (state.passwordVisible) VisualTransformation.None else PasswordVisualTransformation(),
                 keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Password, imeAction = ImeAction.Done),
                 keyboardActions = KeyboardActions(onDone = { focusManager.clearFocus(); vm.onEvent(SignInEvent.Submit) }),
                 isError = state.passwordError != null,

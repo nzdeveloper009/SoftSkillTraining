@@ -17,7 +17,6 @@ import androidx.compose.runtime.getValue
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Modifier
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
-import androidx.lifecycle.viewmodel.compose.viewModel
 import com.cmp.community.healers.softskilltraining.presentation.feature.congrats.ui.CongratsScreen
 import com.cmp.community.healers.softskilltraining.presentation.feature.exam_scheduling.component.SchedulingContent
 import com.cmp.community.healers.softskilltraining.presentation.feature.exam_scheduling.mvi.SchedulingEffect
@@ -29,7 +28,7 @@ import com.cmp.community.healers.softskilltraining.utils.constants.scheduling.Sc
 
 @Composable
 fun SchedulingScreen(
-    vm:                  SchedulingViewModel   = viewModel { SchedulingViewModel() },
+    vm:                  SchedulingViewModel,
     candidateHomeVm:     CandidateHomeViewModel,
     onLogout:            () -> Unit            = {},
     onBackToPayment:     () -> Unit            = {},

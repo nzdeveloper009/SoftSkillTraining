@@ -23,7 +23,6 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
-import androidx.lifecycle.viewmodel.compose.viewModel
 import com.cmp.community.healers.softskilltraining.data.platform.saveReceiptToFile
 import com.cmp.community.healers.softskilltraining.presentation.components.banner.SuccessBanner
 import com.cmp.community.healers.softskilltraining.presentation.components.banner.WarningBanner
@@ -45,7 +44,7 @@ import com.cmp.community.healers.softskilltraining.utils.constants.payment.Payme
 
 @Composable
 fun PaymentScreen(
-    vm:                    PaymentViewModel        = viewModel { PaymentViewModel() },
+    vm:                    PaymentViewModel,
     // ✅ Same VM instance passed from AppNavGraph — shares tab/language state
     candidateHomeVm:       CandidateHomeViewModel,
     onLogout:              () -> Unit              = {},

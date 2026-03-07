@@ -8,6 +8,7 @@ import com.cmp.community.healers.softskilltraining.core.base.UiEvent
 sealed interface SignInEvent : UiEvent {
     data class PhoneChanged(val value: String)    : SignInEvent
     data class PasswordChanged(val value: String) : SignInEvent
+    data object TogglePasswordVisibility          : SignInEvent
     data object Submit                            : SignInEvent
     data object NavigateToSignUp                  : SignInEvent
 }

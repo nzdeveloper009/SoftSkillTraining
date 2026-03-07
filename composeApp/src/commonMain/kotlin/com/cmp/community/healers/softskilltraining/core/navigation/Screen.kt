@@ -11,6 +11,10 @@ import kotlinx.serialization.Serializable
 @Serializable
 sealed interface Screen: NavKey {
 
+    /** Splash — checks DataStore for persisted session, routes accordingly */
+    @Serializable
+    data object Splash : Screen, NavKey
+
     /** Initial sign-in screen */
     @Serializable
     data object SignIn : Screen, NavKey

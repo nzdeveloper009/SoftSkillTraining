@@ -5,6 +5,7 @@ import com.cmp.community.healers.softskilltraining.core.base.UiState
 // ── State ──────────────────────────────────────────────────────────────────────
 data class SignUpState(
     val fullName: String          = "",
+    val email: String             = "",
     val phone: String             = "",
     val password: String          = "",
     val confirmPassword: String   = "",
@@ -12,6 +13,7 @@ data class SignUpState(
     val confirmVisible: Boolean   = false,
     val isLoading: Boolean        = false,
     val fullNameError: String?    = null,
+    val emailError: String?       = null,
     val phoneError: String?       = null,
     val passwordError: String?    = null,
     val confirmError: String?     = null,

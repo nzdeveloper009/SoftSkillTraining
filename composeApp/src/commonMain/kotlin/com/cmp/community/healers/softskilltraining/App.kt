@@ -16,14 +16,17 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.tooling.preview.Preview
 import com.cmp.community.healers.softskilltraining.core.navigation.AppNavGraph
 import org.jetbrains.compose.resources.painterResource
+import org.koin.compose.KoinContext
 import softskilltraining.composeapp.generated.resources.Res
 import softskilltraining.composeapp.generated.resources.compose_multiplatform
 
 @Composable
 @Preview
 fun App() {
-    MaterialTheme {
-        AppNavGraph()
+    KoinContext {
+        MaterialTheme {
+            AppNavGraph()
+        }
     }
 }
 

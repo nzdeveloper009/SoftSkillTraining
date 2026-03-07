@@ -11,6 +11,7 @@ import androidx.compose.foundation.text.KeyboardActions
 import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.outlined.Email
 import androidx.compose.material.icons.outlined.Lock
 import androidx.compose.material.icons.outlined.Person
 import androidx.compose.material.icons.outlined.Phone
@@ -46,7 +47,7 @@ import com.cmp.community.healers.softskilltraining.theme.*
 // ─── Sign Up Screen ───────────────────────────────────────────────────────────
 @Composable
 fun SignUpScreen(
-    vm: SignUpViewModel = viewModel { SignUpViewModel() },
+    vm: SignUpViewModel,
     onNavigateToOtp: (phone: String) -> Unit,
     onNavigateToSignIn: () -> Unit
 ) {
@@ -138,6 +139,31 @@ fun SignUpScreen(
                 keyboardActions = KeyboardActions(onNext = { focusManager.moveFocus(FocusDirection.Down) }),
                 isError = state.fullNameError != null,
                 errorMessage = state.fullNameError
+            )
+            Spacer(Modifier.height(24.dp))
+
+            // Email
+            AuthLabel("Email Address")
+            Spacer(Modifier.height(8.dp))
+            AuthTextField(
+                value = state.email,
+                onValueChange = { vm.onEvent(SignUpEvent.EmailChanged(it)) },
+                placeholder = "example@email.com",
+                leadingIcon = {
+                    Icon(
+                        Icons.Outlined.Email,
+                        null,
+                        tint = IconTint,
+                        modifier = Modifier.size(20.dp)
+                    )
+                },
+                keyboardOptions = KeyboardOptions(
+                    keyboardType = KeyboardType.Email,
+                    imeAction = ImeAction.Next
+                ),
+                keyboardActions = KeyboardActions(onNext = { focusManager.moveFocus(FocusDirection.Down) }),
+                isError = state.emailError != null,
+                errorMessage = state.emailError
             )
             Spacer(Modifier.height(24.dp))
 

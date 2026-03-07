@@ -2,13 +2,21 @@ package com.cmp.community.healers.softskilltraining.presentation.feature.auth.ot
 
 import androidx.lifecycle.viewModelScope
 import com.cmp.community.healers.softskilltraining.core.base.BaseViewModel
+import com.cmp.community.healers.softskilltraining.core.datastore.AppPreferences
+import com.cmp.community.healers.softskilltraining.core.network.NetworkResult
+import com.cmp.community.healers.softskilltraining.core.storage.TokenStorage
+import com.cmp.community.healers.softskilltraining.domain.repository.AuthRepository
 import com.cmp.community.healers.softskilltraining.utils.constants.OTP_LENGTH
 import com.cmp.community.healers.softskilltraining.utils.constants.RESEND_COUNTDOWN_SECONDS
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 
-class OtpViewModel(val phone: String) : BaseViewModel<OtpState, OtpEvent, OtpEffect>(OtpState()) {
+class OtpViewModel(
+    val phone: String,
+    private val authRepository: AuthRepository,
+    private val appPreferences: AppPreferences
+) : BaseViewModel<OtpState, OtpEvent, OtpEffect>(OtpState()) {
 
     private var timerJob: Job? = null
 
@@ -29,7 +37,6 @@ class OtpViewModel(val phone: String) : BaseViewModel<OtpState, OtpEvent, OtpEff
                     if (next < OTP_LENGTH) {
                         setEffect(OtpEffect.MoveFocus(next))
                     } else {
-                        // Last box filled — auto submit
                         submit(newDigits.joinToString(""))
                     }
                 }
@@ -55,14 +62,8 @@ class OtpViewModel(val phone: String) : BaseViewModel<OtpState, OtpEvent, OtpEff
             }
 
             OtpEvent.ResendOtp -> {
-                // Reset digits + restart countdown
                 setState {
-                    copy(
-                        digits = List(OTP_LENGTH) { "" },
-                        isError = false,
-                        errorMessage = "",
-                        isExpired = false
-                    )
+                    copy(digits = List(OTP_LENGTH) { "" }, isError = false, errorMessage = "", isExpired = false)
                 }
                 setEffect(OtpEffect.MoveFocus(0))
                 startCountdown()
@@ -73,7 +74,6 @@ class OtpViewModel(val phone: String) : BaseViewModel<OtpState, OtpEvent, OtpEff
                 if (current > 1) {
                     setState { copy(resendTimer = current - 1) }
                 } else {
-                    // Timer expired — stop, show Resend
                     timerJob?.cancel()
                     setState { copy(resendTimer = 0, canResend = true, isExpired = true) }
                 }
@@ -83,10 +83,7 @@ class OtpViewModel(val phone: String) : BaseViewModel<OtpState, OtpEvent, OtpEff
         }
     }
 
-    // ── Verify logic ──────────────────────────────────────────────────────────
-    // Dummy rule: "111111" is the correct OTP
     private fun submit(otp: String) {
-        // Don't allow submission after timer expired
         if (state.value.isExpired) {
             setState { copy(isError = true, errorMessage = "OTP expired. Please resend a new code.") }
             return
@@ -94,22 +91,27 @@ class OtpViewModel(val phone: String) : BaseViewModel<OtpState, OtpEvent, OtpEff
 
         viewModelScope.launch {
             setState { copy(isLoading = true, isError = false) }
-            delay(800) // simulate network latency
 
-            if (otp == CORRECT_OTP) {
-                timerJob?.cancel()
-                setState { copy(isLoading = false) }
-                setEffect(OtpEffect.NavigateToHome)
-            } else {
-                setState {
-                    copy(
-                        isLoading = false,
-                        isError = true,
-                        errorMessage = "Incorrect OTP. Please try again.",
-                        digits = List(OTP_LENGTH) { "" }
-                    )
+            when (val result = authRepository.verifyOtp(phoneNumber = phone, otp = otp)) {
+                is NetworkResult.Success -> {
+                    timerJob?.cancel()
+                    val tokens = result.data
+                    TokenStorage.save(tokens.accessToken, tokens.refreshToken)
+                    appPreferences.saveAuthSession(tokens.accessToken, tokens.refreshToken, phone)
+                    setState { copy(isLoading = false) }
+                    setEffect(OtpEffect.NavigateToHome)
                 }
-                setEffect(OtpEffect.MoveFocus(0))
+                is NetworkResult.Error -> {
+                    setState {
+                        copy(
+                            isLoading    = false,
+                            isError      = true,
+                            errorMessage = result.message,
+                            digits       = List(OTP_LENGTH) { "" }
+                        )
+                    }
+                    setEffect(OtpEffect.MoveFocus(0))
+                }
             }
         }
     }
@@ -128,9 +130,5 @@ class OtpViewModel(val phone: String) : BaseViewModel<OtpState, OtpEvent, OtpEff
     override fun onCleared() {
         super.onCleared()
         timerJob?.cancel()
-    }
-
-    companion object {
-        const val CORRECT_OTP = "111111"
     }
 }

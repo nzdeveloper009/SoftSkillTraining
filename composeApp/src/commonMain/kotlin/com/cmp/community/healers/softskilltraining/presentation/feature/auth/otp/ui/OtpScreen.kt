@@ -39,7 +39,7 @@ import kotlinx.coroutines.launch
 @Composable
 fun OtpScreen(
     phone: String,
-    vm: OtpViewModel = viewModel { OtpViewModel(phone) },
+    vm: OtpViewModel,
     onNavigateToHome: () -> Unit,
     onNavigateBack: () -> Unit
 ) {

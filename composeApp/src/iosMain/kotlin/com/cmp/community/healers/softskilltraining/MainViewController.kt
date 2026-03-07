@@ -1,5 +1,14 @@
 package com.cmp.community.healers.softskilltraining
 
 import androidx.compose.ui.window.ComposeUIViewController
+import com.cmp.community.healers.softskilltraining.di.initKoin
 
-fun MainViewController() = ComposeUIViewController { App() }
+private var koinInitialized = false
+
+fun MainViewController() = ComposeUIViewController {
+    if (!koinInitialized) {
+        initKoin()
+        koinInitialized = true
+    }
+    App()
+}

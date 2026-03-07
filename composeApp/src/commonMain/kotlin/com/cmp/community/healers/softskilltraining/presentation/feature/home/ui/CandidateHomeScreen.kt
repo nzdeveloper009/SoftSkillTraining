@@ -42,7 +42,7 @@ import com.cmp.community.healers.softskilltraining.utils.constants.homee.Candida
 
 @Composable
 fun CandidateHomeScreen(
-    vm: CandidateHomeViewModel = viewModel { CandidateHomeViewModel() },
+    vm: CandidateHomeViewModel,
     onLogout: () -> Unit = {},
     onNavigateToPayment: () -> Unit = {},
     // ── Tab-resume navigation callbacks ──────────────────────────────────────
