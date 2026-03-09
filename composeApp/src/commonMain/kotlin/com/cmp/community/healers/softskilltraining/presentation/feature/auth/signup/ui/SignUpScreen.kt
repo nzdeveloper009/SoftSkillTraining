@@ -117,29 +117,47 @@ fun SignUpScreen(
                 }
             }
 
-            // Full Name
-            AuthLabel("Full Name")
-            Spacer(Modifier.height(8.dp))
-            AuthTextField(
-                value = state.fullName,
-                onValueChange = { vm.onEvent(SignUpEvent.FullNameChanged(it)) },
-                placeholder = "John Doe",
-                leadingIcon = {
-                    Icon(
-                        Icons.Outlined.Person,
-                        null,
-                        tint = IconTint,
-                        modifier = Modifier.size(20.dp)
+            // First Name / Last Name
+            Row(horizontalArrangement = Arrangement.spacedBy(12.dp)) {
+                Column(modifier = Modifier.weight(1f)) {
+                    AuthLabel("First Name")
+                    Spacer(Modifier.height(8.dp))
+                    AuthTextField(
+                        value = state.firstName,
+                        onValueChange = { vm.onEvent(SignUpEvent.FirstNameChanged(it)) },
+                        placeholder = "John",
+                        leadingIcon = {
+                            Icon(Icons.Outlined.Person, null, tint = IconTint, modifier = Modifier.size(20.dp))
+                        },
+                        keyboardOptions = KeyboardOptions(
+                            keyboardType = KeyboardType.Text,
+                            imeAction = ImeAction.Next
+                        ),
+                        keyboardActions = KeyboardActions(onNext = { focusManager.moveFocus(FocusDirection.Right) }),
+                        isError = state.firstNameError != null,
+                        errorMessage = state.firstNameError
                     )
-                },
-                keyboardOptions = KeyboardOptions(
-                    keyboardType = KeyboardType.Text,
-                    imeAction = ImeAction.Next
-                ),
-                keyboardActions = KeyboardActions(onNext = { focusManager.moveFocus(FocusDirection.Down) }),
-                isError = state.fullNameError != null,
-                errorMessage = state.fullNameError
-            )
+                }
+                Column(modifier = Modifier.weight(1f)) {
+                    AuthLabel("Last Name")
+                    Spacer(Modifier.height(8.dp))
+                    AuthTextField(
+                        value = state.lastName,
+                        onValueChange = { vm.onEvent(SignUpEvent.LastNameChanged(it)) },
+                        placeholder = "Doe",
+                        leadingIcon = {
+                            Icon(Icons.Outlined.Person, null, tint = IconTint, modifier = Modifier.size(20.dp))
+                        },
+                        keyboardOptions = KeyboardOptions(
+                            keyboardType = KeyboardType.Text,
+                            imeAction = ImeAction.Next
+                        ),
+                        keyboardActions = KeyboardActions(onNext = { focusManager.moveFocus(FocusDirection.Down) }),
+                        isError = state.lastNameError != null,
+                        errorMessage = state.lastNameError
+                    )
+                }
+            }
             Spacer(Modifier.height(24.dp))
 
             // Email

@@ -4,12 +4,16 @@ enum class DocumentType(
     val label: String,
     val format: String,
     val acceptPdf: Boolean,
-    val acceptImage: Boolean
+    val acceptImage: Boolean,
+    val apiType: String
 ) {
-    CANDIDATE_PHOTO("Candidate Photo",              "Format: Image",       false, true),
-    CNIC_FRONT(     "CNIC Front",                   "Format: Image/PDF",   true,  true),
-    CNIC_BACK(      "CNIC Back",                    "Format: Image/PDF",   true,  true),
-    POLICE_CERT(    "Police Clearance Certificate", "Format: PDF",         true,  false),
-    MEDICAL_CERT(   "Medical Certificate",          "Format: PDF",         true,  false),
-    PASSPORT(       "Passport",                     "Format: PDF",         true,  false),
+    CANDIDATE_PHOTO("Candidate Photo",              "Format: Image",       false, true,  "photo"),
+    CNIC_FRONT(     "CNIC Front",                   "Format: Image/PDF",   true,  true,  "cnicFront"),
+    CNIC_BACK(      "CNIC Back",                    "Format: Image/PDF",   true,  true,  "cnicBack"),
+    POLICE_CERT(    "Police Clearance Certificate", "Format: PDF",         true,  false, "policeClearance"),
+    MEDICAL_CERT(   "Medical Certificate",          "Format: PDF",         true,  false, "medicalCertificate"),
+    PASSPORT(       "Passport",                     "Format: PDF",         true,  false, "passport"),
 }
+
+fun documentTypeFromApiType(apiType: String): DocumentType? =
+    DocumentType.entries.firstOrNull { it.apiType == apiType }

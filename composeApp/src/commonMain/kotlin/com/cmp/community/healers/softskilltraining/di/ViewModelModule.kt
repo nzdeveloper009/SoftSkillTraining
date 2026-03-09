@@ -23,6 +23,11 @@ val viewModelModule = module {
         OtpViewModel(phone = params.get(), authRepository = get(), appPreferences = get())
     }
     viewModel { params ->
-        CandidateHomeViewModel(loggedInPhone = params.get(), authRepository = get(), appPreferences = get())
+        CandidateHomeViewModel(
+            loggedInPhone       = params.get(),
+            authRepository      = get(),
+            candidateRepository = get(),
+            appPreferences      = get()
+        )
     }
 }

@@ -2,9 +2,9 @@ package com.cmp.community.healers.softskilltraining.presentation.feature.auth.si
 
 import com.cmp.community.healers.softskilltraining.core.base.UiState
 
-// ── State ──────────────────────────────────────────────────────────────────────
 data class SignUpState(
-    val fullName: String          = "",
+    val firstName: String         = "",
+    val lastName: String          = "",
     val email: String             = "",
     val phone: String             = "",
     val password: String          = "",
@@ -12,7 +12,8 @@ data class SignUpState(
     val passwordVisible: Boolean  = false,
     val confirmVisible: Boolean   = false,
     val isLoading: Boolean        = false,
-    val fullNameError: String?    = null,
+    val firstNameError: String?   = null,
+    val lastNameError: String?    = null,
     val emailError: String?       = null,
     val phoneError: String?       = null,
     val passwordError: String?    = null,

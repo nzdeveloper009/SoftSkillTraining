@@ -182,12 +182,21 @@ fun AppNavGraph() {
 
             // ── Payment ───────────────────────────────────────────────────────
             entry<Screen.Payment> {
-                val sharedVm = requireNotNull(candidateHomeVm)
+                // candidateHomeVm can be null after process death (back stack is restored
+                // but only the top entry is composed, so CandidateHome entry never runs).
+                // Recover by reading the phone from the serialised back stack entry.
+                val sharedVm = candidateHomeVm ?: run {
+                    val phone = backStack.filterIsInstance<Screen.CandidateHome>().firstOrNull()?.phone ?: ""
+                    koinViewModel<CandidateHomeViewModel>(parameters = { parametersOf(phone) })
+                        .also { candidateHomeVm = it }
+                }
                 val paymentVm: PaymentViewModel = koinViewModel()
                 PaymentScreen(
                     vm = paymentVm,
                     candidateHomeVm = sharedVm,
                     onLogout = {
+                        sharedVm.onEvent(CandidateHomeEvent.Logout)
+                        candidateHomeVm = null
                         backStack.clear()
                         backStack.add(Screen.SignIn)
                     },
@@ -201,12 +210,18 @@ fun AppNavGraph() {
 
             // ── Scheduling ────────────────────────────────────────────────────
             entry<Screen.Scheduling> {
-                val sharedVm = requireNotNull(candidateHomeVm)
+                val sharedVm = candidateHomeVm ?: run {
+                    val phone = backStack.filterIsInstance<Screen.CandidateHome>().firstOrNull()?.phone ?: ""
+                    koinViewModel<CandidateHomeViewModel>(parameters = { parametersOf(phone) })
+                        .also { candidateHomeVm = it }
+                }
                 val schedulingVm: SchedulingViewModel = koinViewModel()
                 SchedulingScreen(
                     vm = schedulingVm,
                     candidateHomeVm = sharedVm,
                     onLogout = {
+                        sharedVm.onEvent(CandidateHomeEvent.Logout)
+                        candidateHomeVm = null
                         backStack.clear()
                         backStack.add(Screen.SignIn)
                     },
@@ -239,6 +254,7 @@ fun AppNavGraph() {
                 CandidateScheduledHomeScreen(
                     candidateHomeVm = vm,
                     onLogout = {
+                        vm.onEvent(CandidateHomeEvent.Logout)
                         candidateHomeVm = null
                         backStack.clear()
                         backStack.add(Screen.SignIn)

@@ -22,16 +22,25 @@ sealed interface CandidateHomeEvent : UiEvent {
     data class DateOfBirthChanged(val value: String)    : CandidateHomeEvent
     data class CityChanged(val value: String)           : CandidateHomeEvent
     data class AddressChanged(val value: String)        : CandidateHomeEvent
-    data object ToggleCityDropdown                      : CandidateHomeEvent
 
     // ── Documents ─────────────────────────────────────────────────────────────
     data class RequestPickDocument(val type: DocumentType) : CandidateHomeEvent
-    data class DocumentSelected(val type: DocumentType, val uri: String) : CandidateHomeEvent
+    /** uri for display, bytes + fileName for upload */
+    data class DocumentSelected(
+        val type: DocumentType,
+        val uri: String,
+        val bytes: ByteArray?,
+        val fileName: String
+    ) : CandidateHomeEvent
 
     // ── Education ─────────────────────────────────────────────────────────────
     data object ToggleSixteenYearsEducation             : CandidateHomeEvent
     data object RequestPickDegree                       : CandidateHomeEvent
-    data class DegreeSelected(val uri: String)          : CandidateHomeEvent
+    data class DegreeSelected(
+        val uri: String,
+        val bytes: ByteArray?,
+        val fileName: String
+    )                                                   : CandidateHomeEvent
 
     // ── Navigation ────────────────────────────────────────────────────────────
 

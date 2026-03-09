@@ -62,11 +62,13 @@ fun CandidateHomeScreen(
             else -> MimeType.IMAGE
         }
         rememberFilePicker(mime) { file ->
-            file?.let { vm.onEvent(CandidateHomeEvent.DocumentSelected(type, it.uri)) }
+            file?.let {
+                vm.onEvent(CandidateHomeEvent.DocumentSelected(type, it.uri, it.bytes, it.name))
+            }
         }
     }
     val degreeLauncher: () -> Unit = rememberFilePicker(MimeType.IMAGE_OR_PDF) { file ->
-        file?.let { vm.onEvent(CandidateHomeEvent.DegreeSelected(it.uri)) }
+        file?.let { vm.onEvent(CandidateHomeEvent.DegreeSelected(it.uri, it.bytes, it.name)) }
     }
 
     // ── Collect one-shot effects ──────────────────────────────────────────────

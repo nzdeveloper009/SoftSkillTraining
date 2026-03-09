@@ -1,6 +1,7 @@
 package com.cmp.community.healers.softskilltraining.presentation.feature.home.mvi
 
 import com.cmp.community.healers.softskilltraining.core.base.UiState
+import com.cmp.community.healers.softskilltraining.domain.model.City
 import com.cmp.community.healers.softskilltraining.utils.constants.homee.CandidateTab
 import com.cmp.community.healers.softskilltraining.utils.constants.document.DocumentType
 import com.cmp.community.healers.softskilltraining.theme.AppLanguage
@@ -32,9 +33,9 @@ data class CandidateHomeState(
     val cnicNumber:       String  = Profile().cnicNumber,
     val dateOfBirth:      String  = Profile().dateOfBirth,
     val contactNumber:    String  = Profile().contactNumber,   // locked — comes from login phone
-    val city:             String  = Profile().city,
+    val city:             String  = Profile().city,            // display name shown in dropdown
+    val cityId:           String  = "",                        // UUID sent to API (from backend)
     val address:          String  = Profile().address,
-    val cityDropdownOpen: Boolean = false,
 
     // ── Documents ─────────────────────────────────────────────────────────────
     val uploadedDocs: Map<DocumentType, String> = emptyMap(),
@@ -67,8 +68,21 @@ data class CandidateHomeState(
     // ── Validation errors ─────────────────────────────────────────────────────
     val errors: Map<String, String> = emptyMap(),
 
+    // ── Cities (populated from GET /super-admin/cities) ───────────────────────
+    val cities: List<City> = emptyList(),
+
+    // ── Scheduling deadline ───────────────────────────────────────────────────
+    // Days remaining to schedule after payment. -1 = not yet paid / unknown.
+    val daysLeftToSchedule: Int = -1,
+
     // ── Loading ───────────────────────────────────────────────────────────────
+    val isLoadingProfile: Boolean = false,
     val isSubmitting: Boolean = false,
+    val uploadingDocTypes: Set<DocumentType> = emptySet(),
+    val isDegreeUploading: Boolean = false,
+
+    // Ensures auto-navigation to the correct phase happens only once per login
+    val hasAutoNavigated: Boolean = false,
 
     ) : UiState
 

@@ -78,7 +78,7 @@ fun SchedulingContent(
                             ) {
                                 SchedulingProgressCard()
                                 SchedulingSectionHeader()
-                                SelectTrainingDateHeader()
+                                SelectTrainingDateHeader(daysLeft = homeState.daysLeftToSchedule)
                                 CalendarAndSelectionRow(state = state, onEvent = onEvent)
 
                                 AnimatedVisibility(
