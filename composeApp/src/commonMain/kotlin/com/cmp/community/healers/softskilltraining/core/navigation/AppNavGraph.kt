@@ -7,6 +7,7 @@ import androidx.compose.animation.slideInHorizontally
 import androidx.compose.animation.slideOutHorizontally
 import androidx.compose.animation.togetherWith
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
@@ -18,6 +19,7 @@ import androidx.navigation3.runtime.rememberNavBackStack
 import androidx.navigation3.runtime.rememberSaveableStateHolderNavEntryDecorator
 import androidx.navigation3.ui.NavDisplay
 import androidx.savedstate.serialization.SavedStateConfiguration
+import com.cmp.community.healers.softskilltraining.core.storage.TokenStorage
 import com.cmp.community.healers.softskilltraining.presentation.feature.auth.login.mvi.SignInViewModel
 import com.cmp.community.healers.softskilltraining.presentation.feature.auth.login.ui.SignInScreen
 import com.cmp.community.healers.softskilltraining.presentation.feature.auth.otp.mvi.OtpViewModel
@@ -27,6 +29,7 @@ import com.cmp.community.healers.softskilltraining.presentation.feature.auth.sig
 import com.cmp.community.healers.softskilltraining.presentation.feature.exam_scheduling.mvi.SchedulingViewModel
 import com.cmp.community.healers.softskilltraining.presentation.feature.exam_scheduling.ui.SchedulingScreen
 import com.cmp.community.healers.softskilltraining.presentation.feature.home.mvi.CandidateHomeEvent
+import com.cmp.community.healers.softskilltraining.utils.constants.homee.CandidateTab
 import com.cmp.community.healers.softskilltraining.presentation.feature.home.mvi.CandidateHomeViewModel
 import com.cmp.community.healers.softskilltraining.presentation.feature.home.ui.CandidateHomeScreen
 import com.cmp.community.healers.softskilltraining.presentation.feature.home.ui.CandidateScheduledHomeScreen
@@ -62,6 +65,25 @@ fun AppNavGraph() {
         },
         Screen.Splash           // ← auth gate — no flicker to SignIn
     )
+
+    // ── Cold-start guard ─────────────────────────────────────────────────────
+    // TokenStorage is in-memory and is empty after process death.
+    // If the restored backstack has an authenticated screen but TokenStorage is
+    // empty, it means the process was killed while the user was logged in (or
+    // the logout navigation didn't save properly). Always go through Splash so
+    // the auth state is validated against DataStore on every cold start.
+    LaunchedEffect(Unit) {
+        val hasAuthScreen = backStack.any { screen ->
+            screen is Screen.CandidateHome        ||
+            screen is Screen.CandidateScheduledHome ||
+            screen is Screen.Payment              ||
+            screen is Screen.Scheduling
+        }
+        if (hasAuthScreen && TokenStorage.accessToken == null) {
+            backStack.clear()
+            backStack.add(Screen.Splash)
+        }
+    }
 
     // ── Shared CandidateHomeViewModel slot ───────────────────────────────────
     var candidateHomeVm: CandidateHomeViewModel? by remember { mutableStateOf(null) }
@@ -195,7 +217,8 @@ fun AppNavGraph() {
                     vm = paymentVm,
                     candidateHomeVm = sharedVm,
                     onLogout = {
-                        sharedVm.onEvent(CandidateHomeEvent.Logout)
+                        // Screen already called onEvent(Logout) and waited for clearAuthSession().
+                        // Here we only clear the backstack now that DataStore is guaranteed cleared.
                         candidateHomeVm = null
                         backStack.clear()
                         backStack.add(Screen.SignIn)
@@ -220,7 +243,7 @@ fun AppNavGraph() {
                     vm = schedulingVm,
                     candidateHomeVm = sharedVm,
                     onLogout = {
-                        sharedVm.onEvent(CandidateHomeEvent.Logout)
+                        // Screen already called onEvent(Logout) and waited for clearAuthSession().
                         candidateHomeVm = null
                         backStack.clear()
                         backStack.add(Screen.SignIn)
@@ -236,8 +259,19 @@ fun AppNavGraph() {
                                 trainingCity    = city
                             )
                         )
-                        backStack.clear()
-                        backStack.add(Screen.CandidateHome(sharedVm.state.value.profilePhone))
+                        // Switch to Profile tab BEFORE navigation so it's
+                        // already selected when CandidateScheduledHome renders.
+                        sharedVm.onEvent(CandidateHomeEvent.TabChanged(CandidateTab.PROFILE))
+                        // Pop Scheduling + Payment but KEEP the CandidateHome
+                        // entry alive — its VM retains all loaded profile data.
+                        while (backStack.lastOrNull()
+                                .let { it is Screen.Scheduling || it is Screen.Payment } == true
+                        ) {
+                            backStack.removeLastOrNull()
+                        }
+                        // Navigate to ScheduledHome — reuses the alive sharedVm,
+                        // so profile data is shown immediately with no N/A flash.
+                        backStack.add(Screen.CandidateScheduledHome(sharedVm.state.value.profilePhone))
                     }
                 )
             }
@@ -248,13 +282,15 @@ fun AppNavGraph() {
                     fadeIn(tween(250)) togetherWith fadeOut(tween(250))
                 }
             ) { key ->
-                val vm: CandidateHomeViewModel = koinViewModel(parameters = { parametersOf(key.phone) })
-                if (candidateHomeVm == null) candidateHomeVm = vm
+                val sharedVm = candidateHomeVm ?: run {
+                    koinViewModel<CandidateHomeViewModel>(parameters = { parametersOf(key.phone) })
+                        .also { candidateHomeVm = it }
+                }
 
                 CandidateScheduledHomeScreen(
-                    candidateHomeVm = vm,
+                    candidateHomeVm = sharedVm,
                     onLogout = {
-                        vm.onEvent(CandidateHomeEvent.Logout)
+                        // Screen already called onEvent(Logout) and waited for clearAuthSession().
                         candidateHomeVm = null
                         backStack.clear()
                         backStack.add(Screen.SignIn)

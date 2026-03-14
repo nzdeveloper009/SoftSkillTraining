@@ -2,7 +2,6 @@ package com.cmp.community.healers.softskilltraining.presentation.feature.payment
 
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
@@ -10,10 +9,7 @@ import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.automirrored.outlined.ArrowForward
 import androidx.compose.material.icons.outlined.ArrowForward
-import androidx.compose.material.icons.outlined.CreditCard
-import androidx.compose.material.icons.outlined.Wallet
 import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.CircularProgressIndicator
@@ -28,38 +24,17 @@ import androidx.compose.ui.unit.sp
 import com.cmp.community.healers.softskilltraining.presentation.feature.payment.mvi.PaymentEvent
 import com.cmp.community.healers.softskilltraining.presentation.feature.payment.mvi.PaymentState
 import com.cmp.community.healers.softskilltraining.theme.Primary
-import com.cmp.community.healers.softskilltraining.utils.constants.payment.PaymentMethod
 
 // ─────────────────────────────────────────────────────────────────────────────
-// PHASE 1: Select method + Generate QR
+// PHASE 1: Generate QR button
 // ─────────────────────────────────────────────────────────────────────────────
 
 @Composable
 fun SelectMethodPhase(state: PaymentState, onEvent: (PaymentEvent) -> Unit) {
     Column(verticalArrangement = Arrangement.spacedBy(16.dp)) {
 
-        // 2-column method selector
-        Row(
-            modifier              = Modifier.fillMaxWidth(),
-            horizontalArrangement = Arrangement.spacedBy(12.dp)
-        ) {
-            PaymentMethodTile(
-                icon       = Icons.Outlined.CreditCard,
-                label      = "Credit/Debit",
-                selected   = state.selectedMethod == PaymentMethod.CREDIT_DEBIT,
-                modifier   = Modifier.weight(1f),
-                onClick    = { onEvent(PaymentEvent.SelectMethod(PaymentMethod.CREDIT_DEBIT)) }
-            )
-            PaymentMethodTile(
-                icon       = Icons.Outlined.Wallet,
-                label      = "Mobile Wallet",
-                selected   = state.selectedMethod == PaymentMethod.MOBILE_WALLET,
-                modifier   = Modifier.weight(1f),
-                onClick    = { onEvent(PaymentEvent.SelectMethod(PaymentMethod.MOBILE_WALLET)) }
-            )
-        }
+        Spacer(Modifier.height(4.dp))
 
-        // Generate QR button
         Button(
             onClick  = { onEvent(PaymentEvent.GenerateQr) },
             enabled  = !state.isGeneratingQr,

@@ -85,7 +85,7 @@ fun CalendarAndSelectionRow(state: SchedulingState, onEvent: (SchedulingEvent) -
                 horizontalArrangement = Arrangement.spacedBy(8.dp)
             ) {
                 Icon(Icons.Outlined.Info, null, tint = MutedFg, modifier = Modifier.size(14.dp))
-                Text("Select any date within the next 30 days",
+                Text("Select any date within the next 7 days",
                     style = TextStyle(fontSize = 11.sp, color = MutedFg))
             }
         }

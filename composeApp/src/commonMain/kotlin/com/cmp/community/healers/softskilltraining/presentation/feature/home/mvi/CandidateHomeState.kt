@@ -84,6 +84,10 @@ data class CandidateHomeState(
     // Ensures auto-navigation to the correct phase happens only once per login
     val hasAutoNavigated: Boolean = false,
 
+    // Set to true the moment logout is confirmed (DataStore cleared).
+    // Observed by every screen — never dropped, unlike Channel effects.
+    val isLoggedOut: Boolean = false,
+
     ) : UiState
 
 

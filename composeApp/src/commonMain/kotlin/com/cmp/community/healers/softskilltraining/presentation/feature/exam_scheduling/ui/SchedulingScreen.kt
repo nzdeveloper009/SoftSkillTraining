@@ -22,6 +22,7 @@ import com.cmp.community.healers.softskilltraining.presentation.feature.exam_sch
 import com.cmp.community.healers.softskilltraining.presentation.feature.exam_scheduling.mvi.SchedulingEffect
 import com.cmp.community.healers.softskilltraining.presentation.feature.exam_scheduling.mvi.SchedulingEvent
 import com.cmp.community.healers.softskilltraining.presentation.feature.exam_scheduling.mvi.SchedulingViewModel
+import com.cmp.community.healers.softskilltraining.presentation.feature.home.mvi.CandidateHomeEvent
 import com.cmp.community.healers.softskilltraining.presentation.feature.home.mvi.CandidateHomeViewModel
 import com.cmp.community.healers.softskilltraining.theme.BgScreen
 import com.cmp.community.healers.softskilltraining.utils.constants.scheduling.SchedulingPhase
@@ -54,6 +55,11 @@ fun SchedulingScreen(
             }
         }
     }
+    // Logout: isLoggedOut is a StateFlow flag set AFTER DataStore is cleared.
+    // StateFlow is replay-safe — never dropped, unlike Channel effects.
+    LaunchedEffect(homeState.isLoggedOut) {
+        if (homeState.isLoggedOut) onLogout()
+    }
 
     Scaffold(
         snackbarHost   = { SnackbarHost(snackbar) },
@@ -78,7 +84,7 @@ fun SchedulingScreen(
                         state    = state,
                         homeState = homeState,
                         candidateHomeVm = candidateHomeVm,
-                        onLogout = onLogout,
+                        onLogout = { candidateHomeVm.onEvent(CandidateHomeEvent.Logout) },
                         onGoToProfile = { vm.onEvent(SchedulingEvent.GoToProfile) }
                     )
                 }
@@ -87,7 +93,7 @@ fun SchedulingScreen(
                         state           = state,
                         homeState       = homeState,
                         candidateHomeVm = candidateHomeVm,
-                        onLogout        = onLogout,
+                        onLogout        = { candidateHomeVm.onEvent(CandidateHomeEvent.Logout) },
                         onEvent         = { vm.onEvent(it) }
                     )
                 }

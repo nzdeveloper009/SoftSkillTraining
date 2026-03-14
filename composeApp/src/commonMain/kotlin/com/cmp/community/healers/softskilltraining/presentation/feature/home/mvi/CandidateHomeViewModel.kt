@@ -392,17 +392,25 @@ class CandidateHomeViewModel(
         }
     }
 
-    // ── Logout — call API, clear tokens, navigate ─────────────────────────────
+    // ── Logout — clear tokens FIRST, then invalidate server-side ────────────────
 
     private fun logout() {
         viewModelScope.launch {
-            val token = TokenStorage.accessToken
+            val token = TokenStorage.accessToken   // capture before clearing
+
+            // Clear local session — DataStore write guaranteed before any navigation fires
+            TokenStorage.clear()
+            appPreferences.clearAuthSession()
+
+            // State flag: observed by ALL screens via StateFlow — never dropped
+            setState { copy(isLoggedOut = true) }
+            // Effect: for CandidateHomeScreen which uses Channel-based collection
+            setEffect(CandidateHomeEffect.NavigateToLogin)
+
+            // Best-effort server-side invalidation (result ignored)
             if (!token.isNullOrBlank()) {
                 authRepository.logout(token)
             }
-            TokenStorage.clear()
-            appPreferences.clearAuthSession()
-            setEffect(CandidateHomeEffect.NavigateToLogin)
         }
     }
 

@@ -13,7 +13,7 @@ object ApiConstants {
         const val CANDIDATE_ME         = "/candidates/me"
         const val CANDIDATE_DOCUMENTS  = "/candidates/me/documents"
         const val CANDIDATE_SCHEDULE   = "/candidates/me/schedule"
-
+        const val INITIATE_PAYMENT     = "/candidates/payments/initiate"
         const val CITIES               = "/super-admin/cities"
     }
 }

@@ -18,11 +18,15 @@ import androidx.compose.material3.SnackbarHostState
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
+import com.cmp.community.healers.softskilltraining.core.navigation.Screen
 import com.cmp.community.healers.softskilltraining.data.platform.saveReceiptToFile
 import com.cmp.community.healers.softskilltraining.presentation.components.banner.SuccessBanner
 import com.cmp.community.healers.softskilltraining.presentation.components.banner.WarningBanner
@@ -41,6 +45,7 @@ import com.cmp.community.healers.softskilltraining.presentation.feature.profile.
 import com.cmp.community.healers.softskilltraining.utils.constants.homee.CandidateTab
 import com.cmp.community.healers.softskilltraining.theme.BgScreen
 import com.cmp.community.healers.softskilltraining.utils.constants.payment.PaymentPhase
+import org.koin.compose.viewmodel.koinViewModel
 
 @Composable
 fun PaymentScreen(
@@ -72,6 +77,11 @@ fun PaymentScreen(
             }
         }
     }
+    // Logout: isLoggedOut is a StateFlow flag set AFTER DataStore is cleared.
+    // StateFlow is replay-safe — never dropped, unlike Channel effects.
+    LaunchedEffect(homeState.isLoggedOut) {
+        if (homeState.isLoggedOut) onLogout()
+    }
 
     Scaffold(
         snackbarHost   = { SnackbarHost(snackbar) },
@@ -89,7 +99,7 @@ fun PaymentScreen(
                     state        = homeState,
                     onTab        = { candidateHomeVm.onEvent(CandidateHomeEvent.TabChanged(it)) },
                     onLangToggle = { candidateHomeVm.onEvent(CandidateHomeEvent.ToggleLanguage) },
-                    onLogout     = onLogout
+                    onLogout     = { candidateHomeVm.onEvent(CandidateHomeEvent.Logout) }
                 )
 
                 // ── Tab-aware body ────────────────────────────────────────────

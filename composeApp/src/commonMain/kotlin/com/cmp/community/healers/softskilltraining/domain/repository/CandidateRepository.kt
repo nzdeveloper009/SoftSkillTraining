@@ -2,6 +2,7 @@ package com.cmp.community.healers.softskilltraining.domain.repository
 
 import com.cmp.community.healers.softskilltraining.core.network.NetworkResult
 import com.cmp.community.healers.softskilltraining.data.remote.dto.response.CandidateProfileData
+import com.cmp.community.healers.softskilltraining.data.remote.dto.response.PaymentInitiateData
 import com.cmp.community.healers.softskilltraining.domain.model.City
 
 interface CandidateRepository {
@@ -31,4 +32,6 @@ interface CandidateRepository {
         accessToken: String,
         examDate: String
     ): NetworkResult<Unit>
+
+    suspend fun initiatePayment(accessToken: String): NetworkResult<PaymentInitiateData>
 }

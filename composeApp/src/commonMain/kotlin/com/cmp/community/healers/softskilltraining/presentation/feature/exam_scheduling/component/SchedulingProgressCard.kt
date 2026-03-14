@@ -4,6 +4,7 @@ import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.BoxWithConstraints
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
@@ -28,12 +29,13 @@ import com.cmp.community.healers.softskilltraining.theme.CardColor
 import com.cmp.community.healers.softskilltraining.theme.MutedFg
 import com.cmp.community.healers.softskilltraining.theme.Primary
 import com.cmp.community.healers.softskilltraining.theme.TextFg
+import com.cmp.community.healers.softskilltraining.utils.constants.AMOUNT_FEE
 
 @Composable
 fun SchedulingProgressCard() {
     val steps = listOf(
         StepInfo("Registration",      "Complete profile",   isDone = true,  isActive = false),
-        StepInfo("Payment",           "Pay PKR 3000",       isDone = true,  isActive = false),
+        StepInfo("Payment",           "Pay PKR $AMOUNT_FEE",       isDone = true,  isActive = false),
         StepInfo("Schedule Training", "Pick training date", isDone = false, isActive = true),
     )
     Surface(
@@ -61,22 +63,24 @@ fun SchedulingProgressCard() {
                 }
             }
             Spacer(Modifier.height(20.dp))
-            Box(modifier = Modifier.fillMaxWidth()) {
-                // Full track
+            BoxWithConstraints(modifier = Modifier.fillMaxWidth()) {
+                val lineHPad = maxWidth / 6
+
+                // Full track: circle-1-centre → circle-3-centre (grey background)
                 Box(
                     modifier = Modifier
                         .fillMaxWidth().height(2.dp)
                         .align(Alignment.TopCenter)
-                        .padding(horizontal = 28.dp)
+                        .padding(horizontal = lineHPad)
                         .offset(y = 20.dp)
                         .background(Border.copy(alpha = 0.4f))
                 )
-                // Both steps done → full track filled
+                // Both segments done → entire track filled with Primary
                 Box(
                     modifier = Modifier
                         .fillMaxWidth().height(2.dp)
                         .align(Alignment.TopStart)
-                        .padding(horizontal = 28.dp)
+                        .padding(horizontal = lineHPad)
                         .offset(y = 20.dp)
                         .background(Primary)
                 )

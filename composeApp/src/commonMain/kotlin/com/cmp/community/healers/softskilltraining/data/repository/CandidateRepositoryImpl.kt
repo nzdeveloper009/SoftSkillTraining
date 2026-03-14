@@ -4,6 +4,7 @@ import com.cmp.community.healers.softskilltraining.core.network.NetworkResult
 import com.cmp.community.healers.softskilltraining.data.remote.api.CandidateApi
 import com.cmp.community.healers.softskilltraining.data.remote.dto.request.UpdateProfileRequest
 import com.cmp.community.healers.softskilltraining.data.remote.dto.response.CandidateProfileData
+import com.cmp.community.healers.softskilltraining.data.remote.dto.response.PaymentInitiateData
 import com.cmp.community.healers.softskilltraining.domain.model.City
 import com.cmp.community.healers.softskilltraining.domain.repository.CandidateRepository
 
@@ -44,4 +45,7 @@ class CandidateRepositoryImpl(
         accessToken: String,
         examDate: String
     ): NetworkResult<Unit> = api.scheduleExam(accessToken, examDate)
+
+    override suspend fun initiatePayment(accessToken: String): NetworkResult<PaymentInitiateData> =
+        api.initiatePayment(accessToken)
 }

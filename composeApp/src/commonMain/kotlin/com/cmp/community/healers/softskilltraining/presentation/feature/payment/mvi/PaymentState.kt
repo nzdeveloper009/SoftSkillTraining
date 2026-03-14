@@ -1,15 +1,14 @@
 package com.cmp.community.healers.softskilltraining.presentation.feature.payment.mvi
 
 import com.cmp.community.healers.softskilltraining.core.base.UiState
-import com.cmp.community.healers.softskilltraining.utils.constants.payment.PaymentMethod
 import com.cmp.community.healers.softskilltraining.utils.constants.payment.PaymentPhase
 
 data class PaymentState(
     val phase:             PaymentPhase  = PaymentPhase.SELECT_METHOD,
-    val selectedMethod: PaymentMethod = PaymentMethod.CREDIT_DEBIT,
 
-    // QR phase
-    val qrContent:         String        = "",   // URL/data encoded in QR
+    // QR phase — populated from initiatePayment API response
+    val qrCodeBase64:      String        = "",
+    val paymentId:         String        = "",
     val isGeneratingQr:    Boolean       = false,
 
     // Confirm phase

@@ -15,7 +15,7 @@ val viewModelModule = module {
     viewModelOf(::SplashViewModel)
     viewModelOf(::SignUpViewModel)
     viewModelOf(::SignInViewModel)
-    viewModelOf(::PaymentViewModel)
+    viewModelOf(::PaymentViewModel)  // auto-wires CandidateRepository
     viewModelOf(::SchedulingViewModel)
 
     // ViewModels that need a runtime phone parameter

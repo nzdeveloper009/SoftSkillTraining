@@ -3,12 +3,15 @@ package com.cmp.community.healers.softskilltraining.data.remote.api
 import com.cmp.community.healers.softskilltraining.core.network.ApiConstants
 import com.cmp.community.healers.softskilltraining.core.network.NetworkResult
 import com.cmp.community.healers.softskilltraining.core.network.httpClient
+import com.cmp.community.healers.softskilltraining.data.remote.dto.request.InitiatePaymentRequest
 import com.cmp.community.healers.softskilltraining.data.remote.dto.request.ScheduleExamRequest
 import com.cmp.community.healers.softskilltraining.data.remote.dto.request.UpdateProfileRequest
 import com.cmp.community.healers.softskilltraining.data.remote.dto.response.CandidateProfileApiResponse
 import com.cmp.community.healers.softskilltraining.data.remote.dto.response.CandidateProfileData
 import com.cmp.community.healers.softskilltraining.data.remote.dto.response.CitiesApiResponse
 import com.cmp.community.healers.softskilltraining.data.remote.dto.response.CityData
+import com.cmp.community.healers.softskilltraining.data.remote.dto.response.PaymentInitiateApiResponse
+import com.cmp.community.healers.softskilltraining.data.remote.dto.response.PaymentInitiateData
 import io.ktor.client.*
 import io.ktor.client.call.*
 import io.ktor.client.plugins.*
@@ -84,6 +87,21 @@ class CandidateApi(private val client: HttpClient = httpClient) {
             NetworkResult.Success(response.body<CitiesApiResponse>().data.data)
         } else {
             NetworkResult.Error(parseError(response.bodyAsText()), response.status.value)
+        }
+    }
+
+    // ── Initiate payment ─────────────────────────────────────────────────────
+    suspend fun initiatePayment(accessToken: String): NetworkResult<PaymentInitiateData> = safeCall {
+        val response = client.post(url(ApiConstants.Endpoints.INITIATE_PAYMENT)) {
+            header(HttpHeaders.Authorization, "Bearer $accessToken")
+            contentType(ContentType.Application.Json)
+            setBody(InitiatePaymentRequest())
+        }
+        val body = response.bodyAsText()
+        if (response.status.isSuccess()) {
+            NetworkResult.Success(response.body<PaymentInitiateApiResponse>().data)
+        } else {
+            NetworkResult.Error(parseError(body), response.status.value)
         }
     }
 

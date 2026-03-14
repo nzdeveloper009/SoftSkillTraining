@@ -21,7 +21,6 @@ import androidx.compose.ui.unit.dp
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.cmp.community.healers.softskilltraining.presentation.feature.home.component.ScheduledCard
 import com.cmp.community.healers.softskilltraining.presentation.feature.home.component.TopBar
-import com.cmp.community.healers.softskilltraining.presentation.feature.home.mvi.CandidateHomeEffect
 import com.cmp.community.healers.softskilltraining.presentation.feature.home.mvi.CandidateHomeEvent
 import com.cmp.community.healers.softskilltraining.presentation.feature.home.mvi.CandidateHomeViewModel
 import com.cmp.community.healers.softskilltraining.presentation.feature.profile.ui.ProfileScreen
@@ -35,13 +34,10 @@ fun CandidateScheduledHomeScreen(
 ) {
     val state by candidateHomeVm.state.collectAsStateWithLifecycle()
 
-    LaunchedEffect(candidateHomeVm) {
-        candidateHomeVm.effect.collect { effect ->
-            when (effect) {
-                CandidateHomeEffect.NavigateToLogin -> onLogout()
-                else -> Unit
-            }
-        }
+    // Logout: isLoggedOut is a StateFlow flag set AFTER DataStore is cleared.
+    // StateFlow is replay-safe — never dropped, unlike Channel effects.
+    LaunchedEffect(state.isLoggedOut) {
+        if (state.isLoggedOut) onLogout()
     }
 
     Scaffold(containerColor = BgScreen) { pad ->

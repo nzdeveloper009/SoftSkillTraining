@@ -4,6 +4,7 @@ import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.BoxWithConstraints
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
@@ -28,6 +29,7 @@ import com.cmp.community.healers.softskilltraining.theme.CardColor
 import com.cmp.community.healers.softskilltraining.theme.MutedFg
 import com.cmp.community.healers.softskilltraining.theme.Primary
 import com.cmp.community.healers.softskilltraining.theme.TextFg
+import com.cmp.community.healers.softskilltraining.utils.constants.AMOUNT_FEE
 
 // ─────────────────────────────────────────────────────────────────────────────
 // APPLICATION PROGRESS CARD (step 2 active)
@@ -35,12 +37,6 @@ import com.cmp.community.healers.softskilltraining.theme.TextFg
 
 @Composable
 fun PaymentProgressCard() {
-    val steps = listOf(
-        Triple("Registration", "Complete profile",  true,),
-        Triple("Payment",      "Pay PKR 3000",       false),
-        Triple("Schedule Training", "Pick training date", false)
-    )
-    // Use Triple: (label, sub, isDone)  + index 1 = active
     Surface(
         modifier        = Modifier.fillMaxWidth(),
         shape           = RoundedCornerShape(14.dp),
@@ -70,25 +66,29 @@ fun PaymentProgressCard() {
             }
             Spacer(Modifier.height(20.dp))
 
-            // Steps row
-            Box(modifier = Modifier.fillMaxWidth()) {
-                // Track line
+            // Steps row — BoxWithConstraints so we can pin line exactly to circle centres
+            BoxWithConstraints(modifier = Modifier.fillMaxWidth()) {
+                // Each of the 3 equal columns is maxWidth/3 wide.
+                // The 40dp circle is centred in its column → centre = column/2 = maxWidth/6.
+                val lineHPad = maxWidth / 6
+
+                // Full track: circle-1-centre → circle-3-centre
                 Box(
                     modifier = Modifier
                         .fillMaxWidth()
                         .height(2.dp)
                         .align(Alignment.TopCenter)
-                        .padding(horizontal = 28.dp)
+                        .padding(horizontal = lineHPad)
                         .offset(y = 20.dp)
                         .background(Border.copy(alpha = 0.4f))
                 )
-                // Active segment (step 1 done → 50% = from left to middle)
+                // Active segment: circle-1-centre → circle-2-centre (Registration done)
                 Box(
                     modifier = Modifier
-                        .fillMaxWidth(0.5f)
+                        .fillMaxWidth()
                         .height(2.dp)
                         .align(Alignment.TopStart)
-                        .padding(start = 28.dp)
+                        .padding(start = lineHPad, end = maxWidth / 2)
                         .offset(y = 20.dp)
                         .background(Primary)
                 )
@@ -97,14 +97,9 @@ fun PaymentProgressCard() {
                     horizontalArrangement = Arrangement.SpaceBetween
                 ) {
                     listOf(
-                        StepInfo(
-                            "Registration",
-                            "Complete profile",
-                            isDone = true,
-                            isActive = false
-                        ),
-                        StepInfo("Payment",            "Pay PKR 3000",       isDone = false, isActive = true),
-                        StepInfo("Schedule Training",  "Pick training date", isDone = false, isActive = false),
+                        StepInfo("Registration",      "Complete profile",   isDone = true,  isActive = false),
+                        StepInfo("Payment",           "Pay PKR $AMOUNT_FEE", isDone = false, isActive = true),
+                        StepInfo("Schedule Training", "Pick training date", isDone = false, isActive = false),
                     ).forEach { step ->
                         StepCircle(step, Modifier.weight(1f))
                     }

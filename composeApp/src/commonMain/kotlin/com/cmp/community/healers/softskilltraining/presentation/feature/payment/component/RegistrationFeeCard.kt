@@ -31,6 +31,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.cmp.community.healers.softskilltraining.presentation.feature.payment.mvi.PaymentEvent
@@ -115,7 +116,7 @@ fun RegistrationFeeCard(
 
                 // ── Amount ────────────────────────────────────────────────────
                 Row(verticalAlignment = Alignment.Bottom, horizontalArrangement = Arrangement.spacedBy(8.dp)) {
-                    Text("PKR 3,000", style = TextStyle(fontSize = 30.sp, fontWeight = FontWeight.Bold, color = TextFg))
+                    Text("PKR 5,000", style = TextStyle(fontSize = 30.sp, fontWeight = FontWeight.Bold, color = TextFg))
                     Text("Included Taxes", style = TextStyle(fontSize = 12.sp, color = MutedFg),
                         modifier = Modifier.padding(bottom = 4.dp))
                 }
@@ -143,3 +144,4 @@ fun RegistrationFeeCard(
         }
     }
 }
+
