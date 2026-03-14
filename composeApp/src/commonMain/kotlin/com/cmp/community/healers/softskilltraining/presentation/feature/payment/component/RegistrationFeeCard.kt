@@ -31,13 +31,13 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.FontWeight
-import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.cmp.community.healers.softskilltraining.presentation.feature.payment.mvi.PaymentEvent
 import com.cmp.community.healers.softskilltraining.presentation.feature.payment.mvi.PaymentState
 import com.cmp.community.healers.softskilltraining.theme.Border
 import com.cmp.community.healers.softskilltraining.theme.CardColor
+import com.cmp.community.healers.softskilltraining.theme.LocalAppStrings
 import com.cmp.community.healers.softskilltraining.theme.MutedFg
 import com.cmp.community.healers.softskilltraining.theme.PrimaryGrad
 import com.cmp.community.healers.softskilltraining.theme.SuccessBg
@@ -55,6 +55,7 @@ fun RegistrationFeeCard(
     state: PaymentState,
     onEvent: (PaymentEvent) -> Unit
 ) {
+    val s = LocalAppStrings.current
     Surface(
         modifier        = Modifier.fillMaxWidth(),
         shape           = RoundedCornerShape(14.dp),
@@ -81,14 +82,14 @@ fun RegistrationFeeCard(
                     verticalAlignment     = Alignment.Top
                 ) {
                     Column(modifier = Modifier.weight(1f)) {
-                        Text("Registration Fee",
+                        Text(s.registrationFee,
                             style = TextStyle(
                                 fontSize = 22.sp,
                                 fontWeight = FontWeight.Bold,
                                 color = TextFg
                             )
                         )
-                        Text("One-time registration fee to activate your candidate profile",
+                        Text(s.registrationFeeSub,
                             style = TextStyle(fontSize = 12.sp, color = MutedFg, lineHeight = 16.sp),
                             modifier = Modifier.padding(top = 4.dp))
                     }
@@ -108,7 +109,7 @@ fun RegistrationFeeCard(
                                 horizontalArrangement = Arrangement.spacedBy(4.dp)
                             ) {
                                 Icon(Icons.Outlined.CheckCircle, null, tint = SuccessText, modifier = Modifier.size(13.dp))
-                                Text("PAID", fontSize = 11.sp, fontWeight = FontWeight.Bold, color = SuccessText)
+                                Text(s.paidBadge, fontSize = 11.sp, fontWeight = FontWeight.Bold, color = SuccessText)
                             }
                         }
                     }
@@ -117,7 +118,7 @@ fun RegistrationFeeCard(
                 // ── Amount ────────────────────────────────────────────────────
                 Row(verticalAlignment = Alignment.Bottom, horizontalArrangement = Arrangement.spacedBy(8.dp)) {
                     Text("PKR 5,000", style = TextStyle(fontSize = 30.sp, fontWeight = FontWeight.Bold, color = TextFg))
-                    Text("Included Taxes", style = TextStyle(fontSize = 12.sp, color = MutedFg),
+                    Text(s.includedTaxes, style = TextStyle(fontSize = 12.sp, color = MutedFg),
                         modifier = Modifier.padding(bottom = 4.dp))
                 }
 

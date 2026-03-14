@@ -25,12 +25,14 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.cmp.community.healers.softskilltraining.theme.Border
 import com.cmp.community.healers.softskilltraining.theme.CardColor
+import com.cmp.community.healers.softskilltraining.theme.LocalAppStrings
 import com.cmp.community.healers.softskilltraining.theme.MutedFg
 import com.cmp.community.healers.softskilltraining.theme.Primary
 import com.cmp.community.healers.softskilltraining.theme.TextFg
 
 @Composable
 fun SchedulingSectionHeader() {
+    val s = LocalAppStrings.current
     Surface(
         modifier        = Modifier.fillMaxWidth(),
         shape           = RoundedCornerShape(14.dp),
@@ -51,9 +53,9 @@ fun SchedulingSectionHeader() {
                 Icon(Icons.Outlined.CalendarMonth, null, tint = Primary, modifier = Modifier.size(20.dp))
             }
             Column {
-                Text("Schedule Your Training",
+                Text(s.scheduleTrainingTitle,
                     style = TextStyle(fontSize = 18.sp, fontWeight = FontWeight.Bold, color = TextFg))
-                Text("Select your preferred training date and complete the payment",
+                Text(s.scheduleTrainingSub,
                     style = TextStyle(fontSize = 12.sp, color = MutedFg, lineHeight = 16.sp))
             }
         }

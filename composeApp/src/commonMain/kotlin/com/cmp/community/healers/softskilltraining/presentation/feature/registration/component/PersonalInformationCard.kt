@@ -49,6 +49,7 @@ import com.cmp.community.healers.softskilltraining.presentation.feature.home.mvi
 import com.cmp.community.healers.softskilltraining.theme.Border
 import com.cmp.community.healers.softskilltraining.theme.CardColor
 import com.cmp.community.healers.softskilltraining.theme.Destructive
+import com.cmp.community.healers.softskilltraining.theme.LocalAppStrings
 import com.cmp.community.healers.softskilltraining.theme.MutedFg
 import com.cmp.community.healers.softskilltraining.theme.Primary
 import com.cmp.community.healers.softskilltraining.theme.Secondary
@@ -61,11 +62,10 @@ fun PersonalInformationCard(
     state:   CandidateHomeState,
     onEvent: (CandidateHomeEvent) -> Unit
 ) {
-    // ── Local UI state ────────────────────────────────────────────────────────
-    var showDatePicker    by remember { mutableStateOf(false) }
-    var cityDropdownOpen  by remember { mutableStateOf(false) }
+    val s = LocalAppStrings.current
+    var showDatePicker   by remember { mutableStateOf(false) }
+    var cityDropdownOpen by remember { mutableStateOf(false) }
 
-    // Convert stored "DD/MM/YYYY" → epoch millis for DatePicker initial selection
     val initialDateMillis = remember(state.dateOfBirth) {
         if (state.dateOfBirth.isNotBlank()) {
             try {
@@ -77,7 +77,6 @@ fun PersonalInformationCard(
     }
     val datePickerState = rememberDatePickerState(initialSelectedDateMillis = initialDateMillis)
 
-    // ── Date Picker Dialog ────────────────────────────────────────────────────
     if (showDatePicker) {
         DatePickerDialog(
             onDismissRequest = { showDatePicker = false },
@@ -90,10 +89,10 @@ fun PersonalInformationCard(
                         onEvent(CandidateHomeEvent.DateOfBirthChanged(formatted))
                     }
                     showDatePicker = false
-                }) { Text("OK") }
+                }) { Text(s.ok) }
             },
             dismissButton = {
-                TextButton(onClick = { showDatePicker = false }) { Text("Cancel") }
+                TextButton(onClick = { showDatePicker = false }) { Text(s.cancel) }
             }
         ) {
             DatePicker(state = datePickerState)
@@ -101,36 +100,33 @@ fun PersonalInformationCard(
     }
 
     ExpandCard(
-        Icons.Outlined.Person, "Personal Information", "Enter your official details as per CNIC",
+        Icons.Outlined.Person, s.personalInfo, s.personalInfoSub,
         state.personalExpanded, { onEvent(CandidateHomeEvent.TogglePersonalSection) }
     ) {
         Column(verticalArrangement = Arrangement.spacedBy(14.dp)) {
 
-            // ── Father's Name + CNIC ──────────────────────────────────────────
             Row(horizontalArrangement = Arrangement.spacedBy(10.dp)) {
                 FieldBox(
-                    Modifier.weight(1f), "Father's Name", state.fatherName, "Aslam Khan",
+                    Modifier.weight(1f), s.fatherName, state.fatherName, s.fatherNameHint,
                     Icons.Outlined.Person,
                     { onEvent(CandidateHomeEvent.FatherNameChanged(it)) },
                     state.errors["fatherName"]
                 )
                 FieldBox(
-                    Modifier.weight(1f), "CNIC Number", state.cnicNumber, "42201-XXXXXXX-X",
+                    Modifier.weight(1f), s.cnicNumber, state.cnicNumber, s.cnicHint,
                     Icons.Outlined.CreditCard,
                     { onEvent(CandidateHomeEvent.CnicChanged(it)) },
                     state.errors["cnic"], KeyboardType.Number
                 )
             }
 
-            // ── Date of Birth + Contact ───────────────────────────────────────
             Row(horizontalArrangement = Arrangement.spacedBy(10.dp)) {
 
-                // Date of Birth — tap opens DatePickerDialog
                 Column(modifier = Modifier.weight(1f), verticalArrangement = Arrangement.spacedBy(5.dp)) {
-                    FieldLabel("Date of Birth")
+                    FieldLabel(s.dateOfBirth)
                     Box {
                         OutlinedTextField(
-                            value         = state.dateOfBirth.ifBlank { "DD/MM/YYYY" },
+                            value         = state.dateOfBirth.ifBlank { s.dobHint },
                             onValueChange = {},
                             enabled       = false,
                             singleLine    = true,
@@ -147,15 +143,13 @@ fun PersonalInformationCard(
                             ),
                             textStyle = TextStyle(fontSize = 13.sp)
                         )
-                        // Overlay to capture taps that the disabled TextField swallows
                         Box(modifier = Modifier.matchParentSize().clickable { showDatePicker = true })
                     }
                     state.errors["dob"]?.let { Text(it, color = Destructive, fontSize = 11.sp) }
                 }
 
-                // Contact — locked read-only
                 Column(modifier = Modifier.weight(1f), verticalArrangement = Arrangement.spacedBy(5.dp)) {
-                    FieldLabel("Contact Number")
+                    FieldLabel(s.contactNumber)
                     OutlinedTextField(
                         value = state.contactNumber, onValueChange = {}, enabled = false, singleLine = true,
                         modifier = Modifier.fillMaxWidth().height(50.dp),
@@ -172,15 +166,14 @@ fun PersonalInformationCard(
                 }
             }
 
-            // ── City dropdown — ExposedDropdownMenuBox handles all click events ─
             Column(verticalArrangement = Arrangement.spacedBy(5.dp)) {
-                FieldLabel("City / Area")
+                FieldLabel(s.cityArea)
                 ExposedDropdownMenuBox(
                     expanded         = cityDropdownOpen,
                     onExpandedChange = { cityDropdownOpen = it }
                 ) {
                     OutlinedTextField(
-                        value         = state.city.ifBlank { "Select your city" },
+                        value         = state.city.ifBlank { s.cityHint },
                         onValueChange = {},
                         readOnly      = true,
                         singleLine    = true,
@@ -215,8 +208,8 @@ fun PersonalInformationCard(
                     ) {
                         state.cities.forEach { cityItem ->
                             DropdownMenuItem(
-                                text        = { Text(cityItem.name, fontSize = 14.sp) },
-                                onClick     = {
+                                text    = { Text(cityItem.name, fontSize = 14.sp) },
+                                onClick = {
                                     onEvent(CandidateHomeEvent.CityChanged(cityItem.name))
                                     cityDropdownOpen = false
                                 },
@@ -231,9 +224,8 @@ fun PersonalInformationCard(
                 state.errors["city"]?.let { Text(it, color = Destructive, fontSize = 11.sp) }
             }
 
-            // ── Address ───────────────────────────────────────────────────────
             FieldBox(
-                Modifier, "Address", state.address, "House #, Street #, Sector/Area",
+                Modifier, s.address, state.address, s.addressHint,
                 Icons.Outlined.Home,
                 { onEvent(CandidateHomeEvent.AddressChanged(it)) },
                 state.errors["address"]

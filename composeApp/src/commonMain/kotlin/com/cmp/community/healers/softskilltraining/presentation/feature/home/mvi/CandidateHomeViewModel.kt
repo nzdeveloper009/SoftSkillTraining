@@ -39,6 +39,16 @@ class CandidateHomeViewModel(
     init {
         loadCities()
         loadProfile()
+        loadLanguage()
+    }
+
+    private fun loadLanguage() {
+        viewModelScope.launch {
+            appPreferences.language.collect { lang ->
+                val appLang = if (lang == "ur") AppLanguage.URDU else AppLanguage.ENGLISH
+                if (state.value.language != appLang) setState { copy(language = appLang) }
+            }
+        }
     }
 
     override fun handleEvent(event: CandidateHomeEvent) {
@@ -47,8 +57,13 @@ class CandidateHomeViewModel(
             // ── Top bar ───────────────────────────────────────────────────────
             is CandidateHomeEvent.TabChanged -> handleTabChanged(event.tab)
 
-            CandidateHomeEvent.ToggleLanguage ->
-                setState { copy(language = if (language == AppLanguage.ENGLISH) AppLanguage.URDU else AppLanguage.ENGLISH) }
+            CandidateHomeEvent.ToggleLanguage -> {
+                val newLang = if (state.value.language == AppLanguage.ENGLISH) AppLanguage.URDU else AppLanguage.ENGLISH
+                setState { copy(language = newLang) }
+                viewModelScope.launch {
+                    appPreferences.setLanguage(if (newLang == AppLanguage.URDU) "ur" else "en")
+                }
+            }
 
             CandidateHomeEvent.Logout -> logout()
 

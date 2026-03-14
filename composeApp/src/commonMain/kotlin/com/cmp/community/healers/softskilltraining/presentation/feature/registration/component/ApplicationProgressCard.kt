@@ -30,6 +30,7 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.cmp.community.healers.softskilltraining.presentation.components.card.Card14
 import com.cmp.community.healers.softskilltraining.theme.Border
+import com.cmp.community.healers.softskilltraining.theme.LocalAppStrings
 import com.cmp.community.healers.softskilltraining.theme.MutedFg
 import com.cmp.community.healers.softskilltraining.theme.Primary
 import com.cmp.community.healers.softskilltraining.theme.Secondary
@@ -38,27 +39,28 @@ import com.cmp.community.healers.softskilltraining.utils.constants.AMOUNT_FEE
 
 @Composable
 fun ApplicationProgressCard(currentStep: Int, totalSteps: Int) {
-    val steps = listOf("Registration" to "Complete profile", "Payment" to "Pay PKR $AMOUNT_FEE", "Training" to "Pick training date")
+    val s = LocalAppStrings.current
+    val steps = listOf(
+        s.stepRegistration to s.completeProfile,
+        s.stepPayment       to "$AMOUNT_FEE",
+        s.stepTraining      to s.pickDate
+    )
     Card14 {
         Row(modifier = Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.SpaceBetween, verticalAlignment = Alignment.Top) {
             Column {
-                Text("Application Progress", style = TextStyle(fontSize = 20.sp, fontWeight = FontWeight.Bold, color = TextFg))
-                Text("Complete all steps to receive your certification", style = TextStyle(fontSize = 12.sp, color = MutedFg))
+                Text(s.appProgress, style = TextStyle(fontSize = 20.sp, fontWeight = FontWeight.Bold, color = TextFg))
+                Text(s.appProgressSub, style = TextStyle(fontSize = 12.sp, color = MutedFg))
             }
             Column(horizontalAlignment = Alignment.End) {
-                Text("Current Step", style = TextStyle(fontSize = 11.sp, color = MutedFg))
+                Text(s.currentStepLabel, style = TextStyle(fontSize = 11.sp, color = MutedFg), maxLines = 1, softWrap = false)
                 Text("$currentStep/$totalSteps", style = TextStyle(fontSize = 24.sp, fontWeight = FontWeight.Bold, color = Primary))
             }
         }
         Spacer(Modifier.height(20.dp))
         BoxWithConstraints(modifier = Modifier.fillMaxWidth()) {
-            // Each of the 3 equal columns is maxWidth/3 wide.
-            // 40dp circle centred in column → centre = maxWidth/6 from each edge.
-            val lineHPad = maxWidth / 6
-            // Number of completed segments = currentStep - 1 (clamped to [0, steps.size-1])
+            val lineHPad   = maxWidth / 6
             val doneSegments = (currentStep - 1).coerceIn(0, steps.size - 1)
 
-            // Full track (grey)
             Box(
                 modifier = Modifier
                     .fillMaxWidth().height(2.dp)
@@ -67,11 +69,7 @@ fun ApplicationProgressCard(currentStep: Int, totalSteps: Int) {
                     .offset(y = 20.dp)
                     .background(Border.copy(alpha = 0.4f))
             )
-            // Active/filled portion (Primary)
             if (doneSegments > 0) {
-                // Each segment = 1/(steps.size-1) of the track
-                // Track width = maxWidth - 2*lineHPad = maxWidth * 2/3
-                // Filled end = lineHPad + (maxWidth * 2/3) * (doneSegments / (steps.size-1))
                 val endPad = maxWidth - lineHPad -
                         (maxWidth * 2f / 3f) * (doneSegments.toFloat() / (steps.size - 1))
                 Box(

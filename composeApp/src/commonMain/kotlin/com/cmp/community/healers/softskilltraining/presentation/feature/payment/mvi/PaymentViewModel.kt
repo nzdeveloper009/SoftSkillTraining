@@ -56,7 +56,7 @@ class PaymentViewModel(
                             isGeneratingQr = false,
                             qrCodeBase64   = "",
                             paymentId      = "DEMO-PAY-001",
-                            transactionId  = "TXN-DEMO-${System.currentTimeMillis()}",
+                            transactionId  = "TXN-DEMO-${Clock.System.now().toEpochMilliseconds()}",
                             phase          = PaymentPhase.QR_SHOWN
                         )
                     }

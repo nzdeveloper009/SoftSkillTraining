@@ -30,6 +30,7 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.cmp.community.healers.softskilltraining.presentation.feature.home.mvi.CandidateHomeState
 import com.cmp.community.healers.softskilltraining.theme.Border
+import com.cmp.community.healers.softskilltraining.theme.LocalAppStrings
 import com.cmp.community.healers.softskilltraining.theme.MutedFg
 import com.cmp.community.healers.softskilltraining.theme.Primary
 import com.cmp.community.healers.softskilltraining.theme.Secondary
@@ -37,14 +38,10 @@ import com.cmp.community.healers.softskilltraining.theme.TextFg
 
 @Composable
 fun ProfileHeaderCard(state: CandidateHomeState) {
+    val s = LocalAppStrings.current
     ProfileCard {
         Column(verticalArrangement = Arrangement.spacedBy(14.dp)) {
-
-            // Avatar + name/ID
-            Row(
-                verticalAlignment     = Alignment.CenterVertically,
-                horizontalArrangement = Arrangement.spacedBy(14.dp)
-            ) {
+            Row(verticalAlignment = Alignment.CenterVertically, horizontalArrangement = Arrangement.spacedBy(14.dp)) {
                 Box(
                     modifier = Modifier
                         .size(68.dp)
@@ -74,11 +71,10 @@ fun ProfileHeaderCard(state: CandidateHomeState) {
 
             HorizontalDivider(color = Border.copy(alpha = 0.5f))
 
-            // Contact rows — stacked vertically so nothing is ever clipped
             Column(verticalArrangement = Arrangement.spacedBy(10.dp)) {
-                ContactRow(Icons.Outlined.Email,      "Email",    state.profileEmail.ifBlank { "N/A" })
-                ContactRow(Icons.Outlined.Phone,      "Phone",    state.profilePhone.ifBlank { "N/A" })
-                ContactRow(Icons.Outlined.LocationOn, "Location", state.profileLocation.ifBlank { "N/A" })
+                ContactRow(Icons.Outlined.Email,      s.email,    state.profileEmail.ifBlank    { "N/A" })
+                ContactRow(Icons.Outlined.Phone,      s.phone,    state.profilePhone.ifBlank    { "N/A" })
+                ContactRow(Icons.Outlined.LocationOn, s.location, state.profileLocation.ifBlank { "N/A" })
             }
         }
     }
@@ -99,11 +95,7 @@ private fun ContactRow(icon: ImageVector, label: String, value: String) {
         }
         Column(modifier = Modifier.weight(1f)) {
             Text(label, style = TextStyle(fontSize = 10.sp, color = MutedFg))
-            Text(
-                value,
-                style    = TextStyle(fontSize = 13.sp, fontWeight = FontWeight.SemiBold, color = TextFg),
-                maxLines = 1, overflow = TextOverflow.Ellipsis
-            )
+            Text(value, style = TextStyle(fontSize = 13.sp, fontWeight = FontWeight.SemiBold, color = TextFg), maxLines = 1, overflow = TextOverflow.Ellipsis)
         }
     }
 }

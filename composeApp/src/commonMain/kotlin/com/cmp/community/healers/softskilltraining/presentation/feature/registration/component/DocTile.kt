@@ -35,6 +35,8 @@ import com.cmp.community.healers.softskilltraining.utils.constants.document.Docu
 import com.cmp.community.healers.softskilltraining.theme.Border
 import com.cmp.community.healers.softskilltraining.theme.CardColor
 import com.cmp.community.healers.softskilltraining.theme.Destructive
+import com.cmp.community.healers.softskilltraining.theme.LocalAppStrings
+import com.cmp.community.healers.softskilltraining.theme.labelFor
 import com.cmp.community.healers.softskilltraining.theme.MutedFg
 import com.cmp.community.healers.softskilltraining.theme.Primary
 import com.cmp.community.healers.softskilltraining.theme.Secondary
@@ -77,6 +79,7 @@ fun DocTile(
     modifier: Modifier = Modifier,
     onPick:   () -> Unit
 ) {
+    val s = LocalAppStrings.current
     Surface(
         modifier = modifier,
         shape    = RoundedCornerShape(12.dp),
@@ -122,7 +125,7 @@ fun DocTile(
                     verticalArrangement = Arrangement.spacedBy(2.dp)
                 ) {
                     Text(
-                        text       = type.label,
+                        text       = s.labelFor(type),
                         fontSize   = 12.sp,
                         fontWeight = FontWeight.SemiBold,
                         color      = TextFg,
@@ -131,7 +134,7 @@ fun DocTile(
                         lineHeight = 15.sp
                     )
                     Text(
-                        text       = "MANDATORY",
+                        text       = s.mandatory,
                         fontSize   = 8.sp,
                         fontWeight = FontWeight.Bold,
                         color      = Destructive
@@ -162,7 +165,7 @@ fun DocTile(
                 )
                 Spacer(Modifier.width(5.dp))
                 Text(
-                    text       = if (uploaded) "Change" else "Upload",
+                    text       = if (uploaded) s.change else s.upload,
                     fontSize   = 12.sp,
                     color      = Primary,
                     fontWeight = FontWeight.SemiBold

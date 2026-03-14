@@ -30,6 +30,7 @@ import com.cmp.community.healers.softskilltraining.presentation.feature.exam_sch
 import com.cmp.community.healers.softskilltraining.presentation.feature.exam_scheduling.mvi.SchedulingState
 import com.cmp.community.healers.softskilltraining.theme.Border
 import com.cmp.community.healers.softskilltraining.theme.CardColor
+import com.cmp.community.healers.softskilltraining.theme.LocalAppStrings
 import com.cmp.community.healers.softskilltraining.theme.MutedFg
 import com.cmp.community.healers.softskilltraining.theme.Secondary
 import com.cmp.community.healers.softskilltraining.utils.constants.scheduling.SchedulingPhase
@@ -37,6 +38,7 @@ import com.cmp.community.healers.softskilltraining.utils.constants.scheduling.Sc
 
 @Composable
 fun CalendarAndSelectionRow(state: SchedulingState, onEvent: (SchedulingEvent) -> Unit) {
+    val s = LocalAppStrings.current
     Surface(
         modifier        = Modifier.fillMaxWidth(),
         shape           = RoundedCornerShape(14.dp),
@@ -85,7 +87,7 @@ fun CalendarAndSelectionRow(state: SchedulingState, onEvent: (SchedulingEvent) -
                 horizontalArrangement = Arrangement.spacedBy(8.dp)
             ) {
                 Icon(Icons.Outlined.Info, null, tint = MutedFg, modifier = Modifier.size(14.dp))
-                Text("Select any date within the next 7 days",
+                Text(s.selectWithinDays,
                     style = TextStyle(fontSize = 11.sp, color = MutedFg))
             }
         }

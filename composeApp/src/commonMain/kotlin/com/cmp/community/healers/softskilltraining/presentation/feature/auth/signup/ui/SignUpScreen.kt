@@ -36,7 +36,6 @@ import androidx.compose.ui.text.withStyle
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
-import androidx.lifecycle.viewmodel.compose.viewModel
 import com.cmp.community.healers.softskilltraining.presentation.feature.auth.component.AuthLabel
 import com.cmp.community.healers.softskilltraining.presentation.feature.auth.component.AuthTextField
 import com.cmp.community.healers.softskilltraining.presentation.feature.auth.signup.mvi.SignUpEffect
@@ -44,7 +43,6 @@ import com.cmp.community.healers.softskilltraining.presentation.feature.auth.sig
 import com.cmp.community.healers.softskilltraining.presentation.feature.auth.signup.mvi.SignUpViewModel
 import com.cmp.community.healers.softskilltraining.theme.*
 
-// ─── Sign Up Screen ───────────────────────────────────────────────────────────
 @Composable
 fun SignUpScreen(
     vm: SignUpViewModel,
@@ -53,14 +51,14 @@ fun SignUpScreen(
 ) {
     val state by vm.state.collectAsStateWithLifecycle()
     val focusManager = LocalFocusManager.current
+    val s = LocalAppStrings.current
 
     LaunchedEffect(vm) {
         vm.effect.collect { effect ->
             when (effect) {
-                is SignUpEffect.NavigateToOtp -> onNavigateToOtp(effect.phone)
+                is SignUpEffect.NavigateToOtp    -> onNavigateToOtp(effect.phone)
                 is SignUpEffect.NavigateToSignIn -> onNavigateToSignIn()
-                is SignUpEffect.ShowSnackbar -> { /* wire to SnackbarHost */
-                }
+                is SignUpEffect.ShowSnackbar     -> { /* wire to SnackbarHost */ }
             }
         }
     }
@@ -77,9 +75,8 @@ fun SignUpScreen(
                 .padding(horizontal = 24.dp)
                 .padding(top = 64.dp, bottom = 32.dp)
         ) {
-            // Header
             Text(
-                "Create Account",
+                s.createAccount,
                 style = TextStyle(
                     fontSize = 32.sp,
                     fontWeight = FontWeight.ExtraBold,
@@ -89,69 +86,48 @@ fun SignUpScreen(
             )
             Spacer(Modifier.height(8.dp))
             Text(
-                "Sign up to get started with your candidate portal",
+                s.createAccountSub,
                 style = TextStyle(fontSize = 15.sp, color = SubtitleColor)
             )
             Spacer(Modifier.height(40.dp))
 
-            // General error
-            AnimatedVisibility(
-                visible = state.generalError != null,
-                enter = fadeIn(),
-                exit = fadeOut()
-            ) {
+            AnimatedVisibility(visible = state.generalError != null, enter = fadeIn(), exit = fadeOut()) {
                 state.generalError?.let { msg ->
                     Surface(
                         color = ErrorColor.copy(alpha = 0.08f),
                         shape = RoundedCornerShape(10.dp),
                         modifier = Modifier.fillMaxWidth()
                     ) {
-                        Text(
-                            msg,
-                            color = ErrorColor,
-                            fontSize = 13.sp,
-                            modifier = Modifier.padding(12.dp)
-                        )
+                        Text(msg, color = ErrorColor, fontSize = 13.sp, modifier = Modifier.padding(12.dp))
                     }
                     Spacer(Modifier.height(16.dp))
                 }
             }
 
-            // First Name / Last Name
             Row(horizontalArrangement = Arrangement.spacedBy(12.dp)) {
                 Column(modifier = Modifier.weight(1f)) {
-                    AuthLabel("First Name")
+                    AuthLabel(s.firstName)
                     Spacer(Modifier.height(8.dp))
                     AuthTextField(
                         value = state.firstName,
                         onValueChange = { vm.onEvent(SignUpEvent.FirstNameChanged(it)) },
-                        placeholder = "John",
-                        leadingIcon = {
-                            Icon(Icons.Outlined.Person, null, tint = IconTint, modifier = Modifier.size(20.dp))
-                        },
-                        keyboardOptions = KeyboardOptions(
-                            keyboardType = KeyboardType.Text,
-                            imeAction = ImeAction.Next
-                        ),
+                        placeholder = s.firstNameHint,
+                        leadingIcon = { Icon(Icons.Outlined.Person, null, tint = IconTint, modifier = Modifier.size(20.dp)) },
+                        keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Text, imeAction = ImeAction.Next),
                         keyboardActions = KeyboardActions(onNext = { focusManager.moveFocus(FocusDirection.Right) }),
                         isError = state.firstNameError != null,
                         errorMessage = state.firstNameError
                     )
                 }
                 Column(modifier = Modifier.weight(1f)) {
-                    AuthLabel("Last Name")
+                    AuthLabel(s.lastName)
                     Spacer(Modifier.height(8.dp))
                     AuthTextField(
                         value = state.lastName,
                         onValueChange = { vm.onEvent(SignUpEvent.LastNameChanged(it)) },
-                        placeholder = "Doe",
-                        leadingIcon = {
-                            Icon(Icons.Outlined.Person, null, tint = IconTint, modifier = Modifier.size(20.dp))
-                        },
-                        keyboardOptions = KeyboardOptions(
-                            keyboardType = KeyboardType.Text,
-                            imeAction = ImeAction.Next
-                        ),
+                        placeholder = s.lastNameHint,
+                        leadingIcon = { Icon(Icons.Outlined.Person, null, tint = IconTint, modifier = Modifier.size(20.dp)) },
+                        keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Text, imeAction = ImeAction.Next),
                         keyboardActions = KeyboardActions(onNext = { focusManager.moveFocus(FocusDirection.Down) }),
                         isError = state.lastNameError != null,
                         errorMessage = state.lastNameError
@@ -160,71 +136,41 @@ fun SignUpScreen(
             }
             Spacer(Modifier.height(24.dp))
 
-            // Email
-            AuthLabel("Email Address")
+            AuthLabel(s.emailAddress)
             Spacer(Modifier.height(8.dp))
             AuthTextField(
                 value = state.email,
                 onValueChange = { vm.onEvent(SignUpEvent.EmailChanged(it)) },
-                placeholder = "example@email.com",
-                leadingIcon = {
-                    Icon(
-                        Icons.Outlined.Email,
-                        null,
-                        tint = IconTint,
-                        modifier = Modifier.size(20.dp)
-                    )
-                },
-                keyboardOptions = KeyboardOptions(
-                    keyboardType = KeyboardType.Email,
-                    imeAction = ImeAction.Next
-                ),
+                placeholder = s.emailHint,
+                leadingIcon = { Icon(Icons.Outlined.Email, null, tint = IconTint, modifier = Modifier.size(20.dp)) },
+                keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Email, imeAction = ImeAction.Next),
                 keyboardActions = KeyboardActions(onNext = { focusManager.moveFocus(FocusDirection.Down) }),
                 isError = state.emailError != null,
                 errorMessage = state.emailError
             )
             Spacer(Modifier.height(24.dp))
 
-            // Phone
-            AuthLabel("Phone Number")
+            AuthLabel(s.phoneNumber)
             Spacer(Modifier.height(8.dp))
             AuthTextField(
                 value = state.phone,
                 onValueChange = { vm.onEvent(SignUpEvent.PhoneChanged(it)) },
-                placeholder = "03001234567",
-                leadingIcon = {
-                    Icon(
-                        Icons.Outlined.Phone,
-                        null,
-                        tint = IconTint,
-                        modifier = Modifier.size(20.dp)
-                    )
-                },
-                keyboardOptions = KeyboardOptions(
-                    keyboardType = KeyboardType.Phone,
-                    imeAction = ImeAction.Next
-                ),
+                placeholder = s.phoneHint,
+                leadingIcon = { Icon(Icons.Outlined.Phone, null, tint = IconTint, modifier = Modifier.size(20.dp)) },
+                keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Phone, imeAction = ImeAction.Next),
                 keyboardActions = KeyboardActions(onNext = { focusManager.moveFocus(FocusDirection.Down) }),
                 isError = state.phoneError != null,
                 errorMessage = state.phoneError
             )
             Spacer(Modifier.height(24.dp))
 
-            // Password
-            AuthLabel("Password")
+            AuthLabel(s.password)
             Spacer(Modifier.height(8.dp))
             AuthTextField(
                 value = state.password,
                 onValueChange = { vm.onEvent(SignUpEvent.PasswordChanged(it)) },
-                placeholder = "Min. 8 characters",
-                leadingIcon = {
-                    Icon(
-                        Icons.Outlined.Lock,
-                        null,
-                        tint = IconTint,
-                        modifier = Modifier.size(20.dp)
-                    )
-                },
+                placeholder = s.passwordCreateHint,
+                leadingIcon = { Icon(Icons.Outlined.Lock, null, tint = IconTint, modifier = Modifier.size(20.dp)) },
                 trailingIcon = {
                     IconButton(onClick = { vm.onEvent(SignUpEvent.TogglePasswordVisibility) }) {
                         Icon(
@@ -234,31 +180,20 @@ fun SignUpScreen(
                     }
                 },
                 visualTransformation = if (state.passwordVisible) VisualTransformation.None else PasswordVisualTransformation(),
-                keyboardOptions = KeyboardOptions(
-                    keyboardType = KeyboardType.Password,
-                    imeAction = ImeAction.Next
-                ),
+                keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Password, imeAction = ImeAction.Next),
                 keyboardActions = KeyboardActions(onNext = { focusManager.moveFocus(FocusDirection.Down) }),
                 isError = state.passwordError != null,
                 errorMessage = state.passwordError
             )
             Spacer(Modifier.height(24.dp))
 
-            // Confirm Password
-            AuthLabel("Confirm Password")
+            AuthLabel(s.confirmPassword)
             Spacer(Modifier.height(8.dp))
             AuthTextField(
                 value = state.confirmPassword,
                 onValueChange = { vm.onEvent(SignUpEvent.ConfirmPasswordChanged(it)) },
-                placeholder = "Re-enter your password",
-                leadingIcon = {
-                    Icon(
-                        Icons.Outlined.Lock,
-                        null,
-                        tint = IconTint,
-                        modifier = Modifier.size(20.dp)
-                    )
-                },
+                placeholder = s.confirmPasswordHint,
+                leadingIcon = { Icon(Icons.Outlined.Lock, null, tint = IconTint, modifier = Modifier.size(20.dp)) },
                 trailingIcon = {
                     IconButton(onClick = { vm.onEvent(SignUpEvent.ToggleConfirmVisibility) }) {
                         Icon(
@@ -268,78 +203,45 @@ fun SignUpScreen(
                     }
                 },
                 visualTransformation = if (state.confirmVisible) VisualTransformation.None else PasswordVisualTransformation(),
-                keyboardOptions = KeyboardOptions(
-                    keyboardType = KeyboardType.Password,
-                    imeAction = ImeAction.Done
-                ),
-                keyboardActions = KeyboardActions(onDone = {
-                    focusManager.clearFocus(); vm.onEvent(
-                    SignUpEvent.Submit
-                )
-                }),
+                keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Password, imeAction = ImeAction.Done),
+                keyboardActions = KeyboardActions(onDone = { focusManager.clearFocus(); vm.onEvent(SignUpEvent.Submit) }),
                 isError = state.confirmError != null,
                 errorMessage = state.confirmError
             )
             Spacer(Modifier.height(32.dp))
 
-            // Submit
             Button(
                 onClick = { focusManager.clearFocus(); vm.onEvent(SignUpEvent.Submit) },
                 enabled = !state.isLoading,
                 modifier = Modifier.fillMaxWidth().height(58.dp),
                 shape = RoundedCornerShape(14.dp),
                 colors = ButtonDefaults.buttonColors(
-                    containerColor = PrimaryGreen,
-                    contentColor = Color.White,
-                    disabledContainerColor = PrimaryGreen.copy(alpha = 0.6f),
-                    disabledContentColor = Color.White
+                    containerColor = PrimaryGreen, contentColor = Color.White,
+                    disabledContainerColor = PrimaryGreen.copy(alpha = 0.6f), disabledContentColor = Color.White
                 ),
                 elevation = ButtonDefaults.buttonElevation(defaultElevation = 0.dp)
             ) {
                 if (state.isLoading) {
-                    CircularProgressIndicator(
-                        modifier = Modifier.size(22.dp),
-                        color = Color.White,
-                        strokeWidth = 2.5.dp
-                    )
+                    CircularProgressIndicator(modifier = Modifier.size(22.dp), color = Color.White, strokeWidth = 2.5.dp)
                 } else {
-                    Text(
-                        "Sign Up",
-                        style = TextStyle(fontSize = 16.sp, fontWeight = FontWeight.SemiBold)
-                    )
+                    Text(s.signUp, style = TextStyle(fontSize = 16.sp, fontWeight = FontWeight.SemiBold))
                 }
             }
             Spacer(Modifier.height(28.dp))
 
-            // Divider
-            Row(
-                modifier = Modifier.fillMaxWidth(),
-                verticalAlignment = Alignment.CenterVertically
-            ) {
+            Row(modifier = Modifier.fillMaxWidth(), verticalAlignment = Alignment.CenterVertically) {
                 HorizontalDivider(modifier = Modifier.weight(1f), color = DividerColor)
                 Text("  or  ", color = SubtitleColor, fontSize = 13.sp)
                 HorizontalDivider(modifier = Modifier.weight(1f), color = DividerColor)
             }
             Spacer(Modifier.height(20.dp))
 
-            // Sign In link
             Box(Modifier.fillMaxWidth(), contentAlignment = Alignment.Center) {
                 TextButton(onClick = { vm.onEvent(SignUpEvent.NavigateToSignIn) }) {
                     Text(
                         buildAnnotatedString {
-                            withStyle(
-                                SpanStyle(
-                                    color = SubtitleColor,
-                                    fontSize = 14.sp
-                                )
-                            ) { append("Already have an account? ") }
-                            withStyle(
-                                SpanStyle(
-                                    color = PrimaryGreen,
-                                    fontWeight = FontWeight.Bold,
-                                    fontSize = 14.sp
-                                )
-                            ) { append("Sign In") }
+                            withStyle(SpanStyle(color = SubtitleColor, fontSize = 14.sp)) { append(s.alreadyAccount) }
+                            withStyle(SpanStyle(color = PrimaryGreen, fontWeight = FontWeight.Bold, fontSize = 14.sp)) { append(s.signIn) }
                         }
                     )
                 }

@@ -27,16 +27,18 @@ import androidx.compose.ui.unit.sp
 import com.cmp.community.healers.softskilltraining.theme.BlueBg
 import com.cmp.community.healers.softskilltraining.theme.BlueBorder
 import com.cmp.community.healers.softskilltraining.theme.BlueText
+import com.cmp.community.healers.softskilltraining.theme.LocalAppStrings
 import com.cmp.community.healers.softskilltraining.theme.SuccessText
 import com.cmp.community.healers.softskilltraining.theme.TextFg
 
 @Composable
 fun WhatsNextCard() {
+    val s = LocalAppStrings.current
     val items = listOf(
-        Icons.Outlined.CheckCircle  to "Visit your assigned center on the scheduled date",
-        Icons.Outlined.Badge        to "Bring your original CNIC for identity verification",
-        Icons.Outlined.Shield       to "The center admin will initiate your training",
-        Icons.Outlined.Timer        to "20 questions in 20 minutes - be prepared!"
+        Icons.Outlined.CheckCircle  to s.whatsNextItem1,
+        Icons.Outlined.Badge        to s.whatsNextItem2,
+        Icons.Outlined.Shield       to s.whatsNextItem3,
+        Icons.Outlined.Timer        to s.whatsNextItem4
     )
 
     Surface(
@@ -55,7 +57,7 @@ fun WhatsNextCard() {
                 horizontalArrangement = Arrangement.spacedBy(8.dp)
             ) {
                 Icon(Icons.Outlined.Info, null, tint = BlueText, modifier = Modifier.size(18.dp))
-                Text("What's Next?",
+                Text(s.whatsNext,
                     style = TextStyle(
                         fontSize = 15.sp,
                         fontWeight = FontWeight.Bold,

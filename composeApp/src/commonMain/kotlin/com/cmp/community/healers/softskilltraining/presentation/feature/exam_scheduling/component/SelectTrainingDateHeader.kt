@@ -27,12 +27,14 @@ import androidx.compose.ui.unit.sp
 import com.cmp.community.healers.softskilltraining.theme.Border
 import com.cmp.community.healers.softskilltraining.theme.CardColor
 import com.cmp.community.healers.softskilltraining.theme.Destructive
+import com.cmp.community.healers.softskilltraining.theme.LocalAppStrings
 import com.cmp.community.healers.softskilltraining.theme.MutedFg
 import com.cmp.community.healers.softskilltraining.theme.Primary
 import com.cmp.community.healers.softskilltraining.theme.TextFg
 
 @Composable
 fun SelectTrainingDateHeader(daysLeft: Int = -1) {
+    val s = LocalAppStrings.current
     Surface(
         modifier        = Modifier.fillMaxWidth(),
         shape           = RoundedCornerShape(14.dp),
@@ -56,11 +58,11 @@ fun SelectTrainingDateHeader(daysLeft: Int = -1) {
                 }
                 Column {
                     Text(
-                        "Select Training Date",
+                        s.selectTrainingDateTitle,
                         style = TextStyle(fontSize = 16.sp, fontWeight = FontWeight.Bold, color = TextFg)
                     )
                     Text(
-                        "Choose your preferred training date",
+                        s.chooseTrainingDate,
                         style = TextStyle(fontSize = 12.sp, color = MutedFg)
                     )
                 }
@@ -69,9 +71,9 @@ fun SelectTrainingDateHeader(daysLeft: Int = -1) {
             // ── 7-day deadline banner ─────────────────────────────────────────
             if (daysLeft >= 0) {
                 val (deadlineColor, deadlineText) = when {
-                    daysLeft == 0 -> Destructive to "Last day to schedule your exam!"
-                    daysLeft <= 2 -> Destructive to "$daysLeft day${if (daysLeft == 1) "" else "s"} left to schedule your exam"
-                    else          -> Primary      to "$daysLeft days remaining to schedule your exam"
+                    daysLeft == 0 -> Destructive to s.lastDaySchedule
+                    daysLeft <= 2 -> Destructive to "$daysLeft ${s.daysLeftSchedule}"
+                    else          -> Primary      to "$daysLeft ${s.daysRemainingSchedule}"
                 }
                 Row(
                     modifier              = Modifier

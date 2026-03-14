@@ -31,6 +31,7 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.cmp.community.healers.softskilltraining.presentation.feature.payment.mvi.PaymentEvent
 import com.cmp.community.healers.softskilltraining.presentation.feature.payment.mvi.PaymentState
+import com.cmp.community.healers.softskilltraining.theme.LocalAppStrings
 import com.cmp.community.healers.softskilltraining.theme.MutedFg
 import com.cmp.community.healers.softskilltraining.utils.decodeBase64Bitmap
 import io.github.alexzhirkevich.qrose.options.QrBallShape
@@ -45,6 +46,7 @@ import io.github.alexzhirkevich.qrose.rememberQrCodePainter
 
 @Composable
 fun QrShownPhase(state: PaymentState, onEvent: (PaymentEvent) -> Unit) {
+    val s = LocalAppStrings.current
 
     val qrBitmap = remember(state.qrCodeBase64) {
         decodeBase64Bitmap(state.qrCodeBase64)
@@ -87,7 +89,7 @@ fun QrShownPhase(state: PaymentState, onEvent: (PaymentEvent) -> Unit) {
         }
 
         Text(
-            "Scan the QR code to pay PKR 5,000",
+            s.scanQrToPay,
             style = TextStyle(fontSize = 13.sp, color = MutedFg)
         )
 
@@ -106,9 +108,9 @@ fun QrShownPhase(state: PaymentState, onEvent: (PaymentEvent) -> Unit) {
             if (state.isConfirming) {
                 CircularProgressIndicator(modifier = Modifier.size(18.dp), color = Color.White, strokeWidth = 2.dp)
                 Spacer(Modifier.width(8.dp))
-                Text("Verifying...", fontWeight = FontWeight.SemiBold, fontSize = 14.sp)
+                Text(s.verifying, fontWeight = FontWeight.SemiBold, fontSize = 14.sp)
             } else {
-                Text("Confirm Payment", fontWeight = FontWeight.SemiBold, fontSize = 14.sp)
+                Text(s.confirmPayment, fontWeight = FontWeight.SemiBold, fontSize = 14.sp)
                 Spacer(Modifier.width(8.dp))
                 Icon(Icons.Outlined.ArrowForward, null, modifier = Modifier.size(16.dp))
             }

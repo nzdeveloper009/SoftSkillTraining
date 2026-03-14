@@ -26,15 +26,12 @@ import androidx.compose.ui.text.withStyle
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
-import androidx.lifecycle.viewmodel.compose.viewModel
 import com.cmp.community.healers.softskilltraining.presentation.feature.auth.otp.component.OtpBox
 import com.cmp.community.healers.softskilltraining.presentation.feature.auth.otp.mvi.OtpEffect
 import com.cmp.community.healers.softskilltraining.presentation.feature.auth.otp.mvi.OtpEvent
 import com.cmp.community.healers.softskilltraining.presentation.feature.auth.otp.mvi.OtpViewModel
 import com.cmp.community.healers.softskilltraining.theme.*
 import com.cmp.community.healers.softskilltraining.utils.constants.OTP_LENGTH
-import kotlinx.coroutines.delay
-import kotlinx.coroutines.launch
 
 @Composable
 fun OtpScreen(
@@ -46,8 +43,8 @@ fun OtpScreen(
     val state by vm.state.collectAsStateWithLifecycle()
     val focusRequesters = remember { List(OTP_LENGTH) { FocusRequester() } }
     var isVisible by remember { mutableStateOf(false) }
+    val s = LocalAppStrings.current
 
-    // ── Effects ───────────────────────────────────────────────────────────────
     LaunchedEffect(vm) {
         vm.effect.collect { effect ->
             when (effect) {
@@ -59,7 +56,6 @@ fun OtpScreen(
         }
     }
 
-    // Auto-focus first box on entry
     LaunchedEffect(Unit) { focusRequesters[0].requestFocus() }
 
     Box(
@@ -73,8 +69,6 @@ fun OtpScreen(
                 .padding(horizontal = 24.dp)
                 .padding(top = 56.dp)
         ) {
-
-            // ── Back ──────────────────────────────────────────────────────────
             IconButton(
                 onClick = { vm.onEvent(OtpEvent.NavigateBack) },
                 modifier = Modifier
@@ -90,9 +84,8 @@ fun OtpScreen(
 
             Spacer(Modifier.height(32.dp))
 
-            // ── Title ─────────────────────────────────────────────────────────
             Text(
-                "Verification Code",
+                s.verificationCode,
                 style = TextStyle(
                     fontSize = 32.sp, fontWeight = FontWeight.ExtraBold,
                     color = LabelColor, letterSpacing = (-0.5).sp
@@ -100,7 +93,6 @@ fun OtpScreen(
             )
             Spacer(Modifier.height(10.dp))
 
-            // Masked phone subtitle
             val masked = phone.let {
                 if (it.length >= 7) it.take(4) + "***" + it.takeLast(3) else it
             }
@@ -108,7 +100,7 @@ fun OtpScreen(
             Text(
                 buildAnnotatedString {
                     withStyle(SpanStyle(color = SubtitleColor, fontSize = 15.sp)) {
-                        append("We've sent a 6-digit code to ")
+                        append(s.otpSentTo)
                     }
                     withStyle(SpanStyle(color = LabelColor, fontWeight = FontWeight.Bold, fontSize = 15.sp)) {
                         append(masked)
@@ -116,13 +108,9 @@ fun OtpScreen(
                 }
             )
 
-            // ── Hint chip ─────────────────────────────────────────────────────
             Spacer(Modifier.height(12.dp))
-            if(isVisible){
-                Surface(
-                    color = GreenTint,
-                    shape = RoundedCornerShape(8.dp)
-                ) {
+            if (isVisible) {
+                Surface(color = GreenTint, shape = RoundedCornerShape(8.dp)) {
                     Text(
                         text = "💡 Hint: enter  1 1 1 1 1 1  to verify",
                         fontSize = 12.sp,
@@ -135,7 +123,6 @@ fun OtpScreen(
 
             Spacer(Modifier.height(40.dp))
 
-            // ── OTP Boxes ─────────────────────────────────────────────────────
             Row(
                 modifier = Modifier
                     .fillMaxWidth()
@@ -156,7 +143,6 @@ fun OtpScreen(
                 }
             }
 
-            // ── Inline error / expiry messages ────────────────────────────────
             AnimatedVisibility(
                 visible = state.isError || state.isExpired,
                 enter = fadeIn() + slideInVertically { -it / 2 },
@@ -170,10 +156,7 @@ fun OtpScreen(
                     modifier = Modifier.fillMaxWidth()
                 ) {
                     Text(
-                        text = if (state.isExpired)
-                            "⏱  OTP expired. Tap Resend to get a new code."
-                        else
-                            state.errorMessage,
+                        text = if (state.isExpired) "⏱  ${s.otpExpired}" else state.errorMessage,
                         color = if (state.isExpired) OrangeExpired else ErrorColor,
                         fontSize = 13.sp,
                         modifier = Modifier.padding(12.dp)
@@ -183,7 +166,6 @@ fun OtpScreen(
 
             Spacer(Modifier.height(32.dp))
 
-            // ── Verify button (hidden once expired) ───────────────────────────
             AnimatedVisibility(visible = !state.isExpired) {
                 Button(
                     onClick  = { vm.onEvent(OtpEvent.Submit) },
@@ -199,18 +181,13 @@ fun OtpScreen(
                     elevation = ButtonDefaults.buttonElevation(defaultElevation = 0.dp)
                 ) {
                     if (state.isLoading) {
-                        CircularProgressIndicator(
-                            modifier = Modifier.size(22.dp),
-                            color = Color.White,
-                            strokeWidth = 2.5.dp
-                        )
+                        CircularProgressIndicator(modifier = Modifier.size(22.dp), color = Color.White, strokeWidth = 2.5.dp)
                     } else {
-                        Text("Verify Code", style = TextStyle(fontSize = 16.sp, fontWeight = FontWeight.SemiBold))
+                        Text(s.verifyCode, style = TextStyle(fontSize = 16.sp, fontWeight = FontWeight.SemiBold))
                     }
                 }
             }
 
-            // ── Resend button (prominent when expired) ────────────────────────
             AnimatedVisibility(
                 visible = state.isExpired,
                 enter = fadeIn() + expandVertically(),
@@ -220,19 +197,15 @@ fun OtpScreen(
                     onClick   = { vm.onEvent(OtpEvent.ResendOtp) },
                     modifier  = Modifier.fillMaxWidth().height(58.dp),
                     shape     = RoundedCornerShape(14.dp),
-                    colors    = ButtonDefaults.buttonColors(
-                        containerColor = OrangeExpired,
-                        contentColor   = Color.White
-                    ),
+                    colors    = ButtonDefaults.buttonColors(containerColor = OrangeExpired, contentColor = Color.White),
                     elevation = ButtonDefaults.buttonElevation(defaultElevation = 0.dp)
                 ) {
-                    Text("Resend OTP", style = TextStyle(fontSize = 16.sp, fontWeight = FontWeight.SemiBold))
+                    Text(s.resendOtp, style = TextStyle(fontSize = 16.sp, fontWeight = FontWeight.SemiBold))
                 }
             }
 
             Spacer(Modifier.height(28.dp))
 
-            // ── Timer / inline resend row ─────────────────────────────────────
             Row(
                 modifier = Modifier.fillMaxWidth(),
                 horizontalArrangement = Arrangement.Center,
@@ -240,40 +213,25 @@ fun OtpScreen(
             ) {
                 when {
                     state.isExpired -> {
-                        // Already showing the prominent button above; show subtle link too
-                        Text("Didn't receive it? ", color = SubtitleColor, fontSize = 14.sp)
-                        TextButton(
-                            onClick = { vm.onEvent(OtpEvent.ResendOtp) },
-                            contentPadding = PaddingValues(0.dp)
-                        ) {
-                            Text("Resend", color = PrimaryGreen, fontWeight = FontWeight.Bold, fontSize = 14.sp)
+                        Text(s.didntReceive, color = SubtitleColor, fontSize = 14.sp)
+                        TextButton(onClick = { vm.onEvent(OtpEvent.ResendOtp) }, contentPadding = PaddingValues(0.dp)) {
+                            Text(s.resend, color = PrimaryGreen, fontWeight = FontWeight.Bold, fontSize = 14.sp)
                         }
                     }
                     state.canResend -> {
-                        Text("Didn't receive the code? ", color = SubtitleColor, fontSize = 14.sp)
-                        TextButton(
-                            onClick = { vm.onEvent(OtpEvent.ResendOtp) },
-                            contentPadding = PaddingValues(0.dp)
-                        ) {
-                            Text("Resend", color = PrimaryGreen, fontWeight = FontWeight.Bold, fontSize = 14.sp)
+                        Text(s.didntReceive, color = SubtitleColor, fontSize = 14.sp)
+                        TextButton(onClick = { vm.onEvent(OtpEvent.ResendOtp) }, contentPadding = PaddingValues(0.dp)) {
+                            Text(s.resend, color = PrimaryGreen, fontWeight = FontWeight.Bold, fontSize = 14.sp)
                         }
                     }
                     else -> {
-                        Text("Resend code in ", color = SubtitleColor, fontSize = 14.sp)
-                        // Animated countdown
+                        Text(s.resendCodeIn, color = SubtitleColor, fontSize = 14.sp)
                         AnimatedContent(
                             targetState = state.resendTimer,
-                            transitionSpec = {
-                                slideInVertically { it } togetherWith slideOutVertically { -it }
-                            },
+                            transitionSpec = { slideInVertically { it } togetherWith slideOutVertically { -it } },
                             label = "timer"
                         ) { seconds ->
-                            Text(
-                                "${seconds}s",
-                                color = PrimaryGreen,
-                                fontWeight = FontWeight.Bold,
-                                fontSize = 14.sp
-                            )
+                            Text("${seconds}s", color = PrimaryGreen, fontWeight = FontWeight.Bold, fontSize = 14.sp)
                         }
                     }
                 }

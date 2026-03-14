@@ -25,6 +25,7 @@ import androidx.compose.ui.unit.sp
 import com.cmp.community.healers.softskilltraining.presentation.feature.payment.mvi.PaymentEvent
 import com.cmp.community.healers.softskilltraining.presentation.feature.payment.mvi.PaymentState
 import com.cmp.community.healers.softskilltraining.theme.Border
+import com.cmp.community.healers.softskilltraining.theme.LocalAppStrings
 import com.cmp.community.healers.softskilltraining.theme.Primary
 
 // ─────────────────────────────────────────────────────────────────────────────
@@ -33,17 +34,18 @@ import com.cmp.community.healers.softskilltraining.theme.Primary
 
 @Composable
 fun PaidPhase(state: PaymentState, onEvent: (PaymentEvent) -> Unit) {
+    val s = LocalAppStrings.current
     Column(verticalArrangement = Arrangement.spacedBy(16.dp)) {
 
         // Transaction details
         HorizontalDivider(color = Border.copy(alpha = 0.4f))
 
-        ReceiptRow("Transaction ID", state.transactionId, isGreen = false)
-        ReceiptRow("Payment Date",   state.paymentDate,   isGreen = false)
+        ReceiptRow(s.transactionId, state.transactionId, isGreen = false)
+        ReceiptRow(s.paymentDate,   state.paymentDate,   isGreen = false)
 
         HorizontalDivider(color = Border.copy(alpha = 0.4f))
 
-        ReceiptRow("Status", "Success", isGreen = true)
+        ReceiptRow(s.statusLabel, s.successLabel, isGreen = true)
 
         HorizontalDivider(color = Border.copy(alpha = 0.4f))
 
@@ -59,11 +61,11 @@ fun PaidPhase(state: PaymentState, onEvent: (PaymentEvent) -> Unit) {
             if (state.isDownloading) {
                 CircularProgressIndicator(modifier = Modifier.size(16.dp), color = Primary, strokeWidth = 2.dp)
                 Spacer(Modifier.width(8.dp))
-                Text("Downloading...", fontSize = 14.sp, color = Primary)
+                Text(s.downloading, fontSize = 14.sp, color = Primary)
             } else {
                 Icon(Icons.Outlined.Download, null, modifier = Modifier.size(18.dp))
                 Spacer(Modifier.width(8.dp))
-                Text("Download Receipt", fontWeight = FontWeight.SemiBold, fontSize = 14.sp)
+                Text(s.downloadReceipt, fontWeight = FontWeight.SemiBold, fontSize = 14.sp)
             }
         }
     }

@@ -18,23 +18,24 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.cmp.community.healers.softskilltraining.presentation.feature.home.mvi.CandidateHomeState
 import com.cmp.community.healers.softskilltraining.theme.Border
+import com.cmp.community.healers.softskilltraining.theme.LocalAppStrings
 import com.cmp.community.healers.softskilltraining.theme.MutedFg
 import com.cmp.community.healers.softskilltraining.theme.TextFg
 
-
 @Composable
 fun PersonalInfoCard(state: CandidateHomeState) {
+    val s = LocalAppStrings.current
     ProfileCard {
         Column(verticalArrangement = Arrangement.spacedBy(16.dp)) {
-            SectionTitle(Icons.Outlined.Person, "Personal Information")
+            SectionTitle(Icons.Outlined.Person, s.personalInfo)
 
             val fields = listOf(
-                "Father's Name"     to state.fatherName.ifBlank { "N/A" },
-                "CNIC Number"       to state.cnicNumber.ifBlank { "N/A" },
-                "Date of Birth"     to state.dateOfBirth.ifBlank { "N/A" },
-                "City"              to state.city.ifBlank { "N/A" },
-                "Address"           to state.address.ifBlank { "N/A" },
-                "Registration Date" to state.profileRegistrationDate.ifBlank { "N/A" }
+                s.fatherNameLabel to state.fatherName.ifBlank          { "N/A" },
+                s.cnicLabel       to state.cnicNumber.ifBlank          { "N/A" },
+                s.dobLabel        to state.dateOfBirth.ifBlank         { "N/A" },
+                s.cityLabel       to state.city.ifBlank                { "N/A" },
+                s.addressLabel    to state.address.ifBlank             { "N/A" },
+                s.regDateLabel    to state.profileRegistrationDate.ifBlank { "N/A" }
             )
 
             fields.chunked(2).forEach { pair ->
@@ -51,7 +52,7 @@ fun PersonalInfoCard(state: CandidateHomeState) {
                 horizontalArrangement = Arrangement.SpaceBetween,
                 verticalAlignment     = Alignment.CenterVertically
             ) {
-                Text("Fee Payment", style = TextStyle(fontSize = 12.sp, color = MutedFg))
+                Text(s.feePayment, style = TextStyle(fontSize = 12.sp, color = MutedFg))
                 FeePaymentBadge(state.profileFeePaymentStatus)
             }
         }

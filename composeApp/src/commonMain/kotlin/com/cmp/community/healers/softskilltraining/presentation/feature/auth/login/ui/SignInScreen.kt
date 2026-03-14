@@ -17,30 +17,23 @@ import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.text.KeyboardActions
 import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.Lock
 import androidx.compose.material.icons.outlined.Lock
 import androidx.compose.material.icons.outlined.Phone
 import androidx.compose.material.icons.outlined.Visibility
 import androidx.compose.material.icons.outlined.VisibilityOff
-import androidx.compose.material3.IconButton
 import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.Icon
-import androidx.compose.material3.OutlinedTextField
-import androidx.compose.material3.OutlinedTextFieldDefaults
+import androidx.compose.material3.IconButton
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextButton
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.remember
-import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.focus.FocusDirection
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalFocusManager
 import androidx.compose.ui.text.SpanStyle
@@ -55,16 +48,15 @@ import androidx.compose.ui.text.withStyle
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
-import androidx.lifecycle.viewmodel.compose.viewModel
 import com.cmp.community.healers.softskilltraining.presentation.feature.auth.component.AuthLabel
 import com.cmp.community.healers.softskilltraining.presentation.feature.auth.component.AuthTextField
 import com.cmp.community.healers.softskilltraining.presentation.feature.auth.login.mvi.SignInEffect
 import com.cmp.community.healers.softskilltraining.presentation.feature.auth.login.mvi.SignInEvent
 import com.cmp.community.healers.softskilltraining.presentation.feature.auth.login.mvi.SignInViewModel
 import com.cmp.community.healers.softskilltraining.theme.*
+import androidx.compose.ui.focus.FocusDirection
 
 
-// ─── Screen ──────────────────────────────────────────────────────────────────
 @Composable
 fun SignInScreen(
     vm: SignInViewModel,
@@ -73,11 +65,12 @@ fun SignInScreen(
 ) {
     val state by vm.state.collectAsStateWithLifecycle()
     val focusManager = LocalFocusManager.current
+    val s = LocalAppStrings.current
 
     LaunchedEffect(vm) {
         vm.effect.collect { effect ->
             when (effect) {
-                is SignInEffect.NavigateToHome    -> onNavigateToHome(effect.phone)
+                is SignInEffect.NavigateToHome   -> onNavigateToHome(effect.phone)
                 is SignInEffect.NavigateToSignUp -> onNavigateToSignUp()
                 is SignInEffect.ShowSnackbar     -> { /* wire to SnackbarHost if needed */ }
             }
@@ -96,7 +89,7 @@ fun SignInScreen(
                 .padding(top = 64.dp)
         ) {
             Text(
-                text = "Welcome Back",
+                text = s.welcomeBack,
                 style = TextStyle(
                     fontSize = 32.sp,
                     fontWeight = FontWeight.ExtraBold,
@@ -106,12 +99,11 @@ fun SignInScreen(
             )
             Spacer(Modifier.height(8.dp))
             Text(
-                text = "Sign in to access your candidate portal",
+                text = s.welcomeBackSub,
                 style = TextStyle(fontSize = 15.sp, color = SubtitleColor)
             )
             Spacer(Modifier.height(40.dp))
 
-            // General error banner
             AnimatedVisibility(visible = state.generalError != null, enter = fadeIn(), exit = fadeOut()) {
                 state.generalError?.let { msg ->
                     Surface(
@@ -125,12 +117,12 @@ fun SignInScreen(
                 }
             }
 
-            AuthLabel("Phone Number")
+            AuthLabel(s.phoneNumber)
             Spacer(Modifier.height(8.dp))
             AuthTextField(
                 value = state.phone,
                 onValueChange = { vm.onEvent(SignInEvent.PhoneChanged(it)) },
-                placeholder = "03001234567",
+                placeholder = s.phoneHint,
                 leadingIcon = { Icon(Icons.Outlined.Phone, null, tint = IconTint, modifier = Modifier.size(20.dp)) },
                 keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Phone, imeAction = ImeAction.Next),
                 keyboardActions = KeyboardActions(onNext = { focusManager.moveFocus(FocusDirection.Down) }),
@@ -139,12 +131,12 @@ fun SignInScreen(
             )
             Spacer(Modifier.height(24.dp))
 
-            AuthLabel("Password")
+            AuthLabel(s.password)
             Spacer(Modifier.height(8.dp))
             AuthTextField(
                 value = state.password,
                 onValueChange = { vm.onEvent(SignInEvent.PasswordChanged(it)) },
-                placeholder = "Enter your password",
+                placeholder = s.passwordHint,
                 leadingIcon = { Icon(Icons.Outlined.Lock, null, tint = IconTint, modifier = Modifier.size(20.dp)) },
                 trailingIcon = {
                     IconButton(onClick = { vm.onEvent(SignInEvent.TogglePasswordVisibility) }) {
@@ -176,7 +168,7 @@ fun SignInScreen(
                 if (state.isLoading) {
                     CircularProgressIndicator(modifier = Modifier.size(22.dp), color = Color.White, strokeWidth = 2.5.dp)
                 } else {
-                    Text("Sign In", style = TextStyle(fontSize = 16.sp, fontWeight = FontWeight.SemiBold))
+                    Text(s.signIn, style = TextStyle(fontSize = 16.sp, fontWeight = FontWeight.SemiBold))
                 }
             }
             Spacer(Modifier.height(28.dp))
@@ -185,8 +177,8 @@ fun SignInScreen(
                 TextButton(onClick = { vm.onEvent(SignInEvent.NavigateToSignUp) }) {
                     Text(
                         buildAnnotatedString {
-                            withStyle(SpanStyle(color = SubtitleColor, fontSize = 14.sp)) { append("Don't have an account? ") }
-                            withStyle(SpanStyle(color = PrimaryGreen, fontWeight = FontWeight.Bold, fontSize = 14.sp)) { append("Sign Up") }
+                            withStyle(SpanStyle(color = SubtitleColor, fontSize = 14.sp)) { append(s.noAccount) }
+                            withStyle(SpanStyle(color = PrimaryGreen, fontWeight = FontWeight.Bold, fontSize = 14.sp)) { append(s.signUp) }
                         }
                     )
                 }

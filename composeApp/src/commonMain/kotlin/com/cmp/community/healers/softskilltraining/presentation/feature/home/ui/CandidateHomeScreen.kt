@@ -34,6 +34,7 @@ import com.cmp.community.healers.softskilltraining.presentation.feature.registra
 import com.cmp.community.healers.softskilltraining.presentation.feature.registration.component.PersonalInformationCard
 import com.cmp.community.healers.softskilltraining.utils.constants.document.DocumentType
 import com.cmp.community.healers.softskilltraining.theme.BgScreen
+import com.cmp.community.healers.softskilltraining.theme.LocalAppStrings
 import com.cmp.community.healers.softskilltraining.theme.CardColor
 import com.cmp.community.healers.softskilltraining.theme.MutedFg
 import com.cmp.community.healers.softskilltraining.theme.Primary
@@ -53,6 +54,7 @@ fun CandidateHomeScreen(
 ) {
     val state by vm.state.collectAsStateWithLifecycle()
     val snackbar = remember { SnackbarHostState() }
+    val s = LocalAppStrings.current
 
     // ── Pre-build file pickers (must be @Composable-level, never inside effects)
     val docLaunchers: Map<DocumentType, () -> Unit> = DocumentType.entries.associateWith { type ->
@@ -173,7 +175,7 @@ fun CandidateHomeScreen(
                                         verticalAlignment = Alignment.CenterVertically
                                     ) {
                                         Text(
-                                            "Step 1 of 3 • Registration",
+                                            s.step1Label,
                                             style = TextStyle(fontSize = 13.sp, color = MutedFg)
                                         )
                                         Button(
@@ -196,7 +198,7 @@ fun CandidateHomeScreen(
                                                 )
                                             } else {
                                                 Text(
-                                                    "Continue to Payment",
+                                                    s.continueToPayment,
                                                     fontWeight = FontWeight.SemiBold,
                                                     fontSize = 14.sp
                                                 )

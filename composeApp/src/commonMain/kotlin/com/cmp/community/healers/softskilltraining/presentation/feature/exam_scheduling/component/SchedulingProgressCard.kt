@@ -26,6 +26,7 @@ import com.cmp.community.healers.softskilltraining.domain.model.StepInfo
 import com.cmp.community.healers.softskilltraining.presentation.components.progress.circle.StepCircle
 import com.cmp.community.healers.softskilltraining.theme.Border
 import com.cmp.community.healers.softskilltraining.theme.CardColor
+import com.cmp.community.healers.softskilltraining.theme.LocalAppStrings
 import com.cmp.community.healers.softskilltraining.theme.MutedFg
 import com.cmp.community.healers.softskilltraining.theme.Primary
 import com.cmp.community.healers.softskilltraining.theme.TextFg
@@ -33,10 +34,11 @@ import com.cmp.community.healers.softskilltraining.utils.constants.AMOUNT_FEE
 
 @Composable
 fun SchedulingProgressCard() {
+    val s = LocalAppStrings.current
     val steps = listOf(
-        StepInfo("Registration",      "Complete profile",   isDone = true,  isActive = false),
-        StepInfo("Payment",           "Pay PKR $AMOUNT_FEE",       isDone = true,  isActive = false),
-        StepInfo("Schedule Training", "Pick training date", isDone = false, isActive = true),
+        StepInfo(s.paymentProgressDone,    s.completeProfile,         isDone = true,  isActive = false),
+        StepInfo(s.paymentProgressActive,  s.payFee, isDone = true,  isActive = false),
+        StepInfo(s.paymentProgressPending, s.pickDate,                isDone = false, isActive = true),
     )
     Surface(
         modifier        = Modifier.fillMaxWidth(),
@@ -52,13 +54,13 @@ fun SchedulingProgressCard() {
                 verticalAlignment     = Alignment.Top
             ) {
                 Column {
-                    Text("Application Progress",
+                    Text(s.appProgress,
                         style = TextStyle(fontSize = 20.sp, fontWeight = FontWeight.Bold, color = TextFg))
-                    Text("Complete all steps to receive your certification",
+                    Text(s.appProgressSub,
                         style = TextStyle(fontSize = 12.sp, color = MutedFg))
                 }
                 Column(horizontalAlignment = Alignment.End) {
-                    Text("Current Step", style = TextStyle(fontSize = 11.sp, color = MutedFg))
+                    Text(s.currentStepLabel, style = TextStyle(fontSize = 11.sp, color = MutedFg), maxLines = 1, softWrap = false)
                     Text("3/3", style = TextStyle(fontSize = 24.sp, fontWeight = FontWeight.Bold, color = Primary))
                 }
             }

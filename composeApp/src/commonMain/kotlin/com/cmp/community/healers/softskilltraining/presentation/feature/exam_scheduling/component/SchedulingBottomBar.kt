@@ -33,6 +33,7 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.cmp.community.healers.softskilltraining.theme.CardColor
+import com.cmp.community.healers.softskilltraining.theme.LocalAppStrings
 import com.cmp.community.healers.softskilltraining.theme.MutedFg
 import com.cmp.community.healers.softskilltraining.theme.Primary
 import com.cmp.community.healers.softskilltraining.theme.TextFg
@@ -45,6 +46,7 @@ fun SchedulingBottomBar(
     onBack:       () -> Unit,
     onContinue:   () -> Unit
 ) {
+    val s = LocalAppStrings.current
     Surface(
         modifier        = modifier.fillMaxWidth(),
         color           = CardColor,
@@ -60,7 +62,7 @@ fun SchedulingBottomBar(
             verticalArrangement = Arrangement.spacedBy(8.dp)
         ) {
             Text(
-                "Step 3 of 3  •  Scheduling",
+                s.step3Label,
                 style    = TextStyle(fontSize = 12.sp, color = MutedFg),
                 modifier = Modifier.align(Alignment.CenterHorizontally)
             )
@@ -79,7 +81,7 @@ fun SchedulingBottomBar(
                 ) {
                     Icon(Icons.Outlined.ChevronLeft, null, tint = Primary, modifier = Modifier.size(18.dp))
                     Spacer(Modifier.width(4.dp))
-                    Text("Back", fontSize = 14.sp, fontWeight = FontWeight.SemiBold, color = TextFg, maxLines = 1)
+                    Text(s.back, fontSize = 14.sp, fontWeight = FontWeight.SemiBold, color = TextFg, maxLines = 1)
                 }
                 Button(
                     onClick        = onContinue,
@@ -97,9 +99,9 @@ fun SchedulingBottomBar(
                     if (isScheduling) {
                         CircularProgressIndicator(modifier = Modifier.size(16.dp), color = Color.White, strokeWidth = 2.dp)
                         Spacer(Modifier.width(8.dp))
-                        Text("Scheduling...", fontSize = 14.sp, fontWeight = FontWeight.SemiBold, maxLines = 1)
+                        Text(s.scheduling, fontSize = 14.sp, fontWeight = FontWeight.SemiBold, maxLines = 1)
                     } else {
-                        Text("Complete Registration", fontSize = 14.sp, fontWeight = FontWeight.SemiBold, maxLines = 1, softWrap = false)
+                        Text(s.completeRegistrationBtn, fontSize = 14.sp, fontWeight = FontWeight.SemiBold, maxLines = 1, softWrap = false)
                         Spacer(Modifier.width(6.dp))
                         Icon(Icons.Outlined.ChevronRight, null, modifier = Modifier.size(16.dp))
                     }

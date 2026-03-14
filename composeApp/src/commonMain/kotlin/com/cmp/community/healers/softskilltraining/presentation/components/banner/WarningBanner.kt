@@ -22,9 +22,11 @@ import com.cmp.community.healers.softskilltraining.theme.Amber
 import com.cmp.community.healers.softskilltraining.theme.AmberBg
 import com.cmp.community.healers.softskilltraining.theme.AmberBorder
 import com.cmp.community.healers.softskilltraining.theme.AmberText
+import com.cmp.community.healers.softskilltraining.theme.LocalAppStrings
 
 @Composable
 fun WarningBanner() {
+    val s = LocalAppStrings.current
     Surface(
         modifier = Modifier.fillMaxWidth(),
         shape    = RoundedCornerShape(12.dp),
@@ -38,7 +40,7 @@ fun WarningBanner() {
         ) {
             Icon(Icons.Outlined.Warning, null, tint = Amber, modifier = Modifier.size(16.dp))
             Text(
-                "Please complete the payment to proceed to training scheduling",
+                s.paymentRequiredWarning,
                 style = TextStyle(fontSize = 13.sp, color = AmberText, lineHeight = 18.sp)
             )
         }

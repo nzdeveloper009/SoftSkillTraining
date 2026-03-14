@@ -31,6 +31,7 @@ import androidx.compose.ui.unit.sp
 import com.cmp.community.healers.softskilltraining.presentation.feature.exam_scheduling.mvi.SchedulingState
 import com.cmp.community.healers.softskilltraining.theme.Border
 import com.cmp.community.healers.softskilltraining.theme.CardColor
+import com.cmp.community.healers.softskilltraining.theme.LocalAppStrings
 import com.cmp.community.healers.softskilltraining.theme.MutedFg
 import com.cmp.community.healers.softskilltraining.theme.SuccessBg
 import com.cmp.community.healers.softskilltraining.theme.SuccessBorder
@@ -39,6 +40,7 @@ import com.cmp.community.healers.softskilltraining.theme.TextFg
 
 @Composable
 fun CelebrationCard(state: SchedulingState, onGoToProfile: () -> Unit) {
+    val s = LocalAppStrings.current
     Surface(
         modifier        = Modifier.fillMaxWidth(),
         shape           = RoundedCornerShape(20.dp),
@@ -67,7 +69,7 @@ fun CelebrationCard(state: SchedulingState, onGoToProfile: () -> Unit) {
                     horizontalArrangement = Arrangement.spacedBy(6.dp)
                 ) {
                     Icon(Icons.Outlined.CheckCircle, null, tint = SuccessText, modifier = Modifier.size(14.dp))
-                    Text("Registration Complete",
+                    Text(s.regComplete,
                         style = TextStyle(
                             fontSize = 13.sp,
                             fontWeight = FontWeight.SemiBold,
@@ -79,7 +81,7 @@ fun CelebrationCard(state: SchedulingState, onGoToProfile: () -> Unit) {
 
             // ── Title ─────────────────────────────────────────────────────────
             Text(
-                "Congratulations! 🎉",
+                s.congratulations,
                 style = TextStyle(
                     fontSize   = 26.sp,
                     fontWeight = FontWeight.ExtraBold,
@@ -88,7 +90,7 @@ fun CelebrationCard(state: SchedulingState, onGoToProfile: () -> Unit) {
                 )
             )
             Text(
-                "Your registration has been completed and your training has been scheduled successfully",
+                s.regCompletedSub,
                 style = TextStyle(
                     fontSize  = 13.sp,
                     color     = MutedFg,
@@ -121,7 +123,7 @@ fun CelebrationCard(state: SchedulingState, onGoToProfile: () -> Unit) {
             ) {
                 Icon(Icons.Outlined.Person, null, tint = MutedFg, modifier = Modifier.size(18.dp))
                 Spacer(Modifier.width(8.dp))
-                Text("Go to Profile", fontSize = 14.sp, fontWeight = FontWeight.SemiBold, color = TextFg)
+                Text(s.goToProfile, fontSize = 14.sp, fontWeight = FontWeight.SemiBold, color = TextFg)
             }
         }
     }

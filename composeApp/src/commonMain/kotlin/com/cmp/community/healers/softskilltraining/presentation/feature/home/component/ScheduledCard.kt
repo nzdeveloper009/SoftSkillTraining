@@ -22,12 +22,14 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.cmp.community.healers.softskilltraining.theme.CardBg
 import com.cmp.community.healers.softskilltraining.theme.CardBorder
+import com.cmp.community.healers.softskilltraining.theme.LocalAppStrings
 import com.cmp.community.healers.softskilltraining.theme.Primary
 import com.cmp.community.healers.softskilltraining.theme.SubtitleHomeColor
 import com.cmp.community.healers.softskilltraining.theme.TitleColor
 
 @Composable
 fun ScheduledCard(modifier: Modifier, onGoToProfile: () -> Unit) {
+    val s = LocalAppStrings.current
     Surface(
         modifier        = modifier.fillMaxWidth(),
         shape           = RoundedCornerShape(16.dp),
@@ -43,16 +45,16 @@ fun ScheduledCard(modifier: Modifier, onGoToProfile: () -> Unit) {
             verticalArrangement = Arrangement.spacedBy(12.dp)
         ) {
             Text(
-                "Training Already Scheduled",
+                s.trainingScheduled,
                 style = TextStyle(
-                    fontSize = 22.sp,
+                    fontSize   = 22.sp,
                     fontWeight = FontWeight.Bold,
-                    color = TitleColor,
-                    textAlign = TextAlign.Center
+                    color      = TitleColor,
+                    textAlign  = TextAlign.Center
                 )
             )
             Text(
-                "Your training has been scheduled. View your profile for training details.",
+                s.trainingScheduledSub,
                 style = TextStyle(
                     fontSize   = 14.sp,
                     color      = SubtitleHomeColor,
@@ -64,13 +66,10 @@ fun ScheduledCard(modifier: Modifier, onGoToProfile: () -> Unit) {
             Button(
                 onClick  = onGoToProfile,
                 shape    = RoundedCornerShape(10.dp),
-                colors   = ButtonDefaults.buttonColors(
-                    containerColor = Primary,
-                    contentColor   = Color.White
-                ),
+                colors   = ButtonDefaults.buttonColors(containerColor = Primary, contentColor = Color.White),
                 modifier = Modifier.height(46.dp)
             ) {
-                Text("Go to Profile", fontSize = 14.sp, fontWeight = FontWeight.SemiBold)
+                Text(s.goToProfile, fontSize = 14.sp, fontWeight = FontWeight.SemiBold)
             }
         }
     }

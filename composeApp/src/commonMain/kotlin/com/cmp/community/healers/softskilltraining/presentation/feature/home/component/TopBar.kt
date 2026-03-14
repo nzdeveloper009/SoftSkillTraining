@@ -40,6 +40,7 @@ import com.cmp.community.healers.softskilltraining.presentation.feature.home.mvi
 import com.cmp.community.healers.softskilltraining.utils.constants.homee.CandidateTab
 import com.cmp.community.healers.softskilltraining.theme.AppLanguage
 import com.cmp.community.healers.softskilltraining.theme.Border
+import com.cmp.community.healers.softskilltraining.theme.LocalAppStrings
 import com.cmp.community.healers.softskilltraining.theme.CardColor
 import com.cmp.community.healers.softskilltraining.theme.Destructive
 import com.cmp.community.healers.softskilltraining.theme.MutedFg
@@ -54,6 +55,7 @@ fun TopBar(
     onLangToggle: () -> Unit,
     onLogout:     () -> Unit
 ) {
+    val s = LocalAppStrings.current
     Surface(
         modifier        = Modifier.fillMaxWidth().shadow(3.dp),
         color           = CardColor,
@@ -94,11 +96,11 @@ fun TopBar(
                     }
                     Column(verticalArrangement = Arrangement.spacedBy(1.dp)) {
                         Text(
-                            "Soft Skill Training",
+                            s.appTitle,
                             style = TextStyle(fontSize = 15.sp, fontWeight = FontWeight.Bold, color = TextFg)
                         )
                         Text(
-                            "Candidate Portal",
+                            s.appSubtitle,
                             style = TextStyle(fontSize = 11.sp, color = MutedFg)
                         )
                     }
@@ -115,7 +117,7 @@ fun TopBar(
                 ) {
                     Icon(Icons.Outlined.Logout, null, modifier = Modifier.size(14.dp), tint = Destructive)
                     Spacer(Modifier.width(5.dp))
-                    Text("Logout", fontSize = 12.sp, color = Destructive, fontWeight = FontWeight.Medium)
+                    Text(s.logout, fontSize = 12.sp, color = Destructive, fontWeight = FontWeight.Medium)
                 }
             }
 
@@ -135,13 +137,13 @@ fun TopBar(
                     horizontalArrangement = Arrangement.spacedBy(2.dp)
                 ) {
                     SegTab(
-                        label    = "Profile",
+                        label    = s.tabProfile,
                         icon     = Icons.Outlined.Person,
                         selected = state.activeTab == CandidateTab.PROFILE,
                         onClick  = { onTab(CandidateTab.PROFILE) }
                     )
                     SegTab(
-                        label    = "Application",
+                        label    = s.tabApplication,
                         icon     = Icons.Outlined.Description,
                         selected = state.activeTab == CandidateTab.REGISTRATION,
                         onClick  = { onTab(CandidateTab.REGISTRATION) }

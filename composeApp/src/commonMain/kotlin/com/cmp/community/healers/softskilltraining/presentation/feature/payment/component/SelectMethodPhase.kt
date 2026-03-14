@@ -23,6 +23,7 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.cmp.community.healers.softskilltraining.presentation.feature.payment.mvi.PaymentEvent
 import com.cmp.community.healers.softskilltraining.presentation.feature.payment.mvi.PaymentState
+import com.cmp.community.healers.softskilltraining.theme.LocalAppStrings
 import com.cmp.community.healers.softskilltraining.theme.Primary
 
 // ─────────────────────────────────────────────────────────────────────────────
@@ -31,6 +32,7 @@ import com.cmp.community.healers.softskilltraining.theme.Primary
 
 @Composable
 fun SelectMethodPhase(state: PaymentState, onEvent: (PaymentEvent) -> Unit) {
+    val s = LocalAppStrings.current
     Column(verticalArrangement = Arrangement.spacedBy(16.dp)) {
 
         Spacer(Modifier.height(4.dp))
@@ -49,9 +51,9 @@ fun SelectMethodPhase(state: PaymentState, onEvent: (PaymentEvent) -> Unit) {
             if (state.isGeneratingQr) {
                 CircularProgressIndicator(modifier = Modifier.size(18.dp), color = Color.White, strokeWidth = 2.dp)
                 Spacer(Modifier.width(8.dp))
-                Text("Generating...", fontWeight = FontWeight.SemiBold, fontSize = 14.sp)
+                Text(s.generating, fontWeight = FontWeight.SemiBold, fontSize = 14.sp)
             } else {
-                Text("Generate QR", fontWeight = FontWeight.SemiBold, fontSize = 14.sp)
+                Text(s.generateQr, fontWeight = FontWeight.SemiBold, fontSize = 14.sp)
                 Spacer(Modifier.width(8.dp))
                 Icon(Icons.Outlined.ArrowForward, null, modifier = Modifier.size(16.dp))
             }

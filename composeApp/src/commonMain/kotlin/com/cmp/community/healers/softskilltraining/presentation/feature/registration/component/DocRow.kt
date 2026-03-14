@@ -34,6 +34,8 @@ import com.cmp.community.healers.softskilltraining.utils.constants.document.Docu
 import com.cmp.community.healers.softskilltraining.theme.Border
 import com.cmp.community.healers.softskilltraining.theme.CardColor
 import com.cmp.community.healers.softskilltraining.theme.Destructive
+import com.cmp.community.healers.softskilltraining.theme.LocalAppStrings
+import com.cmp.community.healers.softskilltraining.theme.labelFor
 import com.cmp.community.healers.softskilltraining.theme.MutedFg
 import com.cmp.community.healers.softskilltraining.theme.Primary
 import com.cmp.community.healers.softskilltraining.theme.Secondary
@@ -41,6 +43,7 @@ import com.cmp.community.healers.softskilltraining.theme.TextFg
 
 @Composable
 fun DocRow(type: DocumentType, uploaded: Boolean, modifier: Modifier, onPick: () -> Unit) {
+    val s = LocalAppStrings.current
     Surface(
         modifier = modifier,
         shape    = RoundedCornerShape(12.dp),
@@ -75,8 +78,8 @@ fun DocRow(type: DocumentType, uploaded: Boolean, modifier: Modifier, onPick: ()
                     )
                 }
                 Column {
-                    Text(type.label, fontSize = 12.sp, fontWeight = FontWeight.SemiBold, color = TextFg, lineHeight = 14.sp)
-                    Text("MANDATORY", fontSize = 9.sp, fontWeight = FontWeight.Bold, color = Destructive)
+                    Text(s.labelFor(type), fontSize = 12.sp, fontWeight = FontWeight.SemiBold, color = TextFg, lineHeight = 14.sp)
+                    Text(s.mandatory, fontSize = 9.sp, fontWeight = FontWeight.Bold, color = Destructive)
                     Text(type.format, fontSize = 10.sp, color = MutedFg)
                 }
             }
@@ -94,7 +97,7 @@ fun DocRow(type: DocumentType, uploaded: Boolean, modifier: Modifier, onPick: ()
                     null, tint = Primary, modifier = Modifier.size(13.dp)
                 )
                 Spacer(Modifier.width(4.dp))
-                Text(if (uploaded) "Change" else "Upload", fontSize = 12.sp, color = Primary, fontWeight = FontWeight.SemiBold)
+                Text(if (uploaded) s.change else s.upload, fontSize = 12.sp, color = Primary, fontWeight = FontWeight.SemiBold)
             }
         }
     }

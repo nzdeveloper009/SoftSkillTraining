@@ -6,6 +6,7 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
+import com.cmp.community.healers.softskilltraining.theme.LocalAppStrings
 
 // ─────────────────────────────────────────────────────────────────────────────
 // 3 STATUS BADGES  (Registration Complete | Payment Received | Training Scheduled)
@@ -13,10 +14,11 @@ import androidx.compose.ui.unit.dp
 
 @Composable
 fun StatusBadgesRow() {
+    val s = LocalAppStrings.current
     val badges = listOf(
-        "Registration" to "Complete",
-        "Payment"      to "Received",
-        "Training"     to "Scheduled"
+        s.stepRegistration  to s.badgeRegistrationSub,
+        s.stepPayment       to s.badgePaymentSub,
+        s.stepTraining      to s.badgeTrainingSub
     )
     Row(
         modifier              = Modifier.fillMaxWidth(),

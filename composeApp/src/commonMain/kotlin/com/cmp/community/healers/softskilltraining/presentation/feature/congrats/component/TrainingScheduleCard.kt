@@ -29,12 +29,14 @@ import androidx.compose.ui.unit.sp
 import com.cmp.community.healers.softskilltraining.presentation.feature.exam_scheduling.mvi.SchedulingState
 import com.cmp.community.healers.softskilltraining.theme.Border
 import com.cmp.community.healers.softskilltraining.theme.CardColor
+import com.cmp.community.healers.softskilltraining.theme.LocalAppStrings
 import com.cmp.community.healers.softskilltraining.theme.MutedFg
 import com.cmp.community.healers.softskilltraining.theme.Primary
 import com.cmp.community.healers.softskilltraining.theme.TextFg
 
 @Composable
 fun TrainingScheduleCard(state: SchedulingState) {
+    val s = LocalAppStrings.current
     Surface(
         modifier = Modifier.fillMaxWidth(),
         shape    = RoundedCornerShape(12.dp),
@@ -58,14 +60,14 @@ fun TrainingScheduleCard(state: SchedulingState) {
                     Icon(Icons.Outlined.CalendarMonth, null, tint = Primary, modifier = Modifier.size(18.dp))
                 }
                 Column {
-                    Text("Training Schedule",
+                    Text(s.trainingScheduleTitle,
                         style = TextStyle(
                             fontSize = 15.sp,
                             fontWeight = FontWeight.Bold,
                             color = TextFg
                         )
                     )
-                    Text("Your scheduled training details",
+                    Text(s.trainingScheduleCardSub,
                         style = TextStyle(fontSize = 11.sp, color = MutedFg))
                 }
             }
@@ -77,19 +79,19 @@ fun TrainingScheduleCard(state: SchedulingState) {
             ) {
                 ScheduleInfoTile(
                     icon  = Icons.Outlined.CalendarToday,
-                    label = "Date",
+                    label = s.dateLabel,
                     value = state.trainingDate.ifBlank { "Feb 25, 2026" },
                     modifier = Modifier.weight(1f)
                 )
                 ScheduleInfoTile(
                     icon  = Icons.Outlined.Schedule,
-                    label = "Time",
+                    label = s.timeLabel,
                     value = state.trainingTime,
                     modifier = Modifier.weight(1f)
                 )
                 ScheduleInfoTile(
                     icon  = Icons.Outlined.LocationOn,
-                    label = "Center",
+                    label = s.centerLabel,
                     value = state.trainingCenter,
                     modifier = Modifier.weight(1f)
                 )

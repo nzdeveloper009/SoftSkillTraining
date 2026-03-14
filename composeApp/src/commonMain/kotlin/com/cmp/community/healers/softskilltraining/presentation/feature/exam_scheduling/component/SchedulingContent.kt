@@ -19,6 +19,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
 import com.cmp.community.healers.softskilltraining.presentation.components.banner.WarningBanner
 import com.cmp.community.healers.softskilltraining.presentation.feature.exam_scheduling.mvi.SchedulingEvent
+import com.cmp.community.healers.softskilltraining.theme.LocalAppStrings
 import com.cmp.community.healers.softskilltraining.presentation.feature.exam_scheduling.mvi.SchedulingState
 import com.cmp.community.healers.softskilltraining.presentation.feature.home.component.TopBar
 import com.cmp.community.healers.softskilltraining.presentation.feature.home.mvi.CandidateHomeEvent
@@ -35,6 +36,7 @@ fun SchedulingContent(
     onLogout:        () -> Unit,
     onEvent:         (SchedulingEvent) -> Unit
 ) {
+    val s = LocalAppStrings.current
     Box(modifier = Modifier.fillMaxSize()) {
         Column(modifier = Modifier.fillMaxSize()) {
 
@@ -86,7 +88,7 @@ fun SchedulingContent(
                                     enter   = fadeIn(tween(300)),
                                     exit    = fadeOut(tween(200))
                                 ) {
-                                    WarningBanner("Please select a training date to complete your scheduling")
+                                    WarningBanner(s.selectDateWarning)
                                 }
                             }
 

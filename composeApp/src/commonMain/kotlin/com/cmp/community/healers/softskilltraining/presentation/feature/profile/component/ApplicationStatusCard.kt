@@ -8,7 +8,6 @@ import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.automirrored.outlined.Assignment
 import androidx.compose.material.icons.outlined.Assignment
 import androidx.compose.material.icons.outlined.CalendarMonth
 import androidx.compose.material.icons.outlined.CheckCircle
@@ -23,48 +22,48 @@ import com.cmp.community.healers.softskilltraining.theme.AmberBorder
 import com.cmp.community.healers.softskilltraining.theme.BlueBg
 import com.cmp.community.healers.softskilltraining.theme.BlueBorder
 import com.cmp.community.healers.softskilltraining.theme.BlueText
+import com.cmp.community.healers.softskilltraining.theme.LocalAppStrings
 import com.cmp.community.healers.softskilltraining.theme.SuccessBg
 import com.cmp.community.healers.softskilltraining.theme.SuccessBorder
 import com.cmp.community.healers.softskilltraining.theme.SuccessText
 
 @Composable
 fun ApplicationStatusCard(state: CandidateHomeState) {
+    val s = LocalAppStrings.current
     ProfileCard {
         Column(verticalArrangement = Arrangement.spacedBy(14.dp)) {
-            SectionTitle(Icons.Outlined.Assignment, "Application Status")
+            SectionTitle(Icons.Outlined.Assignment, s.appStatus)
 
-            // Height(IntrinsicSize.Max) makes all 3 child tiles the same height
-            // as the tallest one — no more uneven cards when text wraps.
             Row(
                 modifier              = Modifier.fillMaxWidth().height(IntrinsicSize.Max),
                 horizontalArrangement = Arrangement.spacedBy(8.dp)
             ) {
                 StatusTile(
-                    icon       = Icons.Outlined.CheckCircle,
-                    iconTint   = SuccessText,
-                    bg         = SuccessBg,
-                    border     = SuccessBorder,
-                    title      = "Registration",
-                    subtitle   = state.registrationStatus.ifBlank { "Completed" },
-                    modifier   = Modifier.weight(1f).fillMaxHeight()
+                    icon     = Icons.Outlined.CheckCircle,
+                    iconTint = SuccessText,
+                    bg       = SuccessBg,
+                    border   = SuccessBorder,
+                    title    = s.registrationLabel,
+                    subtitle = state.registrationStatus.ifBlank { s.completed },
+                    modifier = Modifier.weight(1f).fillMaxHeight()
                 )
                 StatusTile(
-                    icon       = Icons.Outlined.CalendarMonth,
-                    iconTint   = BlueText,
-                    bg         = BlueBg,
-                    border     = BlueBorder,
-                    title      = "Training Status",
-                    subtitle   = state.trainingStatusLabel.ifBlank { "Not Scheduled" },
-                    modifier   = Modifier.weight(1f).fillMaxHeight()
+                    icon     = Icons.Outlined.CalendarMonth,
+                    iconTint = BlueText,
+                    bg       = BlueBg,
+                    border   = BlueBorder,
+                    title    = s.trainingStatus,
+                    subtitle = state.trainingStatusLabel.ifBlank { s.notScheduled },
+                    modifier = Modifier.weight(1f).fillMaxHeight()
                 )
                 StatusTile(
-                    icon       = Icons.Outlined.EmojiEvents,
-                    iconTint   = Amber,
-                    bg         = AmberBg,
-                    border     = AmberBorder,
-                    title      = "Certificate",
-                    subtitle   = if (state.scheduledTrainingDate.isBlank()) "Pending Training" else "Pending",
-                    modifier   = Modifier.weight(1f).fillMaxHeight()
+                    icon     = Icons.Outlined.EmojiEvents,
+                    iconTint = Amber,
+                    bg       = AmberBg,
+                    border   = AmberBorder,
+                    title    = s.certificate,
+                    subtitle = if (state.scheduledTrainingDate.isBlank()) s.pendingTraining else s.pending,
+                    modifier = Modifier.weight(1f).fillMaxHeight()
                 )
             }
         }

@@ -23,6 +23,7 @@ import androidx.compose.ui.unit.sp
 import com.cmp.community.healers.softskilltraining.theme.AmberBg
 import com.cmp.community.healers.softskilltraining.theme.AmberBorder
 import com.cmp.community.healers.softskilltraining.theme.AmberText
+import com.cmp.community.healers.softskilltraining.theme.LocalAppStrings
 import com.cmp.community.healers.softskilltraining.theme.SuccessBg
 import com.cmp.community.healers.softskilltraining.theme.SuccessBorder
 import com.cmp.community.healers.softskilltraining.theme.SuccessText
@@ -30,6 +31,7 @@ import com.cmp.community.healers.softskilltraining.utils.constants.payment.FeePa
 
 @Composable
 fun FeePaymentBadge(status: FeePaymentStatus) {
+    val s = LocalAppStrings.current
     val isPaid = status == FeePaymentStatus.PAID
     Surface(
         shape  = RoundedCornerShape(20.dp),
@@ -47,7 +49,7 @@ fun FeePaymentBadge(status: FeePaymentStatus) {
                 modifier = Modifier.size(14.dp)
             )
             Text(
-                if (isPaid) "Paid" else "Unpaid",
+                if (isPaid) s.paid else s.unpaid,
                 style = TextStyle(fontSize = 13.sp, fontWeight = FontWeight.SemiBold,
                     color = if (isPaid) SuccessText else AmberText)
             )

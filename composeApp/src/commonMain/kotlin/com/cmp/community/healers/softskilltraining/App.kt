@@ -1,56 +1,32 @@
 package com.cmp.community.healers.softskilltraining
 
-import androidx.compose.animation.AnimatedVisibility
-import androidx.compose.foundation.Image
-import androidx.compose.foundation.background
-import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.fillMaxSize
-import androidx.compose.foundation.layout.fillMaxWidth
-import androidx.compose.foundation.layout.safeContentPadding
-import androidx.compose.material3.Button
 import androidx.compose.material3.MaterialTheme
-import androidx.compose.material3.Text
 import androidx.compose.runtime.*
-import androidx.compose.ui.Alignment
-import androidx.compose.ui.Modifier
-import androidx.compose.ui.tooling.preview.Preview
+import androidx.compose.ui.platform.LocalLayoutDirection
+import androidx.compose.ui.unit.LayoutDirection
+import com.cmp.community.healers.softskilltraining.core.datastore.AppPreferences
 import com.cmp.community.healers.softskilltraining.core.navigation.AppNavGraph
-import org.jetbrains.compose.resources.painterResource
+import com.cmp.community.healers.softskilltraining.theme.LocalAppStrings
+import com.cmp.community.healers.softskilltraining.theme.englishStrings
+import com.cmp.community.healers.softskilltraining.theme.urduStrings
 import org.koin.compose.KoinContext
-import softskilltraining.composeapp.generated.resources.Res
-import softskilltraining.composeapp.generated.resources.compose_multiplatform
+import org.koin.compose.koinInject
 
 @Composable
-@Preview
 fun App() {
     KoinContext {
-        MaterialTheme {
-            AppNavGraph()
-        }
-    }
-}
+        val appPreferences: AppPreferences = koinInject()
+        val language by appPreferences.language.collectAsState("en")
 
-@Composable
-private fun DefaultApp() {
-    var showContent by remember { mutableStateOf(false) }
-    Column(
-        modifier = Modifier
-            .background(MaterialTheme.colorScheme.primaryContainer)
-            .safeContentPadding()
-            .fillMaxSize(),
-        horizontalAlignment = Alignment.CenterHorizontally,
-    ) {
-        Button(onClick = { showContent = !showContent }) {
-            Text("Click me!")
-        }
-        AnimatedVisibility(showContent) {
-            val greeting = remember { Greeting().greet() }
-            Column(
-                modifier = Modifier.fillMaxWidth(),
-                horizontalAlignment = Alignment.CenterHorizontally,
-            ) {
-                Image(painterResource(Res.drawable.compose_multiplatform), null)
-                Text("Compose: $greeting")
+        val strings    = if (language == "ur") urduStrings else englishStrings
+        val layoutDir  = if (language == "ur") LayoutDirection.Rtl else LayoutDirection.Ltr
+
+        CompositionLocalProvider(
+            LocalAppStrings   provides strings,
+            LocalLayoutDirection provides layoutDir
+        ) {
+            MaterialTheme {
+                AppNavGraph()
             }
         }
     }

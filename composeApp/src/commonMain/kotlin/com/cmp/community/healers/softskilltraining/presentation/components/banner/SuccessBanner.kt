@@ -20,6 +20,7 @@ import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import com.cmp.community.healers.softskilltraining.theme.LocalAppStrings
 import com.cmp.community.healers.softskilltraining.theme.SuccessBg
 import com.cmp.community.healers.softskilltraining.theme.SuccessBorder
 import com.cmp.community.healers.softskilltraining.theme.SuccessText
@@ -27,6 +28,7 @@ import com.cmp.community.healers.softskilltraining.theme.SuccessText
 
 @Composable
 fun SuccessBanner() {
+    val s = LocalAppStrings.current
     Surface(
         modifier = Modifier.fillMaxWidth(),
         shape    = RoundedCornerShape(12.dp),
@@ -40,13 +42,13 @@ fun SuccessBanner() {
         ) {
             Icon(Icons.Outlined.CheckCircle, null, tint = SuccessText, modifier = Modifier.size(20.dp))
             Column {
-                Text("Payment Successful!", style = TextStyle(
+                Text(s.paymentSuccessfulBanner, style = TextStyle(
                     fontSize = 14.sp,
                     fontWeight = FontWeight.Bold,
                     color = SuccessText
                 )
                 )
-                Text("You can now proceed to schedule your training",
+                Text(s.proceedToSchedule,
                     style = TextStyle(fontSize = 12.sp, color = SuccessText.copy(alpha = 0.8f)))
             }
         }

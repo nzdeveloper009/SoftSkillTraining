@@ -29,6 +29,7 @@ import com.cmp.community.healers.softskilltraining.theme.AmberBg
 import com.cmp.community.healers.softskilltraining.theme.AmberBorder
 import com.cmp.community.healers.softskilltraining.theme.AmberText
 import com.cmp.community.healers.softskilltraining.theme.Destructive
+import com.cmp.community.healers.softskilltraining.theme.LocalAppStrings
 
 @Composable
 fun DocumentUploadCard(
@@ -36,10 +37,11 @@ fun DocumentUploadCard(
     onToggle: () -> Unit,
     onPick: (DocumentType) -> Unit     // fires RequestPickDocument event
 ) {
+    val s = LocalAppStrings.current
     ExpandCard(
         Icons.Outlined.Upload,
-        "Document Upload",
-        "Upload high-quality scans of your original documents",
+        s.docUpload,
+        s.docUploadSub,
         state.documentsExpanded,
         onToggle
     ) {
@@ -72,7 +74,7 @@ fun DocumentUploadCard(
                 ) {
                     Icon(Icons.Outlined.Info, null, tint = Amber, modifier = Modifier.size(16.dp))
                     Text(
-                        "Please ensure all documents are clearly legible. Blurry or incorrect documents may lead to registration rejection. Max file size: 5MB.",
+                        s.docWarning,
                         style = TextStyle(fontSize = 11.sp, color = AmberText, lineHeight = 16.sp)
                     )
                 }

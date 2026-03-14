@@ -21,17 +21,18 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.FontWeight
-import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.cmp.community.healers.softskilltraining.theme.Border
 import com.cmp.community.healers.softskilltraining.theme.CardColor
+import com.cmp.community.healers.softskilltraining.theme.LocalAppStrings
 import com.cmp.community.healers.softskilltraining.theme.MutedFg
 import com.cmp.community.healers.softskilltraining.theme.Primary
 import com.cmp.community.healers.softskilltraining.theme.TextFg
 
 @Composable
 fun PaymentSectionHeader() {
+    val s = LocalAppStrings.current
     Surface(
         modifier        = Modifier.fillMaxWidth(),
         shape           = RoundedCornerShape(14.dp),
@@ -52,13 +53,13 @@ fun PaymentSectionHeader() {
                 Icon(Icons.Outlined.Wallet, null, tint = Primary, modifier = Modifier.size(20.dp))
             }
             Column {
-                Text("Registration Payment", style = TextStyle(
+                Text(s.paymentTitle, style = TextStyle(
                     fontSize = 18.sp,
                     fontWeight = FontWeight.Bold,
                     color = TextFg
                 )
                 )
-                Text("Complete the payment to activate your candidate profile",
+                Text(s.paymentSub,
                     style = TextStyle(fontSize = 12.sp, color = MutedFg, lineHeight = 16.sp))
             }
         }
