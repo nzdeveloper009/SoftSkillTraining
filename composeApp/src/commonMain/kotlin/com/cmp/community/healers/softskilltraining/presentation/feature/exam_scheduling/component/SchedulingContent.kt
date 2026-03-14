@@ -25,7 +25,7 @@ import com.cmp.community.healers.softskilltraining.presentation.feature.home.com
 import com.cmp.community.healers.softskilltraining.presentation.feature.home.mvi.CandidateHomeEvent
 import com.cmp.community.healers.softskilltraining.presentation.feature.home.mvi.CandidateHomeViewModel
 import com.cmp.community.healers.softskilltraining.presentation.feature.profile.ui.ProfileScreen
-import com.cmp.community.healers.softskilltraining.utils.constants.homee.CandidateTab
+import com.cmp.community.healers.softskilltraining.presentation.feature.home.helper.CandidateTab
 import com.cmp.community.healers.softskilltraining.utils.constants.scheduling.SchedulingPhase
 
 @Composable

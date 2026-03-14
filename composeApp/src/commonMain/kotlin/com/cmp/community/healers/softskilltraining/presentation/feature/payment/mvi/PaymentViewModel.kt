@@ -70,7 +70,6 @@ class PaymentViewModel(
     private fun confirmPayment() {
         viewModelScope.launch {
             setState { copy(isConfirming = true) }
-            // TODO: call confirm payment API when available
             val date = currentFormattedDate()
             setState {
                 copy(

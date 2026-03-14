@@ -25,7 +25,7 @@ import com.cmp.community.healers.softskilltraining.presentation.feature.home.mvi
 import com.cmp.community.healers.softskilltraining.presentation.feature.home.mvi.CandidateHomeViewModel
 import com.cmp.community.healers.softskilltraining.presentation.feature.profile.ui.ProfileScreen
 import com.cmp.community.healers.softskilltraining.theme.BgScreen
-import com.cmp.community.healers.softskilltraining.utils.constants.homee.CandidateTab
+import com.cmp.community.healers.softskilltraining.presentation.feature.home.helper.CandidateTab
 
 @Composable
 fun CandidateScheduledHomeScreen(

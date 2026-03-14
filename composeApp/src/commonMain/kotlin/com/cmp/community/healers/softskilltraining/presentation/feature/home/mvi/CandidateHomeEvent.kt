@@ -1,7 +1,7 @@
 package com.cmp.community.healers.softskilltraining.presentation.feature.home.mvi
 
 import com.cmp.community.healers.softskilltraining.core.base.UiEvent
-import com.cmp.community.healers.softskilltraining.utils.constants.homee.CandidateTab
+import com.cmp.community.healers.softskilltraining.presentation.feature.home.helper.CandidateTab
 import com.cmp.community.healers.softskilltraining.utils.constants.document.DocumentType
 
 sealed interface CandidateHomeEvent : UiEvent {

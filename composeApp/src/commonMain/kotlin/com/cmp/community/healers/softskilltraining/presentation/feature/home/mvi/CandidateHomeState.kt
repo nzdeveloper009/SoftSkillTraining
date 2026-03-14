@@ -2,7 +2,7 @@ package com.cmp.community.healers.softskilltraining.presentation.feature.home.mv
 
 import com.cmp.community.healers.softskilltraining.core.base.UiState
 import com.cmp.community.healers.softskilltraining.domain.model.City
-import com.cmp.community.healers.softskilltraining.utils.constants.homee.CandidateTab
+import com.cmp.community.healers.softskilltraining.presentation.feature.home.helper.CandidateTab
 import com.cmp.community.healers.softskilltraining.utils.constants.document.DocumentType
 import com.cmp.community.healers.softskilltraining.theme.AppLanguage
 import com.cmp.community.healers.softskilltraining.utils.constants.application.ApplicationStep

@@ -29,7 +29,7 @@ import com.cmp.community.healers.softskilltraining.presentation.feature.auth.sig
 import com.cmp.community.healers.softskilltraining.presentation.feature.exam_scheduling.mvi.SchedulingViewModel
 import com.cmp.community.healers.softskilltraining.presentation.feature.exam_scheduling.ui.SchedulingScreen
 import com.cmp.community.healers.softskilltraining.presentation.feature.home.mvi.CandidateHomeEvent
-import com.cmp.community.healers.softskilltraining.utils.constants.homee.CandidateTab
+import com.cmp.community.healers.softskilltraining.presentation.feature.home.helper.CandidateTab
 import com.cmp.community.healers.softskilltraining.presentation.feature.home.mvi.CandidateHomeViewModel
 import com.cmp.community.healers.softskilltraining.presentation.feature.home.ui.CandidateHomeScreen
 import com.cmp.community.healers.softskilltraining.presentation.feature.home.ui.CandidateScheduledHomeScreen

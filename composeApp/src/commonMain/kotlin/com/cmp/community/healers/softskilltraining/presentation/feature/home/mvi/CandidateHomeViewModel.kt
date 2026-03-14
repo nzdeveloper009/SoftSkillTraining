@@ -9,7 +9,7 @@ import com.cmp.community.healers.softskilltraining.data.remote.dto.response.Cand
 import com.cmp.community.healers.softskilltraining.domain.model.City
 import com.cmp.community.healers.softskilltraining.domain.repository.AuthRepository
 import com.cmp.community.healers.softskilltraining.domain.repository.CandidateRepository
-import com.cmp.community.healers.softskilltraining.utils.constants.homee.CandidateTab
+import com.cmp.community.healers.softskilltraining.presentation.feature.home.helper.CandidateTab
 import com.cmp.community.healers.softskilltraining.utils.constants.document.DocumentType
 import com.cmp.community.healers.softskilltraining.utils.constants.document.documentTypeFromApiType
 import com.cmp.community.healers.softskilltraining.theme.AppLanguage

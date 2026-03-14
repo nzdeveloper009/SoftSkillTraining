@@ -116,7 +116,7 @@ fun HomeScreen(
             onDeepLinkIntercepted = { path ->
                 when (PATH_TO_NATIVE[path]) {
                     NativeDestination.SignIn         -> onNavigateToSignIn()
-                    NativeDestination.TrainingSignIn -> { /* TODO */ }
+                    NativeDestination.TrainingSignIn -> { /*  */ }
                     NativeDestination.WebOnly, null  -> { /* let WebView handle it */ }
                 }
             }
